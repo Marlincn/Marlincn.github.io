@@ -320,6 +320,25 @@
     if (match) document.body.classList.add(...match[1])
   }
 
+  function syncMenuActive() {
+    const path = (location.pathname || '/').replace(/\/+$/, '') || '/'
+    const isPost = /^\/\d{4}\/\d{2}\/\d{2}\//.test(path)
+
+    const matches = (href) => {
+      const h = (href || '').replace(/\/+$/, '') || '/'
+      if (h === '/') return path === '/'
+      if (h === '/articles') return path.startsWith('/articles') || isPost
+      return path === h || path.startsWith(h + '/')
+    }
+
+    document.querySelectorAll(
+      '#nav .menus_items .menus_item, #sidebar-menus .menus_items .menus_item'
+    ).forEach(item => {
+      const link = item.querySelector(':scope > a.site-page')
+      item.classList.toggle('active', Boolean(link && matches(link.getAttribute('href'))))
+    })
+  }
+
   document.addEventListener('pjax:send', beginNavigation)
   document.addEventListener('pjax:complete', finishNavigation)
   document.addEventListener('pjax:error', finishNavigation)
@@ -328,11 +347,13 @@
   document.addEventListener('DOMContentLoaded', initStatsFallback, { once: true })
   document.addEventListener('DOMContentLoaded', syncNavigationSemantics, { once: true })
   document.addEventListener('DOMContentLoaded', syncRouteState, { once: true })
+  document.addEventListener('DOMContentLoaded', syncMenuActive, { once: true })
   document.addEventListener('pjax:complete', enhanceSearch)
   document.addEventListener('pjax:complete', initRightsideEnhancement)
   document.addEventListener('pjax:complete', initStatsFallback)
   document.addEventListener('pjax:complete', syncNavigationSemantics)
   document.addEventListener('pjax:complete', syncRouteState)
+  document.addEventListener('pjax:complete', syncMenuActive)
   window.addEventListener('pageshow', finishInitialLoading)
   window.addEventListener('pageshow', scheduleInitialFinish, { once: true })
   window.addEventListener('resize', syncNavigationSemantics)
