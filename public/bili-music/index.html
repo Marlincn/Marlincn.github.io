@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<!-- nova-theme-first-frame -->
+<script>
+  ;(function () {
+    try {
+      var hour = new Date().getHours()
+      var dark = hour >= 18 || hour < 7
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+    } catch (e) {}
+  })()
+</script>
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bili Music 试验站</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<style>
+  body { font-family: system-ui, "Microsoft YaHei", sans-serif; max-width: 780px; margin: 32px auto; padding: 0 16px; color: #222; background: #f6f6f8; }
+  h2 { margin-bottom: 4px; } p.hint { color: #777; font-size: 13px; margin: 6px 0 14px; }
+  .row { display: flex; gap: 8px; margin-bottom: 10px; }
+  input { flex: 1; padding: 8px 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; }
+  button { padding: 8px 18px; border: 0; border-radius: 8px; background: #00a1d6; color: #fff; cursor: pointer; font-size: 14px; }
+  button:hover { background: #0087ad; }
+  #log { color: #c0392b; font-size: 13px; min-height: 18px; margin: 6px 0; }
+  #list { margin: 14px 0; font-size: 14px; }
+  #list div { padding: 6px 10px; border-bottom: 1px dashed #ddd; }
+  #ap { background: #fff; border-radius: 12px; padding: 10px; }
+</style>
+</head>
+<body>
+<h2>Bilibili 音乐试验站</h2>
+<p class="hint">架构:静态页(GitHub Pages)+ 云端代理(腾讯云函数)。代理地址留空 = 同源(本地模拟器);部署后填云端地址。</p>
+<div class="row">
+  <input id="proxy" placeholder="代理地址(如 https://1470690781-xxx.ap-guangzhou.tencentscf.com)">
+</div>
+<div class="row">
+  <input id="bvid" placeholder="BVID 或完整链接,如 BV1GJ411x7h7">
+  <button onclick="addSong()">添加歌曲</button>
+</div>
+<div id="log"></div>
+<div id="list"></div>
+<div id="ap"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script>
+  const base = () => (document.getElementById('proxy').value.trim() || '').replace(/\/+$/, '');
+  let ap = null;
+  const songs = [];
+
+  function log(msg) { document.getElementById('log').textContent = msg; }
+
+  async function fetchAudioBlob(bvid) {
+    // 优先走 /stream2(云端函数:服务端解析+主备回退);本地模拟器同样实现
+    const resp = await fetch(base() + '/stream2?bvid=' + bvid);
+    if (!resp.ok) {
+      let detail = '';
+      try { detail = (await resp.text()).slice(0, 150); } catch (e) { /* ignore */ }
+      throw new Error('音频请求失败 HTTP ' + resp.status + ' ' + detail);
+    }
+    const ct = resp.headers.get('Content-Type') || '';
+    if (ct.includes('json')) {
+      const b64 = await resp.text();
+      if (b64.trim().startsWith('{')) {
+        const j = JSON.parse(b64);
+        throw new Error(j.error || '音频获取失败');
+      }
+      const bin = atob(b64.trim());
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return new Blob([bytes], { type: 'audio/mp4' });
+    }
+    return await resp.blob(); // 二进制(本地模拟器)
+  }
+
+  async function addSong() {
+    const raw = document.getElementById('bvid').value.trim();
+    if (!raw) return log('请输入 BVID');
+    const m = raw.match(/BV[0-9A-Za-z]{10}/);
+    if (!m) return log('未识别到 BVID');
+    log('加载中: ' + m[0] + ' ...');
+    try {
+      const r = await fetch(base() + '/api/info?bvid=' + m[0]);
+      const j = await r.json();
+      if (j.error) return log('加载失败: ' + j.error);
+      log('下载音频中: ' + j.title + ' ...');
+      const blob = await fetchAudioBlob(m[0]);
+      const playUrl = URL.createObjectURL(blob);
+      songs.push(j);
+      const listEl = document.getElementById('list');
+      const row = document.createElement('div');
+      row.textContent = songs.length + '. ' + j.title + ' — ' + j.artist;
+      listEl.appendChild(row);
+      if (!ap) {
+        ap = new APlayer({ container: document.getElementById('ap'), listFolded: false, audio: [] });
+      }
+      ap.list.add({ name: j.title, artist: j.artist, url: playUrl, cover: j.pic });
+      document.getElementById('bvid').value = '';
+      log('已添加,共 ' + songs.length + ' 首');
+    } catch (e) {
+      log('请求失败: ' + e);
+    }
+  }
+</script>
+</body>
+</html>

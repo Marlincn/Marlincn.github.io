@@ -1,0 +1,486 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><!-- hexo injector head_begin start --><script>
+;(function () {
+  try {
+    var hour = new Date().getHours()
+    var dark = hour >= 18 || hour < 7
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+  } catch (e) {}
+})()
+</script><!-- hexo injector head_begin end --><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>绘世 Stable Diffusion | Marlin</title><meta name="author" content="Marlin"><meta name="copyright" content="Marlin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="一、提示词1.0概念 提示词(tag)：相对独立的词或短语，告诉AI画什么 权重：单独提示词在总提示词中突出的程度，说明主要画什么 采样：采集文字特征，得到清晰图像的过程，不同采样方法画出的风格不同 采样进程：反映绘画完成程度  1.1写法 专有名词用下划线_连接，突出整体性，提示词之间用英文逗号,分隔 书写越靠前所占权重越高，默认值均为1 为确保有效，提示词数量一般不超过75 权重值一般在0.3">
+<meta property="og:type" content="article">
+<meta property="og:title" content="绘世 Stable Diffusion">
+<meta property="og:url" content="https://deymocn.github.io/2026/08/17/%E7%BB%98%E4%B8%96-Stable%20Diffusion/">
+<meta property="og:site_name" content="Marlin">
+<meta property="og:description" content="一、提示词1.0概念 提示词(tag)：相对独立的词或短语，告诉AI画什么 权重：单独提示词在总提示词中突出的程度，说明主要画什么 采样：采集文字特征，得到清晰图像的过程，不同采样方法画出的风格不同 采样进程：反映绘画完成程度  1.1写法 专有名词用下划线_连接，突出整体性，提示词之间用英文逗号,分隔 书写越靠前所占权重越高，默认值均为1 为确保有效，提示词数量一般不超过75 权重值一般在0.3">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://deymocn.github.io/img/logo1.jpg">
+<meta property="article:published_time" content="2026-08-16T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-08-17T07:20:35.295Z">
+<meta property="article:author" content="Marlin">
+<meta property="article:tag" content="AI绘画">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://deymocn.github.io/img/logo1.jpg"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "绘世 Stable Diffusion",
+  "url": "https://deymocn.github.io/2026/08/17/%E7%BB%98%E4%B8%96-Stable%20Diffusion/",
+  "image": "https://deymocn.github.io/img/logo1.jpg",
+  "datePublished": "2026-08-16T16:00:00.000Z",
+  "dateModified": "2026-08-17T07:20:35.295Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "Marlin",
+      "url": "https://deymocn.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://deymocn.github.io/2026/08/17/%E7%BB%98%E4%B8%96-Stable%20Diffusion/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        const data = { value }
+
+        if (ttl != null) {
+          data.expiry = Date.now() + ttl * 86400000
+        }
+
+        localStorage.setItem(key, JSON.stringify(data))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return
+
+        try {
+          const data = JSON.parse(itemStr)
+
+          if (data.expiry && Date.now() > data.expiry) {
+            localStorage.removeItem(key)
+            return
+          }
+
+          return data.value
+        } catch {
+          localStorage.removeItem(key)
+        }
+      }
+    }
+
+    const scriptCache = new Map()
+    const cssCache = new Map()
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => {
+        if (scriptCache.has(url)) {
+          return scriptCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const script = document.createElement('script')
+
+          script.src = url
+          script.async = true
+
+          for (const key in attr) {
+            script.setAttribute(key, attr[key])
+          }
+
+          script.onload = resolve
+          script.onerror = reject
+
+          document.head.appendChild(script)
+        })
+
+        scriptCache.set(url, promise)
+
+        return promise
+      },
+      getCSS: (url, id) => {
+        if (cssCache.has(url)) {
+          return cssCache.get(url)
+        }
+
+        const promise = new Promise((resolve, reject) => {
+          const link = document.createElement('link')
+
+          link.rel = 'stylesheet'
+          link.href = url
+
+          if (id) {
+            link.id = id
+          }
+
+          link.onload = resolve
+          link.onerror = reject
+
+          document.head.appendChild(link)
+        })
+
+        cssCache.set(url, promise)
+
+        return promise
+      },
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+      const activateDarkMode = () => {
+        document.documentElement.dataset.theme = 'dark'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.dataset.theme = 'light'
+        if (metaThemeColor !== null) {
+          metaThemeColor.setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":true,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false,"highlightFullpage":false,"highlightMacStyle":false},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'medium_zoom',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '绘世 Stable Diffusion',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css?v=20260833-nav"><link rel="stylesheet" href="/rose-galaxy/css/night-visitor.css?v=20260813-prince-quotes-v1"><meta name="generator" content="Hexo 8.1.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/logo1.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/articles/"><div class="headline">文章</div><div class="length-num">9</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/articles/"><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/leetcode.webp);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/brand/nova-rose-line-128.png" alt="Logo"><span class="site-name">Marlin</span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/articles/"><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">绘世 Stable Diffusion</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2026-08-16T16:00:00.000Z" title="发表于 2026-08-17 00:00:00">2026-08-17</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2026-08-17T07:20:35.295Z" title="更新于 2026-08-17 15:20:35">2026-08-17</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="一、提示词"><a href="#一、提示词" class="headerlink" title="一、提示词"></a>一、提示词</h2><h3 id="1-0概念"><a href="#1-0概念" class="headerlink" title="1.0概念"></a>1.0概念</h3><ul>
+<li>提示词(tag)：相对独立的词或短语，告诉AI画什么</li>
+<li>权重：单独提示词在总提示词中突出的程度，说明主要画什么</li>
+<li>采样：采集文字特征，得到清晰图像的过程，不同采样方法画出的风格不同</li>
+<li>采样进程：反映绘画完成程度</li>
+</ul>
+<h3 id="1-1写法"><a href="#1-1写法" class="headerlink" title="1.1写法"></a>1.1写法</h3><ul>
+<li>专有名词用下划线<code>_</code>连接，突出整体性，提示词之间用英文逗号<code>,</code>分隔</li>
+<li>书写越靠前所占权重越高，默认值均为1</li>
+<li>为确保有效，提示词数量一般不超过75</li>
+<li>权重值一般在0.3-1.5</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="left">功能</th>
+<th align="left">写法</th>
+<th>权重值W</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">设置权重：括号嵌套</td>
+<td align="left">(tag)<br>[tag]<br>{tag}</td>
+<td>1.1<br>0.9<br>1.05</td>
+<td>((tag1)),[[[tag2]]]<br><strong>W</strong>(tag1)&#x3D;1.1^2^&#x3D;1.21<br><strong>W</strong>(tag2)&#x3D;0.9^3^&#x3D;0.729</td>
+</tr>
+<tr>
+<td align="left">设置权重：直接设置</td>
+<td align="left">(tag:W)</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>功能</th>
+<th>写法</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>设置采样比例：后采样</td>
+<td>[tag:比例]</td>
+<td>(tree:0.8)<br>只在整体采样进程达到80%后，画树</td>
+</tr>
+<tr>
+<td>设置采样比例：前采样</td>
+<td>[tag::比例]</td>
+<td>[tree::0.7]<br>只在整体采样进程到达70%前，画树</td>
+</tr>
+<tr>
+<td>设置采样比例：分步采样</td>
+<td>[tag1:tag2:比例]</td>
+<td>[tree:river:0.6]<br>前60%画树，后40%画河</td>
+</tr>
+<tr>
+<td>设置采样比例：交替采样</td>
+<td>[tag1|tag2]</td>
+<td>[purple|blue]hair<br>发色第一步画紫色，第二部画蓝色，交替进行，最终得到蓝紫相间的发色</td>
+</tr>
+</tbody></table>
+<h3 id="1-3推荐格式"><a href="#1-3推荐格式" class="headerlink" title="1.3推荐格式"></a>1.3推荐格式</h3><h4 id="1-3-1正向提示词"><a href="#1-3-1正向提示词" class="headerlink" title="1.3.1正向提示词"></a>1.3.1正向提示词</h4><p><strong>1. 画质，画风</strong></p>
+<p>高质量：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">masterpiece, best quality, highres, extremely detailed CG, perfect lighting, 8k wallpaper</span><br></pre></td></tr></table></figure>
+
+
+<p>​              杰作，最佳质量，高分辨率，极其精细的电脑生成图像，完美灯光，8K 壁纸</p>
+<p>真实系：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">photograph, photorealistic</span><br></pre></td></tr></table></figure>
+
+
+<p>​              照片，超写实</p>
+<p>二次元：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">anime, comic, game CG</span><br></pre></td></tr></table></figure>
+
+
+<p>​              动漫，漫画，游戏电脑生成图像，三维场景：3D，C4D 渲染，虚幻引擎，Octane 渲染</p>
+<p>插画风：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ilustration, painting, paintbrush</span><br></pre></td></tr></table></figure>
+
+
+<p>​              插画，绘画，画笔，</p>
+<p>三维场景：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3D, C4D renderunreal engine, octane render</span><br></pre></td></tr></table></figure>
+
+
+<p>​              3D，C4D 渲染，虚幻引擎，Octane 渲染</p>
+<p>画风词：</p>
+<table>
+<thead>
+<tr>
+<th>赛博朋克</th>
+<th>Cyberpunk</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>像素风</td>
+<td>8bit&#x2F;16bit pixel</td>
+</tr>
+<tr>
+<td>宫崎骏风格</td>
+<td>studio ghibli</td>
+</tr>
+<tr>
+<td>皮克斯风格</td>
+<td>pixel style</td>
+</tr>
+<tr>
+<td>水墨画</td>
+<td>Chinese ink style</td>
+</tr>
+</tbody></table>
+<p><strong>2. 主题描述</strong></p>
+<p>人物，年龄，发型，发色，服饰，配饰，情绪表情，动作</p>
+<p><strong>3. 场景，灯光，景别，拍摄角度</strong></p>
+<p><strong>4. lora调用</strong></p>
+<p>&lt;lora:名称：权重&gt;</p>
+<table>
+<thead>
+<tr>
+<th>景别</th>
+<th align="center"></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>close-up</td>
+<td align="center">近景</td>
+<td>extreme close-up</td>
+<td>特写镜头</td>
+</tr>
+<tr>
+<td>medium close-up</td>
+<td align="center">中近景</td>
+<td>establishing shot</td>
+<td>定场镜头（视野宽阔的远景）</td>
+</tr>
+<tr>
+<td>medium shot</td>
+<td align="center">中景</td>
+<td>cowboy shot</td>
+<td>牛仔镜头（上半身以及大腿）</td>
+</tr>
+<tr>
+<td>long shot</td>
+<td align="center">全景</td>
+<td>upper body</td>
+<td>上半身</td>
+</tr>
+<tr>
+<td>medium full shot</td>
+<td align="center">中全景</td>
+<td>full body</td>
+<td>全身</td>
+</tr>
+<tr>
+<td>full shot</td>
+<td align="center">全景</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p><span style="color: #FF0000">注意加入景别提示词后，尽量不要加入如beautiful face 这些脸部提示词，否则多数会生成半身照</span></p>
+<table>
+<thead>
+<tr>
+<th align="left">拍摄角度</th>
+<th align="center"></th>
+<th></th>
+<th align="center"></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">overhead shot</td>
+<td align="center">俯视</td>
+<td>straight on</td>
+<td align="center">水平拍摄</td>
+</tr>
+<tr>
+<td align="left">top down</td>
+<td align="center">由上向下</td>
+<td>hero view</td>
+<td align="center">英雄视角</td>
+</tr>
+<tr>
+<td align="left">bird’s eye view</td>
+<td align="center">鸟瞰</td>
+<td>low view</td>
+<td align="center">低视角</td>
+</tr>
+<tr>
+<td align="left">high angle</td>
+<td align="center">高角度</td>
+<td>worm’s eye view</td>
+<td align="center">仰视</td>
+</tr>
+<tr>
+<td align="left">slightly above</td>
+<td align="center">微高角度</td>
+<td>selfie</td>
+<td align="center">自拍</td>
+</tr>
+</tbody></table>
+<img style="zoom:30%" src="C:\Users\mabin\Downloads\d43a9bd8af7901bed6459b385a3f4038.jpeg">
+
+
+
+<h4 id="1-3-2反向提示词"><a href="#1-3-2反向提示词" class="headerlink" title="1.3.2反向提示词"></a>1.3.2反向提示词</h4><p>通用的范式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">NSFW,mutated hands and fingers,worst quality,low quality,extra limb,missing limb,floating limbs,cloned face,disconnected limbs,extra legs,fused fingers,long neck,deformed iris,deformedpupils,deformed,distorted,disfigured,lineart,watermark,cropped, out of frame,poorly drawn,bad anatomy,wrong anatomy,mutation,ugly,disgusting</span><br></pre></td></tr></table></figure>
+
+<p>不适合公开内容，手部与手指畸变，质量极差，质量低下，多余肢体，缺失肢体，漂浮肢体，克隆脸，断离肢体，多余腿部，手指融合，长脖子，虹膜畸变，瞳孔畸变，畸形，扭曲，毁容，线稿，水印，裁剪不当，画面出框，绘制粗糙，解剖结构错误，解剖结构异常，畸变，丑陋，恶心</p>
+<h2 id="二、模型推荐"><a href="#二、模型推荐" class="headerlink" title="二、模型推荐"></a>二、模型推荐</h2><h2 id="2-1底模"><a href="#2-1底模" class="headerlink" title="2.1底模"></a>2.1底模</h2><p><span style="color:#87CEEB ">SD绘画的基础大模型，决定了后续画风的内容和基本输出风格。体量在GB级别</span></p>
+<ul>
+<li><span style="font-size: 25px">NoobAI-XL V-Pred-1.0</span></li>
+<li><span style="font-size: 25px">Plant Milk - Model Suite Hemp II</span><br><span style="color:#FFC0CB ">动漫模型，人物二次元，场景偏现实</span></li>
+</ul>
+<ul>
+<li><span style="font-size: 25px">Plant Milk - Model Suite Walnut</span> </li>
+<li><span style="font-size: 25px">Cetus-Mix_WhaleFall2</span></li>
+</ul>
+<h2 id="2-2LORA"><a href="#2-2LORA" class="headerlink" title="2.2LORA"></a>2.2LORA</h2><p><span style="color:#87CEEB ">针对特定艺术风格、对象类型等进行快速微调，文件大小通常在百兆左右</span></p>
+<ul>
+<li><span style="font-size: 25px">Artist style: Rella - Illustrious-XL V1</span></li>
+<li><span style="font-size: 25px">薄塗り &#x2F; USNR STYLE ILL V1.0</span></li>
+<li><span style="font-size: 25px">Artist Style: konya_karasue&#x2F;紺屋鴉江</span></li>
+<li><span style="font-size: 25px">动漫光效| Flux Anime Light</span></li>
+</ul>
+<h2 id="三、成图优化"><a href="#三、成图优化" class="headerlink" title="三、成图优化"></a>三、成图优化</h2><ol>
+<li>生成无反应时，滚动web点击最下端的**<code>重载UI</code>**</li>
+<li>512*512以上使用高清分辨率修复极易爆显存，尝试拉满像素、采样方式和迭代步数生成高质量图片</li>
+<li>3.0采样更适合高迭代步数（30-60）收敛，2.0适合低迭代步数（20-40），Krass是均衡方向</li>
+</ol>
+<h2 id="四、画作"><a href="#四、画作" class="headerlink" title="四、画作"></a>四、画作</h2><h3 id="3-1夏末游鳞"><a href="#3-1夏末游鳞" class="headerlink" title="3.1夏末游鳞"></a>3.1夏末游鳞</h3><p><strong>正向Tag</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">masterpiece, best quality, newest, highres, absurdres, very Aesthetic,</span><br><span class="line">depth of field, cowboy shot, close-up, solo, 1girl, holding sparkler, adjusting hair, looking at viewer, from side, light smile, closed mouth, upper body, original, gloom, (medium chest), white hair, long hair, ((red eyes)), bangs, hair between eyes, brown cardigan, white shirt, black dress, school uniform, blurry background, outdoors, dusk, on beach, water, cloudy sky, sea, floating glowing goldfish surround, light particles, lens flare, sunset, bokeh, backlighitng, blurry, handsome,</span><br></pre></td></tr></table></figure>
+
+
+<p>杰作，最佳品质，最新，高分辨率，超高分辨率，非常有美感<br>景深，牛仔镜头，特写，单人，1女孩，手持烟花棒，整理头发，看向观众，侧面，轻笑，闭嘴，上半身，原图，阴暗，（中胸），白发，长发，（红眼），刘海，头发遮住眼睛，棕色开衫，白色衬衫，黑色连衣裙，校服，背景模糊，户外，黄昏，海滩上，水，多云天空，大海，漂浮发光的金鱼环绕，光粒子，镜头光晕，日落，背景虚化，逆光，模糊，帅气</p>
+<p><strong>负向Tag</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(score_4, score_3, score_2, score_1), ugly, nsfw, lineart,watermark,bad anatomy,bad proportions,extra limbs,extra digit,extra legs,extra legs and arms,disfigured,missing arms,too many fingers,fused fingers,missing fingers,watermark,username,furry,3fingers,god&#x27;s eyes,yu pei,mutated hands and fingers,</span><br></pre></td></tr></table></figure>
+
+
+<p>（得分 4、得分 3、得分 2、得分 1），丑陋，不适宜公开，线稿，水印，糟糕的解剖结构，比例失调，多余肢体，多余手指，多余腿和胳膊，畸形，缺失胳膊，手指过多，手指粘连，缺失手指，水印，用户名，兽迷，三根手指，上帝之眼，余佩，变异的手和手指</p>
+<p><strong>采样</strong> Euler Karras</p>
+<p><strong>迭代步数</strong> 30，CFG5</p>
+<p><strong>模型</strong> Plant Milk HempII</p>
+<p><strong>Lora</strong> Rella - Illustrious-XL (0.4)</p>
+<p>其他数值均为默认</p>
+<img src="C:\Users\mabin\Desktop\杂集\图片\夏末游鳞.png" style="zoom: 50%;" />
+
+
+<h3 id="3-暗香盛雪"><a href="#3-暗香盛雪" class="headerlink" title="3.暗香盛雪"></a>3.暗香盛雪</h3><p><strong>正向tag</strong></p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">masterpiece, best quality, extremely detailed CG unity 8k wallpaper, close up, (blurry background), (depth of field), (skadi &#123;arknights&#125;), white theme, (Inception_(film)), beautiful detailed eyes, detailed clothes, (black and white suit), solo, from side, hair_ribbons, gloom, black scarf, original, floating, falling white petals, upper body,  (medium chest), white hair, short hair, messy hair, ((red eyes)), (black cloak), cinematic highlight hair, depth of field, nature, (morning), sky, (blurry), (plum blossom:1.2), (best shadow), (sunlight), shade, handsome</span><br></pre></td></tr></table></figure>
+
+
+<p>大师级作品，顶级品质，极其精细的 CG Unity 8K 壁纸，特写镜头，（模糊背景），（景深），（斯卡蒂 {明日方舟}），白色主题，（盗梦空间），美丽细致的眼睛，精致的服装，（黑白西装），独照，侧面，发带，忧郁，黑色围巾，原创，飘浮，飘落的白色花瓣，上半身，（中等胸部），白色头发，短发，凌乱的头发，（红色眼睛），（黑色斗篷），电影级高光头发，景深，自然，（清晨），天空，（模糊），（梅花：1.2），（最佳阴影），（阳光），阴影，帅气</p>
+<p><strong>采样</strong> DPM++ 3M SDE     Karras</p>
+<p><strong>迭代步数</strong> 30，CFG5</p>
+<p><strong>模型</strong> CetusMix-WhaleFall2</p>
+<p><strong>独立Lora</strong>  薄塗り &#x2F; USNR STYLE (0.4)</p>
+<p>​	          Rella - Illustrious-XL (0.4，最佳)</p>
+<p>​                  konya_karasue&#x2F;紺屋鴉江 (0.4)</p>
+<p><strong>混合Lora</strong></p>
+<p>其他数值均为默认</p>
+<img src="C:\Users\mabin\Desktop\杂集\图片\暗香胜雪.png" style="zoom: 50%;" />
+
+
+<blockquote>
+<p>本文参考于：</p>
+<p><span style="color:#87CEEB"><strong>乌咪橘</strong></span>	<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1j4421D76v">【SD提示词】B站最全的StableDiffusion提示词教程（上）</a></p>
+<p><span style="color:#87CEEB"><strong>村口郭大爷AITechLab</strong></span>	<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1SW4y1X7ME">stable diffusion 必须技能之用【提示词】控制镜头景别与角度</a></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://deymocn.github.io">Marlin</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://deymocn.github.io/2026/08/17/%E7%BB%98%E4%B8%96-Stable%20Diffusion/">https://deymocn.github.io/2026/08/17/%E7%BB%98%E4%B8%96-Stable%20Diffusion/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://deymocn.github.io" target="_blank">Marlin</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/articles/AI%E7%BB%98%E7%94%BB/">AI绘画</a></div><div class="post-share"><div class="social-share" data-image="/img/logo1.jpg" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2026/08/17/Markdown%20%E8%AF%AD%E6%B3%95%E9%80%9F%E6%9F%A5%E8%A1%A8/" title="Markdown 语法速查表"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">Markdown 语法速查表</div></div><div class="info-2"><div class="info-item-1">Markdown 语法参考手册 &#x2F; 速查表。 总览此 Markdown 语法速查表提供了所有 Markdown 语法元素的快速参考。但是此速查表无法涵盖所有极限用法，因此，如果您需要某些语法元素的详细信息，请参阅我们的 基本语法 和 扩展语法 手册。 基本语法这些是 John Gruber 的原始设计文档中列出的元素。所有 Markdown 应用程序都支持这些元素。    元素 Markdown 语法    标题（Heading） # H1&lt;br&gt;## H2&lt;br&gt;### H3   粗体（Bold） **bold text**   斜体（Italic） *italicized text*   引用块（Blockquote） &gt; blockquote   有序列表（Ordered List） 1. First item&lt;br&gt;2. Second item&lt;br&gt;3. Third item   无序列表（Unordered List） - First item&lt;br&gt;- Second item&lt;br&g...</div></div></div></a><a class="pagination-related" href="/2026/08/17/Markdown%20%E5%AE%9E%E7%94%A8%E8%AF%AD%E6%B3%95/" title="Markdown 实用语法"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">Markdown 实用语法</div></div><div class="info-2"><div class="info-item-1">本文以Typora作演示书写页面，不能完成的操作切换到源代码模式界面进行（打开\关闭源代码界面：ctrl+/），在这个界面，你可以一窥端倪  一、段落和字体格式   格式 书写界面 源代码界面    换行 软回车^1 双空格回车   换段^2 回车 双回车   分割线  —   斜体 右键 *文字*   加粗 右键 *文字*   斜体加粗  ***文字***   删除线  ~~文字~~   演示（换段）  这是新的一行   这是新的一行  这是新的一段 二、标题   标题级数 格式    一级标题（主标题） # 标题   二级标题 ## 标题   …^3 #…# 标题   三、列表和勾选框3.1列表   列表符 有序列表 无序列表    *    +    - 1. 列表2. 列表3. 列表 * 列表+ 列表- 列表   1.    2.    3. 2. 列表3. 列表4. 列表 * 列表+ 列表- 列表   演示  这是有序列表 有序列表是一段的不同行，书写界面回车自动添加列表符 有序列表数字可以不从1开始，但必须连续   这是无序列表，呈无先后关系的并列内容   用*,+,...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E6%8F%90%E7%A4%BA%E8%AF%8D"><span class="toc-number">1.</span> <span class="toc-text">一、提示词</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-0%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.</span> <span class="toc-text">1.0概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1%E5%86%99%E6%B3%95"><span class="toc-number">1.2.</span> <span class="toc-text">1.1写法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3%E6%8E%A8%E8%8D%90%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.3.</span> <span class="toc-text">1.3推荐格式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-1%E6%AD%A3%E5%90%91%E6%8F%90%E7%A4%BA%E8%AF%8D"><span class="toc-number">1.3.1.</span> <span class="toc-text">1.3.1正向提示词</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-3-2%E5%8F%8D%E5%90%91%E6%8F%90%E7%A4%BA%E8%AF%8D"><span class="toc-number">1.3.2.</span> <span class="toc-text">1.3.2反向提示词</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A8%A1%E5%9E%8B%E6%8E%A8%E8%8D%90"><span class="toc-number">2.</span> <span class="toc-text">二、模型推荐</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-1%E5%BA%95%E6%A8%A1"><span class="toc-number">3.</span> <span class="toc-text">2.1底模</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-2LORA"><span class="toc-number">4.</span> <span class="toc-text">2.2LORA</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%88%90%E5%9B%BE%E4%BC%98%E5%8C%96"><span class="toc-number">5.</span> <span class="toc-text">三、成图优化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E7%94%BB%E4%BD%9C"><span class="toc-number">6.</span> <span class="toc-text">四、画作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1%E5%A4%8F%E6%9C%AB%E6%B8%B8%E9%B3%9E"><span class="toc-number">6.1.</span> <span class="toc-text">3.1夏末游鳞</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%9A%97%E9%A6%99%E7%9B%9B%E9%9B%AA"><span class="toc-number">6.2.</span> <span class="toc-text">3.暗香盛雪</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>其他文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><span>无</span></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script><div class="js-pjax"></div><script src="/rose-galaxy/js/nova-ux.js?v=20260817-theme-pref"></script><script src="/rose-galaxy/js/night-visitor.js?v=20260813-prince-quotes-v1"></script><script src="/rose-galaxy/js/decorative-loader.js?v=20260730-performance"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.7.0"></script></div></div></body></html>

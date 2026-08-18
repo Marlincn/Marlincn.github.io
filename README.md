@@ -18,13 +18,13 @@
 - [技术栈](#技术栈)
 - [定制记录](#定制记录文件级)
 - [构建过程记录](#构建过程记录)
-- [后续计划(Phase 2)](#后续计划phase-2)
+- [后续计划(待做)](#后续计划待做)
 
 ---
 
 ## 功能特性
 
-- 深色 / 浅色双主题:时间自动切换(7:00-17:59 浅色、18:00-6:59 深色),任意页手动切换写入 localStorage 偏好、切页保持、到时间边界拉回,粒子与背景全联动换肤
+- 深色 / 浅色双主题:**打开页面只按时间决定**(7:00-17:59 浅色、18:00-6:59 深色),不读任何持久记忆;手动切换仅当前会话(sessionStorage,会话内导航保持,关浏览器即清),粒子与背景全联动换肤
 - 玫瑰星系粒子画布:尘埃 / 雾气 / 花瓣三类粒子 + 星座连线 + 鼠标吸引,30fps 节流,`prefers-reduced-motion` 降级
 - Hero 打字机副标题、滚动显现动画、LATEST SIGNAL 最新文章卡
 - 全站本地搜索(search.xml,无后端)、PJAX 无刷新导航、访问统计(busuanzi)
@@ -185,14 +185,14 @@ tags:
 ```
 
 - 第一张卡片用 `nova-note-card--lead`,其余用 `--side`;URL 中空格需编码为 `%20`
-- 生活碎片区指向 /music/、/shuoshuo/,与文章无关
+- 生活碎片区指向 /music/、/shuoshuo/(按钮文案:进入音乐 / 进入说说),与文章无关
 
 ### 主题切换
 
-- **时间自动制**:7:00-17:59 浅色、18:00-6:59 深色(访客本地时间,定时器精确排到边界原地切换,无需刷新)
-- **手动切换**(任意页 `#darkmode` 按钮):写入 localStorage 偏好(`marlin-theme-pref`),切页/刷新保持;到下一时间边界自动清除并拉回时间制
-- 无偏好新访客:纯时间制
-- 实现:`source/rose-galaxy/js/nova-ux.js`(时间主题模块)
+- **只按时间制**:打开页面不读任何持久记忆,7:00-17:59 浅色、18:00-6:59 深色(访客本地时间,定时器精确排到边界原地切换)
+- **手动切换**(任意页 `#darkmode` 按钮):仅当前会话——写入 sessionStorage,会话内导航(含 PJAX)保持,关闭浏览器/新标签即清空,重新打开只按时间
+- 首帧脚本(各页 `<html>` 后内联 + 文章页 injector)同样只按时间,避免"先深后浅"闪烁
+- 实现:`source/rose-galaxy/js/nova-ux.js`(时间主题模块)+ 各页首帧脚本 + `scripts/inject-theme.js`
 
 ### 导航栏
 
@@ -206,7 +206,8 @@ tags:
 | 深色滚动后 | 深色毛玻璃条 rgba(7,10,20,.72) + blur(18px) |
 | 菜单文字 / 站点名 / 搜索按钮 | 跟随主题统一 |
 
-- 首页(nova-home-active)悬浮透明导航独立
+- 当前页高亮:进入各页时对应菜单标玫瑰色(深 #ce8299 / 浅 #9a6177),由 `nova-ux.js` 的 `syncMenuActive()` 按路径匹配加 `.active`(桌面 `#nav` + 移动 `#sidebar`),pjax 切页自动更新;文章菜单覆盖 `/articles/`、标签页与文章详情页
+- 首页(nova-home-active)悬浮透明导航独立,导航文字浅色未选中近黑 `#1f1d24`、菜单 17px / 站名 18px
 
 ### 页面板块
 
@@ -231,7 +232,9 @@ Marlin-web/
 ├── _config.butterfly.yml    Butterfly 主题配置(导航/搜索/注入)
 ├── package.json             Hexo 8.1.2 + 插件 + hexo-cli
 ├── scripts/
-│   └── nova-tags.js         ★ 生成器:标签页/索引/搜索/sitemap/atom
+│   ├── nova-tags.js         ★ 生成器:标签页/索引/搜索/sitemap/atom
+│   └── inject-theme.js      ★ 文章页首帧主题脚本注入(head_begin)
+├── py-tools/                 Python 工具脚本(insert/update_first_frame,hexo 不加载)
 ├── nova-templates/          ★ 生成器模板(tag-template / index-template)
 ├── source/                  网站源文件
 │   ├── index.html           首页(静态;LATEST SIGNAL + 精选记录手工维护)
@@ -264,6 +267,17 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-08-19 | 导航当前页高亮:进入各页面时对应菜单标玫瑰色(深 #ce8299 / 浅 #9a6177,与首页"首页"同款),覆盖未滚动/滚动后/hover;JS 按路径匹配(文章含索引页/标签页/详情页),桌面与移动端同步,pjax 自动更新 | `nova-ux.js`、`custom.css` |
+| 2026-08-19 | 首页导航文字:浅色未选中菜单改近黑 #1f1d24(含滚动后),移除 text-shadow;菜单 14/15px→17px、站名 16px→18px(深浅一致) | `nova-home.css` |
+| 2026-08-19 | 首页生活碎片板块文案:进入播放空间→进入音乐、进入日常记录→进入说说 | `index.html` |
+| 2026-08-19 | 关于页浅色导航透明修复:删除静态不透明浅色背景 rgba(247,244,246,.82)+blur,导航透明(与其他页一致,滚动后毛玻璃由全局规则处理);hero 顶部遮罩改深色(音乐页同款)、hero 文字改白 | `about-page.css` |
+| 2026-08-19 | 主题逻辑改为"打开只按时间,手动切换仅当前会话":首帧脚本只按时间制(不读 localStorage),手动切换写入 sessionStorage(会话内全局、关浏览器即清),时间边界自动拉回 | `nova-ux.js`、各页首帧脚本、`inject-theme.js` |
+| 2026-08-19 | 文章详情页侧边栏"最新文章"→"其他文章":展示同标签(同二级页)下的其他文章,无则显示"无";修复 hexo partial cache 导致模板不生效(改用 include) | `card_recent_post.pug`、`widget/index.pug` |
+| 2026-08-19 | 标签页(文章二级页)卡片修复:摘要剥离 HTML 标签(Hexo excerpt 是渲染 HTML,残留未闭合标签破坏 DOM 致箭头交互失效)+ 实体解码;摘要单行 + 下移 10px;卡片 meta 标签去重并换位(标签在前日期在后);箭头交互改 gap 动画(与 fliex 全局一致) | `nova-tags.js`、`tag-page.css` |
+| 2026-08-19 | 标签页侧边栏:深色透明 / 浅色白底 + 边框;隐藏滚动条 + overscroll-behavior 悬停翻页;"阅读路径""相关标签"补标题 header | `tag-page.css`、`nova-tags.js` |
+| 2026-08-19 | 文章详情页侧边栏 sticky 修复:`#aside-content` 加 align-self:stretch 提供 sticky 活动空间,1101px/820px 以上粘住、以下跟随;宽屏限高 + 隐藏滚动条翻页 | `custom.css` |
+| 2026-08-19 | 文章详情页删除简介(card_author)与公告(card_announcement)卡;部署修复:gh-pages 曾被误推整个工程源码,恢复为纯站点产物 | `widget/index.pug`、`_config.butterfly.yml` |
+| 2026-08-18 | 关于页重构:删"记录内容/关于本站/状态三卡",联系方式三框(GITHUB 链接 / QQ EMAIL mailto / EMAIL mailto),头像换 headpicture.jpg,简介文案更新;修复三框间距(删残留 `.nova-about-contact > div` 规则) | `about/index.html`、`about-page.css`、`img/headpicture.jpg` |
 | 2026-08-18 | 音乐页换源:B 站收藏夹"music"(UID 3546712446601247,公开)经腾讯云函数读取,播放器改原生 Audio + stream2 拉流;移除 Meting/网易云/APlayer 依赖 | `music-page.js`、`music/index.html` |
 | 2026-08-17 | 浅色模式导航栏静止(未滚动)文字改为深色模式同款白色(菜单/站点名 rgba(255,255,255,.7)、搜索 #f2edf0),滚动后浅色毛玻璃不受影响 | `custom.css` |
 | 2026-08-17 | 文章页统一背景图:`default_top_img = /img/leetcode.webp`(marlin 参考站 go语法总结 同款,同位置:header 400px / center-cover / 暗色遮罩),9 篇全部生效 | `_config.butterfly.yml` |
@@ -291,15 +305,42 @@ Marlin-web/
 
 - **hexo server 不热加载配置/模板/插件**:每次改动配置或脚本后必须重启 server
 - **浏览器缓存**:CSS/JS 版本号未变时,强刷(Ctrl+Shift+R)或隐私窗口验证
-- **hexo 会加载 `scripts/` 下所有文件**:模板不能放 scripts/ 下,放工程根 `nova-templates/`
+- **hexo 会加载 `scripts/` 下所有文件**:模板不能放 scripts/ 下,放工程根 `nova-templates/`;Python 工具脚本(如 `py-tools/` 里的)也不能放 scripts/,否则 hexo 当 JS 执行报错导致渲染不完整
+- **hexo partial `cache: true` 会缓存旧模板**:改 partial 模板后可能不生效,改用 `include` 或删 db.json + `hexo clean`
+- **Hexo excerpt 是渲染后的 HTML**:生成摘要时须先剥离 HTML 标签,否则残留未闭合标签破坏卡片 DOM
 - **hexo generate 不删除孤儿文件**:删除文章/页面后需 `hexo clean` 再 generate
 - **headless 截图陷阱**:虚拟时钟会冻结入场动画、缓存旧 CSS,验证用全新 profile + 像素采样
 
 ---
 
-## 后续计划(Phase 2)
+## 后续计划(待做)
 
-1. 课程页:`/courses/` 三列卡片布局(骨架已生成,待写样式与真实内容)。
-2. ~~文章反推:23 篇文章 HTML → Markdown。~~(已于 2026-08-16 完成)
-3. 品牌替换:标题、作者、头像、页脚、配色变量(等待品牌名确定)。
-4. 部署:配置 `_config.yml` 的 `deploy.repo` 后 `npm run deploy` 推送 GitHub Pages。
+### 1. 评论功能替换为自己
+
+- **目标**:移除对第三方评论服务(如 Waline 公共实例)的依赖,自建评论系统,数据与站点同源可控。
+- **具体内容**:
+  - 自部署评论后端(Waline 自托管实例,数据存 LeanCloud/自建数据库;或按需选 Typecho 评论 API 方案),替换现有配置中的第三方 serverURL
+  - 评论 UI 与站点视觉统一:深色/浅色双主题联动、玫瑰色点缀、字体与卡片风格对齐 rose-galaxy 定制层
+  - 接入文章详情页与说说页,评论框支持 Markdown、表情、昵称/邮箱留空校验,管理后台可审核/删除
+  - 隐私与性能:评论异步懒加载,不拖慢首屏;防垃圾评论(验证码或频率限制)
+- **验收**:文章页、说说页可正常发评论与回复;深浅色切换无样式错乱;第三方服务下线后评论不丢失(数据自持)。
+
+### 2. 专业音乐播放取代音乐页样式
+
+- **目标**:把当前音乐页(收藏夹列表 + 原生 Audio 播放)升级为专业播放器体验。
+- **具体内容**:
+  - 播放器组件化:播放/暂停、上一首/下一首、进度条(可拖拽)、音量、循环(单曲/列表/随机)、播放队列
+  - 音频源:保留 B 站收藏夹经腾讯云函数代理的现有链路,补封面、时长、歌名元数据展示;支持失败重试与源切换提示
+  - 视觉升级:歌词滚动显示(若有)、播放状态动画(唱片旋转/音波动画)、迷你播放条(切页后仍可控制)
+  - 体验细节:记忆上次播放进度(会话级)、键盘快捷键(空格暂停、方向键切歌)、移动端手势适配
+- **验收**:播放流畅无卡顿,切歌/拖进度/循环模式全部可用;深浅色双主题样式完整;断网或源失效时有明确提示而非静默失败。
+
+### 3. 增加工程大板块
+
+- **目标**:新增独立"工程(Projects)"板块,展示个人作品/项目,与文章、音乐、说说并列成为站内大板块。
+- **具体内容**:
+  - 新页面 `/projects/`(入口加入导航栏):项目卡片网格,每张卡含封面、标题、简介、技术栈标签、仓库/演示链接
+  - 数据驱动:仿标签系统建生成器(scripts/ 下新生成器 + 模板),项目以 Markdown 源文件维护(自动生成卡片与详情页),避免手工维护静态 HTML
+  - 板块联动:首页新增"工程"入口卡片(类似生活碎片区)、搜索索引与 sitemap 纳入新板块
+  - 样式:与 rose-galaxy 视觉体系一致(双主题、玫瑰色点缀、粒子背景可选)
+- **验收**:`/projects/` 可浏览全部项目;新增项目只需加一个 md 文件并重新构建;导航当前页高亮对"工程"生效;首页入口可跳转。

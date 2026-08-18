@@ -1,0 +1,70 @@
+/* BG drag debugger - article header background tuning (demo only) */
+body.nova-bg-debug #page-header {
+  position: relative;
+  overflow: hidden;
+}
+body.nova-bg-debug #page-header > *:not(#bg-debug-layer) {
+  position: relative;
+  z-index: 2;
+}
+#bg-debug-layer,
+body.nova-bg-debug #page-header > #bg-debug-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  background-repeat: no-repeat;
+  background-position: 50% 0%;
+  pointer-events: none;
+  transition: opacity .3s;
+}
+body.bgd-dragging { cursor: grabbing; user-select: none; }
+
+#bg-debug-panel {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 9999;
+  width: 250px;
+  padding: 12px 14px;
+  border: 1px solid rgba(215, 130, 160, .35);
+  border-radius: 14px;
+  background: rgba(12, 15, 30, .92);
+  color: #e8e1e8;
+  font-size: 12px;
+  line-height: 1.6;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, .45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  user-select: none;
+}
+#bg-debug-panel .bgd-title {
+  font-weight: 700;
+  letter-spacing: .05em;
+  color: #f0b8cd;
+  margin-bottom: 6px;
+}
+#bg-debug-panel .bgd-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 5px 0;
+}
+#bg-debug-panel .bgd-row label { width: 58px; flex: none; color: #b9b0bd; }
+#bg-debug-panel .bgd-row input[type="range"] { flex: 1; }
+#bg-debug-panel .bgd-val { width: 64px; text-align: right; color: #f5e6ee; font-family: Consolas, monospace; }
+#bg-debug-panel .bgd-btns { display: flex; gap: 6px; margin-top: 8px; }
+#bg-debug-panel button {
+  flex: 1;
+  padding: 5px 0;
+  border: 1px solid rgba(215, 130, 160, .4);
+  border-radius: 8px;
+  background: rgba(205, 105, 143, .12);
+  color: #eedde6;
+  font-size: 12px;
+  cursor: pointer;
+}
+#bg-debug-panel button:hover { background: rgba(205, 105, 143, .24); }
+#bg-debug-panel .bgd-hint { margin-top: 6px; color: #8f8796; font-size: 11px; }
