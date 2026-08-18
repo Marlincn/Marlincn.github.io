@@ -20,7 +20,8 @@ body.nova-tag-route main.nova-tag-content::before{content:"";position:absolute;z
 .nova-tag-summary span{color:var(--nova-tag-accent);font-size:10px;letter-spacing:.14em}
 .nova-tag-summary small{color:var(--nova-tag-muted);font-size:12px}
 .nova-tag-layout{display:grid;width:min(1280px,calc(100% - 64px));margin:42px auto 0;grid-template-columns:minmax(0,1.72fr) minmax(300px,.82fr);align-items:start;gap:clamp(26px,3vw,38px)}
-.nova-tag-main,.nova-tag-side-card{min-width:0;border:1px solid var(--nova-tag-line);background:linear-gradient(145deg,rgba(10,16,31,.84),rgba(8,13,26,.76));box-shadow:0 22px 62px rgba(0,0,0,.2);backdrop-filter:blur(18px)}
+.nova-tag-main{min-width:0;border:1px solid var(--nova-tag-line);background:linear-gradient(145deg,rgba(10,16,31,.84),rgba(8,13,26,.76));box-shadow:0 22px 62px rgba(0,0,0,.2);backdrop-filter:blur(18px)}
+.nova-tag-side-card{min-width:0;border:1px solid rgba(224,194,210,.24);background:transparent;box-shadow:none;backdrop-filter:none}
 .nova-tag-main{padding:28px;border-radius:24px}
 .nova-tag-main-header{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--nova-tag-line)}
 .nova-tag-main-header span,.nova-tag-side-card header span{color:var(--nova-tag-accent);font-size:11px;letter-spacing:.14em}
@@ -56,7 +57,8 @@ body.nova-tag-route main.nova-tag-content::before{content:"";position:absolute;z
 body.nova-tag-route footer#footer{margin:0;border-top:1px solid rgba(199,97,132,.14);background:linear-gradient(180deg,rgba(12,20,39,.88),#0b162a)}
 html[data-theme="light"] body.nova-tag-route #body-wrap{background:radial-gradient(circle at 80% 8%,rgba(189,96,125,.06),transparent 30%),radial-gradient(circle at 16% 28%,rgba(112,130,144,.045),transparent 34%),linear-gradient(180deg,#eeebf1,#e7e5ec)}
 html[data-theme="light"] body.nova-tag-route #page-header.nova-tag-hero::after{background:linear-gradient(180deg,rgba(8,13,27,.03),rgba(8,13,27,.02) 62%,rgba(105,98,122,.08) 80%,rgba(211,207,218,.3) 92%,var(--nova-tag-bg))}
-html[data-theme="light"] .nova-tag-main,html[data-theme="light"] .nova-tag-side-card,html[data-theme="light"] .nova-tag-summary{border-color:rgba(255,255,255,.56);background:linear-gradient(145deg,rgba(255,254,255,.83),rgba(244,241,247,.75));box-shadow:0 22px 60px rgba(53,43,62,.1)}
+html[data-theme="light"] .nova-tag-main,html[data-theme="light"] .nova-tag-summary{border-color:rgba(255,255,255,.56);background:linear-gradient(145deg,rgba(255,254,255,.83),rgba(244,241,247,.75));box-shadow:0 22px 60px rgba(53,43,62,.1)}
+html[data-theme="light"] .nova-tag-side-card{border-color:rgba(75,62,83,.16);background:#fff;box-shadow:none}
 html[data-theme="light"] .nova-tag-post-card{border-color:rgba(75,62,83,.1);background:linear-gradient(145deg,rgba(255,255,255,.85),rgba(246,243,248,.78));box-shadow:0 12px 32px rgba(53,43,62,.08)}
 html[data-theme="light"] body.nova-tag-route footer#footer{background:linear-gradient(180deg,rgba(224,221,230,.92),#d0d2dd);color:#514c59}
 @media(max-width:1180px){.nova-tag-summary,.nova-tag-layout{width:calc(100% - 40px)}.nova-tag-layout{grid-template-columns:minmax(0,1fr) minmax(280px,.65fr);gap:clamp(26px,3vw,34px)}.nova-tag-main{padding:22px}}
@@ -198,8 +200,11 @@ html[data-theme="light"] .nova-tag-post-card.is-current-note {
     overflow-x: hidden;
     overflow-y: auto;
     padding-right: 4px;
-    scrollbar-color: rgba(205, 105, 143, .22) transparent;
-    scrollbar-width: thin;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  .nova-tag-sidebar::-webkit-scrollbar {
+    display: none;
   }
 }
 
