@@ -61,9 +61,11 @@ body.nova-about-route main.nova-about-shell {
 }
 
 html[data-theme="light"] body.nova-about-route .nova-about-hero-shade {
+  /* 照搬音乐页浅色 overlay:顶部深色遮罩(透出夜景,导航白字可读),
+     底部 78% 后才过渡到页面浅色 */
   background:
-    linear-gradient(0deg, var(--about-page) 0, rgba(236, 233, 238, .7) 18px, rgba(236, 233, 238, .16) 42px, transparent 60px),
-    linear-gradient(90deg, rgba(244, 241, 244, .78) 0, rgba(244, 241, 244, .58) 18%, rgba(244, 241, 244, .26) 34%, transparent 52%);
+    linear-gradient(90deg, rgba(9, 12, 24, .68) 0%, rgba(9, 12, 24, .44) 34%, rgba(9, 12, 24, .1) 72%),
+    linear-gradient(180deg, transparent 0%, transparent 78%, rgba(30, 29, 48, .1) 87%, rgba(205, 202, 215, .3) 95%, var(--about-page) 100%);
 }
 
 .nova-about-hero-copy {
@@ -94,7 +96,7 @@ html[data-theme="light"] body.nova-about-route .nova-about-hero-shade {
 }
 
 html[data-theme="light"] body.nova-about-route .nova-about-hero-copy h1 {
-  color: #302d35;
+  color: #f3edef;
   opacity: 1;
 }
 
@@ -115,21 +117,21 @@ html[data-theme="light"] body.nova-about-route .nova-about-hero-copy h1 {
 }
 
 html[data-theme="light"] body.nova-about-route .nova-about-hero-copy > span {
-  color: #49434e;
-  font-weight: 500;
-  opacity: .96;
+  color: rgba(237, 230, 234, .82);
+  opacity: 1;
 }
 
 html[data-theme="light"] body.nova-about-route .nova-about-hero-copy > small {
-  color: #6a6370;
+  color: rgba(196, 187, 199, .68);
   opacity: .9;
 }
 
 html[data-theme="light"] body.nova-about-route #page-header #nav {
-  border-bottom: 1px solid rgba(76, 67, 80, .08);
-  background: rgba(247, 244, 246, .82);
-  -webkit-backdrop-filter: blur(14px) saturate(.9);
-  backdrop-filter: blur(14px) saturate(.9);
+  /* 浅色下导航栏背景透明,与其他页面(音乐页)一致;滚动后毛玻璃由全局规则处理 */
+  background: transparent;
+  border-bottom: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 html[data-theme="light"] body.nova-about-route #nav .site-name {
