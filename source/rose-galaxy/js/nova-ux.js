@@ -340,7 +340,10 @@
   /* 时间自动主题 (2026-08-16): 7:00-17:59 浅色, 18:00-6:59 深色。
      手动切换(任意页面 #darkmode)写入 localStorage 偏好:切页/刷新保持,
      到下一时间边界自动清除并拉回时间制(方案 2.B,2026-08-17)。
-     定时器精确排到下一个边界,到点原地切换并复用现有过渡。 */
+     定时器精确排到下一个边界,到点原地切换并复用现有过渡。
+     2026-08-18:偏好增加时段归属(period),每次打开页面时校验:
+     偏好时段与当前时段一致才生效,跨时段(如白天选的浅色,晚上打开)视为过期,
+     拉回时间制。 */
   const THEME_DARK_START = 18
   const THEME_DARK_END = 7
   const THEME_PREF_KEY = 'marlin-theme-pref'
@@ -351,10 +354,33 @@
     return hour >= THEME_DARK_START || hour < THEME_DARK_END
   }
 
+  /* 当前时间所属时段的起始时间戳:
+     浅色段从 7:00 开始,深色段从 18:00 开始(深色段跨天,7:00 前归前一天的 18:00 段)。 */
+  const themePeriodStart = time => {
+    const t = new Date(time)
+    const hour = t.getHours()
+    if (hour < THEME_DARK_END) {
+      t.setDate(t.getDate() - 1)
+      t.setHours(THEME_DARK_START, 0, 0, 0)
+    } else if (hour < THEME_DARK_START) {
+      t.setHours(THEME_DARK_END, 0, 0, 0)
+    } else {
+      t.setHours(THEME_DARK_START, 0, 0, 0)
+    }
+    return t.getTime()
+  }
+
   const getThemePref = () => {
     try {
       const value = window.localStorage.getItem(THEME_PREF_KEY)
-      return value === 'dark' || value === 'light' ? value : null
+      // 旧格式(纯字符串)没有时段信息,无法判断是否过期,一律忽略按时间制
+      if (value === 'dark' || value === 'light') return null
+      if (!value) return null
+      const parsed = JSON.parse(value)
+      if (!parsed || (parsed.mode !== 'dark' && parsed.mode !== 'light')) return null
+      const period = Number(parsed.period)
+      if (!period) return null // 无时段标记:无法校验,忽略按时间制
+      return period === themePeriodStart(Date.now()) ? parsed.mode : null
     } catch (e) {
       return null
     }
@@ -363,7 +389,10 @@
   const setThemePref = mode => {
     try {
       if (mode === 'dark' || mode === 'light') {
-        window.localStorage.setItem(THEME_PREF_KEY, mode)
+        window.localStorage.setItem(
+          THEME_PREF_KEY,
+          JSON.stringify({ mode, period: themePeriodStart(Date.now()) })
+        )
       } else {
         window.localStorage.removeItem(THEME_PREF_KEY)
       }

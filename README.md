@@ -264,6 +264,7 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-08-18 | 音乐页换源:B 站收藏夹"music"(UID 3546712446601247,公开)经腾讯云函数读取,播放器改原生 Audio + stream2 拉流;移除 Meting/网易云/APlayer 依赖 | `music-page.js`、`music/index.html` |
 | 2026-08-17 | 浅色模式导航栏静止(未滚动)文字改为深色模式同款白色(菜单/站点名 rgba(255,255,255,.7)、搜索 #f2edf0),滚动后浅色毛玻璃不受影响 | `custom.css` |
 | 2026-08-17 | 文章页统一背景图:`default_top_img = /img/leetcode.webp`(marlin 参考站 go语法总结 同款,同位置:header 400px / center-cover / 暗色遮罩),9 篇全部生效 | `_config.butterfly.yml` |
 | 2026-08-17 | 搜索索引剔除代码:代码块(`figure.highlight`/`pre`)与内联 `<code>` 不参与匹配,摘要只显示渲染文字;绘世提示词示例改为代码块展示 | `nova-tags.js`、`_posts/绘世-Stable Diffusion.md` |

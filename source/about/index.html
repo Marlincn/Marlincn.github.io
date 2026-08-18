@@ -1,4 +1,40 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>关于 | Marlin</title><meta name="author" content="Marlin"><meta name="copyright" content="Marlin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#080B14"><meta name="description" content="记录正在学习的技术、正在构建的项目，以及一些普通的生活片段。">
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark">
+<!-- nova-theme-first-frame -->
+<script>
+  ;(function () {
+    try {
+      var raw = null;
+      try { raw = window.localStorage.getItem('marlin-theme-pref') } catch (e) {}
+      var now = new Date()
+      var hour = now.getHours()
+      var dark = hour >= 18 || hour < 7
+      var mode = null
+      if (raw && raw !== 'dark' && raw !== 'light') {
+        try {
+          var parsed = JSON.parse(raw)
+          if (parsed && (parsed.mode === 'dark' || parsed.mode === 'light')) {
+            var period = Number(parsed.period)
+            if (period) {
+              var anchor = new Date(now)
+              if (hour < 7) {
+                anchor.setDate(anchor.getDate() - 1)
+                anchor.setHours(18, 0, 0, 0)
+              } else if (hour < 18) {
+                anchor.setHours(7, 0, 0, 0)
+              } else {
+                anchor.setHours(18, 0, 0, 0)
+              }
+              if (period === anchor.getTime()) mode = parsed.mode
+            }
+          }
+        } catch (e2) {}
+      }
+      if (mode === 'dark' || mode === 'light') dark = mode === 'dark'
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+    } catch (e) {}
+  })()
+</script>
+<head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>关于 | Marlin</title><meta name="author" content="Marlin"><meta name="copyright" content="Marlin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#080B14"><meta name="description" content="记录正在学习的技术、正在构建的项目，以及一些普通的生活片段。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="关于">
 <meta property="og:url" content="https://deymocn.github.io/about/">
@@ -223,18 +259,24 @@ const asideStatus = saveToLocal.get('aside-status')
       <div class="nova-about-body">
         <section class="nova-about-profile" aria-labelledby="nova-about-profile-title">
           <div class="nova-about-profile-intro">
-            <img src="/img/logo1.jpg" alt="Marlin 的头像" width="112" height="112" decoding="async">
+            <img src="/img/headpicture.jpg" alt="Marlin 的头像" width="112" height="112" decoding="async">
             <div>
               <p class="nova-about-kicker">PERSONAL PROFILE</p>
               <h2 id="nova-about-profile-title">Marlin</h2>
-              <strong>一名正在学习后端开发的学生。</strong>
-              <p>我是 Marlin，一名正在构建后端能力的学生。这里记录代码、学习过程、音乐和偶尔出现的生活碎片。不追求快速完成，更重视持续积累。</p>
+              <strong>一名正在折腾 AI 工具与个人网站的学生。</strong>
+              <p>我是 Marlin，一名正在折腾 AI 工具、Markdown 写作与个人网站的学生。这里记录代码、学习过程、音乐和偶尔出现的生活碎片。不追求快速完成，更重视持续积累。</p>
             </div>
           </div>
-          <div class="nova-about-status" aria-label="当前状态">
-            <div><span>NOW LEARNING</span><b>Go · Gin · MySQL</b></div>
-            <div><span>CURRENT FOCUS</span><b>HTTP · Database · Project Structure</b></div>
-            <div><span>BUILDING</span><b>Student Management API</b></div>
+          <div class="nova-about-status nova-about-contact" aria-label="联系方式">
+            <a href="https://github.com/Marlincn" target="_blank" rel="noopener noreferrer">
+              <b>GITHUB</b><small>github.com/Marlincn</small><i aria-hidden="true">↗</i>
+            </a>
+            <a href="mailto:2650470260@qq.com">
+              <b>QQ EMAIL</b><small>2650470260@qq.com</small><i aria-hidden="true">↗</i>
+            </a>
+            <a href="mailto:binmay404@gmail.com">
+              <b>EMAIL</b><small>binmay404@gmail.com</small><i aria-hidden="true">↗</i>
+            </a>
           </div>
         </section>
 
@@ -245,46 +287,12 @@ const asideStatus = saveToLocal.get('aside-status')
             <span>保持好奇，也接受进度缓慢。</span>
           </header>
           <div class="nova-about-learning-grid">
-            <article><i aria-hidden="true">01</i><h3>Go 后端</h3><p>Gin、database/sql、MySQL、接口设计与错误处理。</p></article>
-            <article><i aria-hidden="true">02</i><h3>计算机基础</h3><p>数据结构、计算机网络、操作系统与数据库。</p></article>
-            <article><i aria-hidden="true">03</i><h3>项目实践</h3><p>CRUD、JWT、权限、分页、事务与工程结构。</p></article>
-            <article><i aria-hidden="true">04</i><h3>Agent</h3><p>工具调用、任务拆解、上下文与后端服务集成。</p></article>
+            <article><i aria-hidden="true">01</i><h3>AI 工具链</h3><p>LM Studio 本地模型、OpenCode 接入、Stable Diffusion 绘画。</p></article>
+            <article><i aria-hidden="true">02</i><h3>Markdown 写作</h3><p>语法整理、排版规范、知识文档化与速查表。</p></article>
+            <article><i aria-hidden="true">03</i><h3>博客定制</h3><p>Hexo、Butterfly 主题改造、页面视觉与交互细节。</p></article>
+            <article><i aria-hidden="true">04</i><h3>Web 集成</h3><p>云函数代理、B 站 API、GitHub Pages 部署与运维。</p></article>
           </div>
         </section>
-
-        <section class="nova-about-section" aria-labelledby="nova-about-records-title">
-          <header class="nova-about-section-head">
-            <p class="nova-about-kicker">WHAT I KEEP</p>
-            <h2 id="nova-about-records-title">记录内容</h2>
-            <span>技术与生活都保留一点真实的痕迹。</span>
-          </header>
-                    <nav class="nova-about-records" aria-label="记录索引导航">
-            <a href="/articles/"><span>01</span><b>学习笔记</b><small>NOTES</small></a>
-            <a href="/music/"><span>02</span><b>音乐与唱片集</b><small>MUSIC</small></a>
-            <a href="/shuoshuo/"><span>03</span><b>日常记录</b><small>MOMENTS</small></a>
-          </nav>
-        </section>
-
-        <div class="nova-about-lower-grid">
-          <section class="nova-about-site" aria-labelledby="nova-about-site-title">
-            <p class="nova-about-kicker">ABOUT THIS PLACE</p>
-            <h2 id="nova-about-site-title">关于本站</h2>
-            <p>这个博客用于记录学习过程、项目实践和普通生活。网站使用 Hexo 与 Butterfly 构建，并在原主题基础上进行了页面与视觉定制。</p>
-            <div><span>Hexo</span><span>Butterfly</span><span>Personal Archive</span></div>
-          </section>
-          <section class="nova-about-contact" aria-labelledby="nova-about-contact-title">
-            <p class="nova-about-kicker">STAY IN TOUCH</p>
-            <h2 id="nova-about-contact-title">联系方式</h2>
-            <div>
-              <a href="https://github.com/MikeJosion" target="_blank" rel="noopener noreferrer">
-                <span aria-hidden="true">GH</span><b>GitHub</b><small>github.com/MikeJosion</small><i aria-hidden="true">↗</i>
-              </a>
-              <a href="https://wpa.qq.com/msgrd?v=3&amp;uin=2573999435&amp;site=qq&amp;menu=yes" target="_blank" rel="noopener noreferrer">
-                <span aria-hidden="true">QQ</span><b>QQ</b><small>2573999435</small><i aria-hidden="true">↗</i>
-              </a>
-            </div>
-          </section>
-        </div>
 
         <section class="nova-about-comments" aria-labelledby="nova-about-comments-title">
           <header><span>NIGHT MESSAGES</span><h2 id="nova-about-comments-title">留言</h2>

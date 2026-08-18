@@ -40,8 +40,7 @@ html[data-theme="light"] .nova-music-hero::after{content:"";position:absolute;z-
 .nova-music-retry{display:block;margin:14px auto 0;padding:8px 14px;border:1px solid rgba(215,117,150,.42);border-radius:999px;color:#eadce4;background:rgba(205,105,143,.1);font-size:12px;letter-spacing:.04em;cursor:pointer}
 .nova-music-retry[hidden]{display:none}
 .nova-music-retry:hover{border-color:rgba(222,126,159,.72);background:rgba(205,105,143,.18)}
-.nova-music-current{display:grid;grid-template-columns:88px minmax(0,1fr);align-items:center;gap:20px}
-.nova-music-current-cover{width:88px;height:88px;border-radius:10px;object-fit:cover;box-shadow:0 12px 26px rgba(0,0,0,.34)}
+.nova-music-current{display:grid;grid-template-columns:minmax(0,1fr);align-items:center;gap:20px}
 .nova-music-current h2{overflow:hidden;margin:0 0 8px;color:#f5edf1;font:500 21px/1.3 "Noto Serif SC","Songti SC",serif;text-overflow:ellipsis;white-space:nowrap}
 .nova-music-current p{overflow:hidden;margin:0;color:rgba(224,214,226,.72);font-size:14px;text-overflow:ellipsis;white-space:nowrap}
 .nova-music-progress{margin-top:24px;padding-block:8px}
@@ -63,20 +62,21 @@ html[data-theme="light"] .nova-music-control{color:#4a4351;border-color:rgba(75,
 html[data-theme="light"] .nova-music-toggle{color:#fff;border-color:rgba(198,95,130,.58);background:var(--nova-music-player-accent)}
 html[data-theme="light"] .nova-music-meta{border-color:var(--nova-music-player-line)}
 
-.nova-music-card-stage{position:relative;min-height:620px;perspective:1200px}
-.nova-music-card{position:absolute;top:50%;left:50%;width:300px;height:470px;margin:-235px 0 0 -150px;padding:0;overflow:hidden;border:1px solid rgba(245,210,225,.2);border-radius:20px;outline:0;background:#11172a;box-shadow:0 35px 85px rgba(0,0,0,.48);cursor:pointer;transform-origin:50% 92%;transition:transform .55s cubic-bezier(.2,.75,.2,1),opacity .4s,border-color .3s}
-.nova-music-card>img{width:100%;height:100%;object-fit:cover}
+.nova-music-card-stage{position:relative;min-height:480px;perspective:1200px}
+.nova-music-card{position:absolute;top:50%;left:50%;width:500px;height:auto;aspect-ratio:16/9;margin:-141px 0 0 -250px;padding:0;overflow:hidden;border:1px solid rgba(245,210,225,.2);border-radius:16px;outline:0;background:#11172a;box-shadow:0 35px 85px rgba(0,0,0,.48);cursor:pointer;transform-origin:50% 90%;transition:transform .55s cubic-bezier(.2,.75,.2,1),opacity .4s,border-color .3s}
+.nova-music-card>img{width:100%;height:100%;object-fit:cover;transition:opacity .5s ease}
+.nova-music-card>img.nova-card-img-swap{opacity:0}
 .nova-music-card-shade{position:absolute;inset:0;background:linear-gradient(180deg,transparent 42%,rgba(5,7,15,.2) 60%,rgba(5,7,15,.88) 100%)}
-.nova-music-card-content{position:absolute;right:0;bottom:0;left:0;z-index:2;padding:22px;text-align:left;opacity:0;transition:opacity .3s}
+.nova-music-card-content{position:absolute;right:0;bottom:0;left:0;z-index:2;padding:14px 16px;text-align:left;opacity:0;transition:opacity .3s}
 .nova-music-card[aria-current="true"] .nova-music-card-content,.nova-music-card:hover .nova-music-card-content{opacity:1}
 .nova-music-card-content strong,.nova-music-card-content small{display:-webkit-box;overflow:hidden;-webkit-box-orient:vertical}
-.nova-music-card-content strong{color:#f7eff3;font:500 18px/1.35 "Noto Serif SC","Songti SC",serif;-webkit-line-clamp:2}
-.nova-music-card-content small{margin-top:5px;color:rgba(232,220,229,.68);font-size:12px;-webkit-line-clamp:1}
-.nova-music-card[data-slot="0"]{z-index:1;opacity:.54;filter:brightness(.66) saturate(.78);transform:translateX(-214px) rotate(-14deg) scale(.79)}
-.nova-music-card[data-slot="1"]{z-index:2;opacity:.8;filter:brightness(.86) saturate(.9);transform:translateX(-104px) rotate(-7deg) scale(.89)}
-.nova-music-card[data-slot="2"]{z-index:5;opacity:1;filter:brightness(1) saturate(1);border-color:rgba(239,205,219,.28);transform:translateY(-20px) scale(1.08);box-shadow:0 28px 80px rgba(0,0,0,.46),0 0 38px rgba(202,92,137,.1)}
-.nova-music-card[data-slot="3"]{z-index:2;opacity:.8;filter:brightness(.86) saturate(.9);transform:translateX(104px) rotate(7deg) scale(.89)}
-.nova-music-card[data-slot="4"]{z-index:1;opacity:.54;filter:brightness(.66) saturate(.78);transform:translateX(214px) rotate(14deg) scale(.79)}
+.nova-music-card-content strong{color:#f7eff3;font:500 17px/1.35 "Noto Serif SC","Songti SC",serif;-webkit-line-clamp:2}
+.nova-music-card-content small{margin-top:4px;color:rgba(232,220,229,.68);font-size:12px;-webkit-line-clamp:1}
+.nova-music-card[data-slot="0"]{z-index:1;opacity:.5;filter:brightness(.62) saturate(.75);transform:translateX(-330px) rotate(-13deg) scale(.7)}
+.nova-music-card[data-slot="1"]{z-index:2;opacity:.78;filter:brightness(.85) saturate(.9);transform:translateX(-165px) rotate(-6.5deg) scale(.88)}
+.nova-music-card[data-slot="2"]{z-index:5;opacity:1;filter:brightness(1) saturate(1);border-color:rgba(239,205,219,.28);transform:translateY(-14px) scale(1.1);box-shadow:0 28px 80px rgba(0,0,0,.46),0 0 38px rgba(202,92,137,.1)}
+.nova-music-card[data-slot="3"]{z-index:2;opacity:.78;filter:brightness(.85) saturate(.9);transform:translateX(165px) rotate(6.5deg) scale(.88)}
+.nova-music-card[data-slot="4"]{z-index:1;opacity:.5;filter:brightness(.62) saturate(.75);transform:translateX(330px) rotate(13deg) scale(.7)}
 .nova-music-card:hover{border-color:rgba(242,198,216,.55)}
 html[data-theme="light"] .nova-music-card[data-slot="2"]{border-color:rgba(255,255,255,.42);box-shadow:0 28px 72px rgba(37,29,53,.24),0 0 34px rgba(198,102,138,.1)}
 .nova-music-card[aria-current="true"] i{display:flex;align-items:end;gap:3px;margin-top:12px;height:18px;opacity:.35}
@@ -84,6 +84,12 @@ html[data-theme="light"] .nova-music-card[data-slot="2"]{border-color:rgba(255,2
 .nova-music-card[aria-current="true"] i b:nth-child(2){height:15px;animation-delay:.2s}.nova-music-card[aria-current="true"] i b:nth-child(3){height:10px;animation-delay:.4s}
 .nova-music-page.is-playing .nova-music-card[aria-current="true"] i{opacity:1}
 @keyframes nova-music-wave{to{height:18px}}
+.nova-music-card[data-slot="2"].nova-card-pop{animation:nova-card-pop .6s cubic-bezier(.2,.75,.2,1)}
+@keyframes nova-card-pop{
+  0%{transform:translateY(-14px) scale(1.1)}
+  40%{transform:translateY(-18px) scale(1.13)}
+  100%{transform:translateY(-14px) scale(1.1)}
+}
 .nova-music-scroll{position:absolute;z-index:4;bottom:25px;left:50%;width:28px;height:34px;transform:translateX(-50%);color:rgba(240,224,233,.56)}
 .nova-music-scroll span{position:absolute;top:7px;left:9px;width:9px;height:9px;border-right:1px solid;border-bottom:1px solid;transform:rotate(45deg);animation:nova-music-drift 3s ease-in-out infinite}
 @keyframes nova-music-drift{50%{transform:rotate(45deg) translate(4px,4px)}}
@@ -141,6 +147,12 @@ html[data-theme="light"] body.nova-music-route footer#footer a,html[data-theme="
   .nova-music-card[data-slot="2"]{transform:translateY(-8px) scale(1.04)}
   .nova-music-card[data-slot="3"]{transform:translateX(46px) rotate(5deg) scale(.88)}
   .nova-music-card[data-slot="4"]{transform:translateX(92px) rotate(12deg) scale(.76)}
+  .nova-music-card[data-slot="2"].nova-card-pop{animation-name:nova-card-pop-small}
+  @keyframes nova-card-pop-small{
+    0%{transform:translateY(-8px) scale(1.04)}
+    40%{transform:translateY(-12px) scale(1.07)}
+    100%{transform:translateY(-8px) scale(1.04)}
+  }
   .nova-music-card-content{padding:17px}.nova-music-card-content strong{font-size:16px}
   .nova-music-notes{width:calc(100% - 32px);padding:64px 0 48px;grid-template-columns:1fr;gap:32px}
   .nova-music-notes-visual{min-height:190px}
@@ -148,11 +160,11 @@ html[data-theme="light"] body.nova-music-route footer#footer a,html[data-theme="
   .nova-music-comments #post-comment{padding:20px 14px}
 }
 @media(max-width:430px){
-  .nova-music-current{grid-template-columns:76px minmax(0,1fr);gap:14px}.nova-music-current-cover{width:76px;height:76px}
+  .nova-music-current{grid-template-columns:minmax(0,1fr);gap:14px}
   .nova-music-current h2{font-size:19px}
   .nova-music-player{padding:20px}.nova-music-meta{flex-direction:column;gap:5px}
-  .nova-music-card-stage{min-height:340px}
-  .nova-music-card{width:min(62vw,220px);height:min(96vw,340px)}
+  .nova-music-card-stage{min-height:200px}
+  .nova-music-card{width:min(62vw,240px);height:auto;aspect-ratio:16/9}
 }
 @media(prefers-reduced-motion:reduce){
   .nova-music-card,.nova-music-control,.nova-music-scroll span{transition:none;animation:none!important}

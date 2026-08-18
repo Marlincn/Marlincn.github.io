@@ -96,7 +96,7 @@ theme: butterfly
 # Deployment
 deploy:
   type: git
-  repo: https://github.com/deymocn/deymocn.github.io.git
+  repo: https://github.com/Marlincn/Marlincn.github.io.git
   branch: gh-pages
   ignore_hidden: false
 

@@ -162,8 +162,7 @@ html[data-theme="light"] body.nova-about-route #nav #search-button:hover i {
 }
 
 html[data-theme="light"] body.nova-about-route .nova-about-kicker,
-html[data-theme="light"] body.nova-about-route .nova-about-hero-copy > p,
-html[data-theme="light"] body.nova-about-route .nova-about-status span {
+html[data-theme="light"] body.nova-about-route .nova-about-hero-copy > p {
   color: #a45f77;
   font-weight: 600;
   opacity: 1;
@@ -197,20 +196,9 @@ html[data-theme="light"] body.nova-about-route .nova-about-site > p:not(.nova-ab
   opacity: .96;
 }
 
-html[data-theme="light"] body.nova-about-route .nova-about-status > div {
-  border-color: rgba(95, 79, 96, .14);
-  background: #eeeaee;
-  transition: border-color .2s ease, background-color .2s ease;
-}
-
-html[data-theme="light"] body.nova-about-route .nova-about-status > div:hover {
+html[data-theme="light"] body.nova-about-route .nova-about-status.nova-about-contact a:hover {
   border-color: rgba(169, 99, 121, .28);
   background: #eae5ea;
-}
-
-html[data-theme="light"] body.nova-about-route .nova-about-status b {
-  color: #3f3944;
-  font-weight: 560;
 }
 
 .nova-about-body {
@@ -291,33 +279,32 @@ html[data-theme="light"] body.nova-about-route .nova-about-status b {
 
 .nova-about-status {
   display: grid;
-  gap: 10px;
+  gap: 28px;
 }
 
-.nova-about-status > div {
-  min-width: 0;
-  padding: 18px 20px;
-  border: 1px solid var(--about-line);
-  border-radius: 15px;
+/* 联系方式移到 profile 右侧:容器不渲染卡片背景,链接本身成卡片 */
+.nova-about-status.nova-about-contact {
+  border: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.nova-about-status.nova-about-contact a,
+.nova-about-status.nova-about-contact .nova-about-contact-static {
   background: var(--about-card-soft);
 }
 
-.nova-about-status span {
-  display: block;
-  margin-bottom: 6px;
-  color: var(--about-accent);
-  font-size: .61rem;
-  font-weight: 650;
-  letter-spacing: .16em;
+html[data-theme="light"] body.nova-about-route .nova-about-status.nova-about-contact a,
+html[data-theme="light"] body.nova-about-route .nova-about-status.nova-about-contact .nova-about-contact-static {
+  border-color: rgba(95, 79, 96, .14);
+  background: #eeeaee;
 }
 
-.nova-about-status b {
-  display: block;
-  overflow-wrap: anywhere;
-  color: var(--about-text);
-  font-size: .82rem;
-  font-weight: 520;
-  line-height: 1.5;
+html[data-theme="light"] body.nova-about-route .nova-about-status.nova-about-contact a:hover {
+  border-color: rgba(169, 99, 121, .28);
+  background: #eae5ea;
 }
 
 .nova-about-section {
@@ -470,13 +457,14 @@ html[data-theme="light"] body.nova-about-route .nova-about-status b {
   margin-top: 18px;
 }
 
-.nova-about-contact a {
-  display: grid;
-  grid-template-columns: 36px auto 1fr auto;
-  gap: 11px;
-  align-items: center;
+.nova-about-contact a,
+.nova-about-contact-static {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
   min-width: 0;
-  padding: 14px;
+  padding: 15px 17px;
   border: 1px solid var(--about-line);
   border-radius: 13px;
   color: inherit;
@@ -490,35 +478,31 @@ html[data-theme="light"] body.nova-about-route .nova-about-status b {
   background: var(--about-card-soft);
 }
 
-.nova-about-contact a > span {
-  display: grid;
-  width: 36px;
-  height: 36px;
-  place-items: center;
-  border-radius: 10px;
-  background: rgba(195, 135, 158, .11);
-  color: var(--about-accent-soft);
-  font-size: .61rem;
+.nova-about-contact a b,
+.nova-about-contact-static b {
+  color: var(--about-accent);
+  font-size: .68rem;
   font-weight: 650;
+  letter-spacing: .18em;
 }
 
-.nova-about-contact a b {
-  color: var(--about-text);
-  font-size: .78rem;
-  font-weight: 560;
-}
-
-.nova-about-contact a small {
+.nova-about-contact a small,
+.nova-about-contact-static small {
   min-width: 0;
   overflow: hidden;
-  color: var(--about-muted);
-  font-size: .65rem;
+  color: var(--about-text);
+  font-size: .95rem;
+  font-weight: 540;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .nova-about-contact a i {
+  position: absolute;
+  top: 13px;
+  right: 14px;
   color: var(--about-accent);
+  font-size: .8rem;
   font-style: normal;
 }
 
@@ -636,7 +620,7 @@ html[data-theme="light"] body.nova-about-route #footer {
   }
 
   .nova-about-status {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -710,17 +694,14 @@ html[data-theme="light"] body.nova-about-route #footer {
     grid-column: 2;
   }
 
-  .nova-about-contact a {
-    grid-template-columns: 36px minmax(0, 1fr) auto;
-  }
-
-  .nova-about-contact a small {
-    grid-column: 2;
+  .nova-about-contact a small,
+  .nova-about-contact-static small {
+    white-space: normal;
+    overflow-wrap: anywhere;
   }
 
   .nova-about-contact a i {
-    grid-column: 3;
-    grid-row: 1 / span 2;
+    display: none;
   }
 
   .nova-about-comments {
