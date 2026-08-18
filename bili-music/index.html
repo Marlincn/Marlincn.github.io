@@ -19,10 +19,10 @@
 </style>
 </head>
 <body>
-<h2>Bilibili 音乐试验站(GitHub Pages 路线)</h2>
-<p class="hint">架构:静态页(GitHub Pages)+ 代理(Cloudflare Worker)。部署后在此填入 Worker 地址(如 https://xxx.workers.dev);本地测试可留空走同源。</p>
+<h2>Bilibili 音乐试验站</h2>
+<p class="hint">架构:静态页(GitHub Pages)+ 云端代理(腾讯云函数)。代理地址留空 = 同源(本地模拟器);部署后填云端地址。</p>
 <div class="row">
-  <input id="proxy" placeholder="代理地址(留空=同源,如 https://bili-proxy.xxx.workers.dev)">
+  <input id="proxy" placeholder="代理地址(如 https://1470690781-xxx.ap-guangzhou.tencentscf.com)">
 </div>
 <div class="row">
   <input id="bvid" placeholder="BVID 或完整链接,如 BV1GJ411x7h7">
@@ -40,6 +40,29 @@
 
   function log(msg) { document.getElementById('log').textContent = msg; }
 
+  async function fetchAudioBlob(bvid) {
+    // 优先走 /stream2(云端函数:服务端解析+主备回退);本地模拟器同样实现
+    const resp = await fetch(base() + '/stream2?bvid=' + bvid);
+    if (!resp.ok) {
+      let detail = '';
+      try { detail = (await resp.text()).slice(0, 150); } catch (e) { /* ignore */ }
+      throw new Error('音频请求失败 HTTP ' + resp.status + ' ' + detail);
+    }
+    const ct = resp.headers.get('Content-Type') || '';
+    if (ct.includes('json')) {
+      const b64 = await resp.text();
+      if (b64.trim().startsWith('{')) {
+        const j = JSON.parse(b64);
+        throw new Error(j.error || '音频获取失败');
+      }
+      const bin = atob(b64.trim());
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return new Blob([bytes], { type: 'audio/mp4' });
+    }
+    return await resp.blob(); // 二进制(本地模拟器)
+  }
+
   async function addSong() {
     const raw = document.getElementById('bvid').value.trim();
     if (!raw) return log('请输入 BVID');
@@ -50,6 +73,9 @@
       const r = await fetch(base() + '/api/info?bvid=' + m[0]);
       const j = await r.json();
       if (j.error) return log('加载失败: ' + j.error);
+      log('下载音频中: ' + j.title + ' ...');
+      const blob = await fetchAudioBlob(m[0]);
+      const playUrl = URL.createObjectURL(blob);
       songs.push(j);
       const listEl = document.getElementById('list');
       const row = document.createElement('div');
@@ -58,7 +84,7 @@
       if (!ap) {
         ap = new APlayer({ container: document.getElementById('ap'), listFolded: false, audio: [] });
       }
-      ap.list.add({ name: j.title, artist: j.artist, url: base() + '/stream?url=' + encodeURIComponent(j.audioUrl), cover: j.pic });
+      ap.list.add({ name: j.title, artist: j.artist, url: playUrl, cover: j.pic });
       document.getElementById('bvid').value = '';
       log('已添加,共 ' + songs.length + ' 首');
     } catch (e) {
