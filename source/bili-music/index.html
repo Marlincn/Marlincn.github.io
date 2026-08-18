@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bili Music 试验站</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css">
+<style>
+  body { font-family: system-ui, "Microsoft YaHei", sans-serif; max-width: 780px; margin: 32px auto; padding: 0 16px; color: #222; background: #f6f6f8; }
+  h2 { margin-bottom: 4px; } p.hint { color: #777; font-size: 13px; margin: 6px 0 14px; }
+  .row { display: flex; gap: 8px; margin-bottom: 10px; }
+  input { flex: 1; padding: 8px 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; }
+  button { padding: 8px 18px; border: 0; border-radius: 8px; background: #00a1d6; color: #fff; cursor: pointer; font-size: 14px; }
+  button:hover { background: #0087ad; }
+  #log { color: #c0392b; font-size: 13px; min-height: 18px; margin: 6px 0; }
+  #list { margin: 14px 0; font-size: 14px; }
+  #list div { padding: 6px 10px; border-bottom: 1px dashed #ddd; }
+  #ap { background: #fff; border-radius: 12px; padding: 10px; }
+</style>
+</head>
+<body>
+<h2>Bilibili 音乐试验站(GitHub Pages 路线)</h2>
+<p class="hint">架构:静态页(GitHub Pages)+ 代理(Cloudflare Worker)。部署后在此填入 Worker 地址(如 https://xxx.workers.dev);本地测试可留空走同源。</p>
+<div class="row">
+  <input id="proxy" placeholder="代理地址(留空=同源,如 https://bili-proxy.xxx.workers.dev)">
+</div>
+<div class="row">
+  <input id="bvid" placeholder="BVID 或完整链接,如 BV1GJ411x7h7">
+  <button onclick="addSong()">添加歌曲</button>
+</div>
+<div id="log"></div>
+<div id="list"></div>
+<div id="ap"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script>
+<script>
+  const base = () => (document.getElementById('proxy').value.trim() || '').replace(/\/+$/, '');
+  let ap = null;
+  const songs = [];
+
+  function log(msg) { document.getElementById('log').textContent = msg; }
+
+  async function addSong() {
+    const raw = document.getElementById('bvid').value.trim();
+    if (!raw) return log('请输入 BVID');
+    const m = raw.match(/BV[0-9A-Za-z]{10}/);
+    if (!m) return log('未识别到 BVID');
+    log('加载中: ' + m[0] + ' ...');
+    try {
+      const r = await fetch(base() + '/api/info?bvid=' + m[0]);
+      const j = await r.json();
+      if (j.error) return log('加载失败: ' + j.error);
+      songs.push(j);
+      const listEl = document.getElementById('list');
+      const row = document.createElement('div');
+      row.textContent = songs.length + '. ' + j.title + ' — ' + j.artist;
+      listEl.appendChild(row);
+      if (!ap) {
+        ap = new APlayer({ container: document.getElementById('ap'), listFolded: false, audio: [] });
+      }
+      ap.list.add({ name: j.title, artist: j.artist, url: base() + '/stream?url=' + encodeURIComponent(j.audioUrl), cover: j.pic });
+      document.getElementById('bvid').value = '';
+      log('已添加,共 ' + songs.length + ' 首');
+    } catch (e) {
+      log('请求失败: ' + e);
+    }
+  }
+</script>
+</body>
+</html>

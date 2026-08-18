@@ -1,0 +1,12 @@
+# Hexo
+public/
+db.json
+*.log
+
+# Dependencies
+node_modules/
+
+# Local
+.chrome-profile/
+
+.deploy_git/
