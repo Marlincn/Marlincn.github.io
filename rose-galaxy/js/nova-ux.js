@@ -343,10 +343,11 @@
      定时器精确排到下一个边界,到点原地切换并复用现有过渡。
      2026-08-18:偏好增加时段归属(period),每次打开页面时校验:
      偏好时段与当前时段一致才生效,跨时段(如白天选的浅色,晚上打开)视为过期,
-     拉回时间制。 */
+     拉回时间制。
+     2026-08-18(改):打开页面不再读取任何持久偏好,只按当前时间决定主题;
+     手动切换仅对当前会话生效(不写入 localStorage)。 */
   const THEME_DARK_START = 18
   const THEME_DARK_END = 7
-  const THEME_PREF_KEY = 'marlin-theme-pref'
   let themeScheduleTimer = 0
 
   const isDarkTime = () => {
@@ -354,57 +355,36 @@
     return hour >= THEME_DARK_START || hour < THEME_DARK_END
   }
 
-  /* 当前时间所属时段的起始时间戳:
-     浅色段从 7:00 开始,深色段从 18:00 开始(深色段跨天,7:00 前归前一天的 18:00 段)。 */
-  const themePeriodStart = time => {
-    const t = new Date(time)
-    const hour = t.getHours()
-    if (hour < THEME_DARK_END) {
-      t.setDate(t.getDate() - 1)
-      t.setHours(THEME_DARK_START, 0, 0, 0)
-    } else if (hour < THEME_DARK_START) {
-      t.setHours(THEME_DARK_END, 0, 0, 0)
-    } else {
-      t.setHours(THEME_DARK_START, 0, 0, 0)
-    }
-    return t.getTime()
-  }
+  /* 会话级主题偏好(2026-08-18):手动切换写入 sessionStorage,
+     会话内(含 PJAX 导航)全局生效;关闭浏览器/新标签自动清空,
+     重新打开只按时间制,不读任何持久记忆。 */
+  const THEME_SESSION_KEY = 'marlin-theme-session'
 
-  const getThemePref = () => {
+  const getSessionTheme = () => {
     try {
-      const value = window.localStorage.getItem(THEME_PREF_KEY)
-      // 旧格式(纯字符串)没有时段信息,无法判断是否过期,一律忽略按时间制
-      if (value === 'dark' || value === 'light') return null
-      if (!value) return null
-      const parsed = JSON.parse(value)
-      if (!parsed || (parsed.mode !== 'dark' && parsed.mode !== 'light')) return null
-      const period = Number(parsed.period)
-      if (!period) return null // 无时段标记:无法校验,忽略按时间制
-      return period === themePeriodStart(Date.now()) ? parsed.mode : null
+      const value = window.sessionStorage.getItem(THEME_SESSION_KEY)
+      return value === 'dark' || value === 'light' ? value : null
     } catch (e) {
       return null
     }
   }
 
-  const setThemePref = mode => {
+  const setSessionTheme = mode => {
     try {
       if (mode === 'dark' || mode === 'light') {
-        window.localStorage.setItem(
-          THEME_PREF_KEY,
-          JSON.stringify({ mode, period: themePeriodStart(Date.now()) })
-        )
+        window.sessionStorage.setItem(THEME_SESSION_KEY, mode)
       } else {
-        window.localStorage.removeItem(THEME_PREF_KEY)
+        window.sessionStorage.removeItem(THEME_SESSION_KEY)
       }
     } catch (e) {
       /* storage unavailable: fall back to time-based only */
     }
   }
 
-  const clearThemePref = () => setThemePref(null)
-
-  /* 捕获任意页面的 #darkmode 手动切换(含首页 home-theme-toggle 转发的 click),
-     切换完成后记录偏好;main.js 的处理器先执行,故用 setTimeout 延后读取。 */
+  /* 手动切换(任意页面 #darkmode,含首页 home-theme-toggle 转发):
+     main.js 的处理器先执行切换(只改 data-theme 不持久化),
+     这里在切换完成后把结果记入 sessionStorage,供会话内全局保持。
+     setTimeout 延后读取,确保读到 main.js 切换后的最终值。 */
   document.addEventListener(
     'click',
     event => {
@@ -412,7 +392,7 @@
       const button = target && target.closest ? target.closest('#darkmode') : null
       if (!button) return
       setTimeout(() => {
-        setThemePref(document.documentElement.getAttribute('data-theme'))
+        setSessionTheme(document.documentElement.getAttribute('data-theme'))
       }, 0)
     },
     true
@@ -428,10 +408,10 @@
     })
   }
 
-  /* 偏好优先:手动选择过则保持(切页/刷新不拉回);无偏好时按时间制。 */
+  /* 主题:会话内有手动选择则保持(导航不拉回);无则只按时间制。 */
   const applyTimeTheme = () => {
-    const pref = getThemePref()
-    const target = pref === 'dark' || pref === 'light' ? pref : isDarkTime() ? 'dark' : 'light'
+    const session = getSessionTheme()
+    const target = session === 'dark' || session === 'light' ? session : isDarkTime() ? 'dark' : 'light'
     const current = document.documentElement.getAttribute('data-theme')
     if (current !== target) {
       target === 'dark' ? btf.activateDarkMode() : btf.activateLightMode()
@@ -454,11 +434,11 @@
     return next.getTime() - now.getTime()
   }
 
-  /* 边界到点:清除手动偏好,按时间制切换(方案 B 语义)。 */
+  /* 边界到点:清除会话偏好,按时间制切换。 */
   const scheduleThemeTick = () => {
     window.clearTimeout(themeScheduleTimer)
     themeScheduleTimer = window.setTimeout(() => {
-      clearThemePref()
+      setSessionTheme(null)
       applyTimeTheme()
       scheduleThemeTick()
     }, nextBoundaryDelay())

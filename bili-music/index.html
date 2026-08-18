@@ -4,33 +4,8 @@
 <script>
   ;(function () {
     try {
-      var raw = null;
-      try { raw = window.localStorage.getItem('marlin-theme-pref') } catch (e) {}
-      var now = new Date()
-      var hour = now.getHours()
+      var hour = new Date().getHours()
       var dark = hour >= 18 || hour < 7
-      var mode = null
-      if (raw && raw !== 'dark' && raw !== 'light') {
-        try {
-          var parsed = JSON.parse(raw)
-          if (parsed && (parsed.mode === 'dark' || parsed.mode === 'light')) {
-            var period = Number(parsed.period)
-            if (period) {
-              var anchor = new Date(now)
-              if (hour < 7) {
-                anchor.setDate(anchor.getDate() - 1)
-                anchor.setHours(18, 0, 0, 0)
-              } else if (hour < 18) {
-                anchor.setHours(7, 0, 0, 0)
-              } else {
-                anchor.setHours(18, 0, 0, 0)
-              }
-              if (period === anchor.getTime()) mode = parsed.mode
-            }
-          }
-        } catch (e2) {}
-      }
-      if (mode === 'dark' || mode === 'light') dark = mode === 'dark'
       document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
     } catch (e) {}
   })()
