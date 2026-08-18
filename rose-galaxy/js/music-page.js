@@ -7,7 +7,7 @@
   }
 
   // ===== 配置:腾讯云函数代理 + B 站收藏夹 =====
-  const BILI_PROXY = "http://127.0.0.1:8126"; // 云函数地址
+  const BILI_PROXY = "https://1470690781-6b1hcscil5.ap-guangzhou.tencentscf.com"; // 云函数地址
   const BILI_UID = "3546712446601247"; // B 站 UID
   const BILI_FOLDER = "music"; // 收藏夹名
 

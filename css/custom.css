@@ -847,6 +847,7 @@ html[data-theme="light"] #local-search .local-search-hit-item:hover {
   width: 280px;
   min-width: 0;
   padding: 0;
+  align-self: stretch;
 }
 
 #body-wrap.post #aside-content .card-widget {
@@ -893,17 +894,23 @@ html[data-theme="light"] #local-search .local-search-hit-item:hover {
   transform: translateY(-1px);
 }
 
-#body-wrap.post #aside-content .sticky_layout { position: static; }
+#body-wrap.post #aside-content .sticky_layout {
+  position: static;
+}
+@media(min-width:1101px) and (min-height:820px) {
+  #body-wrap.post #aside-content .sticky_layout {
+    position: sticky;
+    top: 88px;
+    align-self: start;
+  }
+}
 #body-wrap.post #card-toc {
-  position: sticky;
-  top: 82px;
+  position: static;
 }
 
 #body-wrap.post #card-toc .toc-content {
-  max-height: calc(100vh - 110px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
+  max-height: none;
+  overflow: visible;
 }
 
 #body-wrap.post #card-toc .toc-link {
@@ -1650,4 +1657,39 @@ html[data-theme="light"] body:not(.nova-home-active) #page-header:not(.nav-fixed
   color: rgba(255,255,255,0.7) !important;
   text-shadow: none !important;
 }
+
+/* ---- 入场动画轻量化(2026-08-18):保留动画,减小位移/缩放幅度,消除"先错位后归位" ---- */
+@keyframes nova-title-soft {
+  0% { opacity: 0; transform: scale(.94); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes nova-header-soft {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes nova-content-soft {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes nova-about-soft {
+  0% { opacity: .35; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+#site-title,
+#site-subtitle {
+  animation: nova-title-soft .45s ease-out !important;
+}
+#page-header:not(.full_page),
+#nav.show {
+  animation: nova-header-soft .4s ease-out !important;
+}
+#content-inner,
+#footer {
+  animation: nova-content-soft .4s ease-out !important;
+}
+body.nova-about-route .nova-about-hero-copy,
+body.nova-about-route .nova-about-profile {
+  animation: nova-about-soft .3s ease-out !important;
+}
+
 

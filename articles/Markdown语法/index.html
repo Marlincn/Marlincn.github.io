@@ -1,4 +1,40 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>文章: Markdown语法 | Marlin</title><meta name="author" content="Marlin"><meta name="copyright" content="Marlin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#080B14"><meta name="description" content="浏览 Marlin 博客中标记为“Markdown语法”的文章与学习记录。">
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark">
+<!-- nova-theme-first-frame -->
+<script>
+  ;(function () {
+    try {
+      var raw = null;
+      try { raw = window.localStorage.getItem('marlin-theme-pref') } catch (e) {}
+      var now = new Date()
+      var hour = now.getHours()
+      var dark = hour >= 18 || hour < 7
+      var mode = null
+      if (raw && raw !== 'dark' && raw !== 'light') {
+        try {
+          var parsed = JSON.parse(raw)
+          if (parsed && (parsed.mode === 'dark' || parsed.mode === 'light')) {
+            var period = Number(parsed.period)
+            if (period) {
+              var anchor = new Date(now)
+              if (hour < 7) {
+                anchor.setDate(anchor.getDate() - 1)
+                anchor.setHours(18, 0, 0, 0)
+              } else if (hour < 18) {
+                anchor.setHours(7, 0, 0, 0)
+              } else {
+                anchor.setHours(18, 0, 0, 0)
+              }
+              if (period === anchor.getTime()) mode = parsed.mode
+            }
+          }
+        } catch (e2) {}
+      }
+      if (mode === 'dark' || mode === 'light') dark = mode === 'dark'
+      document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+    } catch (e) {}
+  })()
+</script>
+<head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>文章: Markdown语法 | Marlin</title><meta name="author" content="Marlin"><meta name="copyright" content="Marlin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#080B14"><meta name="description" content="浏览 Marlin 博客中标记为“Markdown语法”的文章与学习记录。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Marlin">
 <meta property="og:url" content="https://deymocn.github.io/articles/Markdown语法/">
