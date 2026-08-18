@@ -40,9 +40,10 @@ body.nova-tag-route main.nova-tag-content::before{content:"";position:absolute;z
 .nova-tag-post-meta span{color:var(--nova-tag-slate)}
 .nova-tag-post-content h2{margin:10px 0 7px;font:500 19px/1.4 "Noto Serif SC","Songti SC",serif}
 .nova-tag-post-content h2 a{color:var(--nova-tag-text)}
-.nova-tag-post-content p{display:-webkit-box;overflow:hidden;margin:0;color:var(--nova-tag-secondary);font-size:13px;line-height:1.75;-webkit-box-orient:vertical;-webkit-line-clamp:3}
-.nova-tag-post-action{display:inline-flex;align-items:center;align-self:flex-start;gap:6px;margin-top:auto;padding-top:10px;color:var(--nova-tag-accent);font-size:12px}
-.nova-tag-post-action span{transition:transform .22s}.nova-tag-post-action:hover span{transform:translateX(4px)}
+.nova-tag-post-content p{display:block;overflow:hidden;margin:10px 0 0;color:var(--nova-tag-secondary);font-size:13px;line-height:1.75;text-overflow:ellipsis;white-space:nowrap}
+.nova-tag-post-action{display:inline-flex;align-items:center;align-self:flex-start;gap:6px;margin-top:auto;padding-top:10px;color:var(--nova-tag-accent);font-size:12px;transition:gap .22s ease,color .22s ease}
+.nova-tag-post-action span{display:inline-block}
+.nova-tag-post-card:hover .nova-tag-post-action{gap:10px;color:#df86a3}
 .nova-tag-pagination{margin-top:24px}.nova-tag-pagination #pagination{margin:0}.nova-tag-pagination .pagination{display:flex;justify-content:center;gap:8px}
 .nova-tag-pagination .page-number,.nova-tag-pagination .extend{display:grid;width:36px;height:36px;margin:0;place-items:center;border:1px solid var(--nova-tag-line);border-radius:11px;color:var(--nova-tag-secondary);background:rgba(255,255,255,.035)}
 .nova-tag-pagination .current{color:#fff;background:var(--nova-tag-accent)}
@@ -66,7 +67,7 @@ html[data-theme="light"] body.nova-tag-route footer#footer{background:linear-gra
 @media(max-width:768px){.nova-tag-summary,.nova-tag-layout{width:calc(100% - 28px)}}
 @media(max-width:560px){.nova-tag-title{font-size:48px}.nova-tag-description{font-size:12px}.nova-tag-summary>div{min-height:74px;padding:13px}.nova-tag-summary strong{font-size:18px}.nova-tag-main{padding:14px;border-radius:18px}.nova-tag-main-header{align-items:flex-start;flex-direction:column;gap:8px}.nova-tag-post-card{display:block;min-height:0}.nova-tag-post-cover{min-height:170px;aspect-ratio:16/9}.nova-tag-post-content{padding:18px 16px}.nova-tag-post-content h2{font-size:17px}}
 @media(max-width:390px){.nova-tag-summary{grid-template-columns:1fr}.nova-tag-summary>div+div::before{top:0;right:13px;bottom:auto;left:13px;width:auto;height:1px}.nova-tag-post-meta{font-size:10px}.nova-tag-reading-link{grid-template-columns:24px minmax(0,1fr)}.nova-tag-reading-link time{display:none}}
-@media(prefers-reduced-motion:reduce){.nova-tag-post-card,.nova-tag-post-cover img,.nova-tag-post-action span{transition:none!important}.nova-tag-post-card:hover,.nova-tag-post-card:hover .nova-tag-post-cover img,.nova-tag-post-action:hover span{transform:none!important}}
+@media(prefers-reduced-motion:reduce){.nova-tag-post-card,.nova-tag-post-cover img{transition:none!important}.nova-tag-post-card:hover,.nova-tag-post-card:hover .nova-tag-post-cover img{transform:none!important}}
 
 /* Topic reading assistant: scoped to tag detail routes only. */
 .nova-tag-current-title {

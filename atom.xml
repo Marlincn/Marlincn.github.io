@@ -19,7 +19,7 @@
     <id>https://deymocn.github.io/2026/08/17/LM-Studio-OpenCode 接入指南/</id>
     <link href="https://deymocn.github.io/2026/08/17/LM-Studio-OpenCode 接入指南/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>&lt;h2 id=&quot;1-环境信息&quot; &lt;a href=&quot; 1-环境信息&quot; class=&quot;headerlink&quot; title=&quot;1. 环境信息&quot; &lt;/a 1. 环境信息&lt;/h2 &lt;tabl</summary>
+    <summary>1. 环境信息 项目 值 LM Studio 版本 0.4.0+（需要 API Token 功能） LM Studio 地址 http://192.168.133.2:1234 本</summary>
     <title>LM Studio 接入 OpenCode 指南</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
@@ -31,7 +31,7 @@
     <id>https://deymocn.github.io/2026/08/17/Markdown 入门指南/</id>
     <link href="https://deymocn.github.io/2026/08/17/Markdown 入门指南/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>&lt;p Markdown 概述、工作原理以及用途。&lt;/p &lt;h2 id=&quot;Markdown-是什么？&quot; &lt;a href=&quot; Markdown-是什么？&quot; class=&quot;headerl</summary>
+    <summary>Markdown 概述、工作原理以及用途。 Markdown 是什么？ Markdown 是一种轻量级的标记语言，可用于在纯文本文档中添加格式化元素。Markdown 由 John</summary>
     <title>Markdown 入门指南</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
@@ -43,7 +43,7 @@
     <id>https://deymocn.github.io/2026/08/17/Markdown 扩展语法/</id>
     <link href="https://deymocn.github.io/2026/08/17/Markdown 扩展语法/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>&lt;p 构建在 Markdown 基本语法上的扩展功能。&lt;/p &lt;h2 id=&quot;概述&quot; &lt;a href=&quot; 概述&quot; class=&quot;headerlink&quot; title=&quot;概述&quot; &lt;/a</summary>
+    <summary>构建在 Markdown 基本语法上的扩展功能。 概述 即便 John Gruber 的原始设计文档中所列出的 Markdown 基本语法 已经囊括了许多满足日常所需的元素，但对于</summary>
     <title>Markdown 扩展语法</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
@@ -55,7 +55,7 @@
     <id>https://deymocn.github.io/2026/08/17/Markdown 语法速查表/</id>
     <link href="https://deymocn.github.io/2026/08/17/Markdown 语法速查表/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>&lt;p Markdown 语法参考手册 &amp; x2F; 速查表。&lt;/p &lt;h2 id=&quot;总览&quot; &lt;a href=&quot; 总览&quot; class=&quot;headerlink&quot; title=&quot;总览&quot; </summary>
+    <summary>Markdown 语法参考手册 / 速查表。 总览 此 Markdown 语法速查表提供了所有 Markdown 语法元素的快速参考。但是此速查表无法涵盖所有极限用法，因此，如果您</summary>
     <title>Markdown 语法速查表</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
@@ -67,7 +67,7 @@
     <id>https://deymocn.github.io/2026/08/17/变声器操作记录/</id>
     <link href="https://deymocn.github.io/2026/08/17/变声器操作记录/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>&lt;h2 id=&quot;一、前置&quot; &lt;a href=&quot; 一、前置&quot; class=&quot;headerlink&quot; title=&quot;一、前置&quot; &lt;/a 一、前置&lt;/h2 &lt;h3 id=&quot;1-1软件&quot; </summary>
+    <summary>一、前置 1.1软件 virtual voice 音频转接 voicemeeter bannana 音频转接 Retrieval-based-Voice-Conversion-We</summary>
     <title>变声器操作记录</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
@@ -79,7 +79,7 @@
     <id>https://deymocn.github.io/2026/08/17/Markdown 基本语法/</id>
     <link href="https://deymocn.github.io/2026/08/17/Markdown 基本语法/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>&lt;p John Gruber 的 Markdown 设计文档中列出的所有 Markdown 元素。&lt;/p &lt;h2 id=&quot;总览&quot; &lt;a href=&quot; 总览&quot; class=&quot;head</summary>
+    <summary>John Gruber 的 Markdown 设计文档中列出的所有 Markdown 元素。 总览 几乎所有 Markdown 应用程序都支持 John Gruber 原始设计文档</summary>
     <title>Markdown 基本语法</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
@@ -103,7 +103,7 @@
     <id>https://deymocn.github.io/2026/08/17/Markdown 实用语法/</id>
     <link href="https://deymocn.github.io/2026/08/17/Markdown 实用语法/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>&lt;p &lt;strong 本文以Typora作演示书写页面，不能完成的操作切换到源代码模式界面进行（打开\关闭源代码界面：&lt;code ctrl&lt;/code +&lt;code /&lt;/code</summary>
+    <summary>本文以Typora作演示书写页面，不能完成的操作切换到源代码模式界面进行（打开\关闭源代码界面： ctrl + / ），在这个界面，你可以一窥端倪 一、段落和字体格式 格式 书写界</summary>
     <title>Markdown 实用语法</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
@@ -115,7 +115,7 @@
     <id>https://deymocn.github.io/2026/08/17/绘世-Stable Diffusion/</id>
     <link href="https://deymocn.github.io/2026/08/17/绘世-Stable Diffusion/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>&lt;h2 id=&quot;一、提示词&quot; &lt;a href=&quot; 一、提示词&quot; class=&quot;headerlink&quot; title=&quot;一、提示词&quot; &lt;/a 一、提示词&lt;/h2 &lt;h3 id=&quot;1-0</summary>
+    <summary>一、提示词 1.0概念 提示词(tag)：相对独立的词或短语，告诉AI画什么 权重：单独提示词在总提示词中突出的程度，说明主要画什么 采样：采集文字特征，得到清晰图像的过程，不同采</summary>
     <title>绘世 Stable Diffusion</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
