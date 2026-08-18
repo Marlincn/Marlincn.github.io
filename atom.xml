@@ -15,6 +15,18 @@
     <author>
       <name>Marlin</name>
     </author>
+    <category term="Markdown语法" scheme="https://deymocn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
+    <id>https://deymocn.github.io/2026/08/17/Markdown 入门指南/</id>
+    <link href="https://deymocn.github.io/2026/08/17/Markdown 入门指南/"/>
+    <published>2026-08-17T00:00:00.000Z</published>
+    <summary>Markdown 概述、工作原理以及用途。 Markdown 是什么？ Markdown 是一种轻量级的标记语言，可用于在纯文本文档中添加格式化元素。Markdown 由 John</summary>
+    <title>Markdown 入门指南</title>
+    <updated>2026-08-17T00:00:00.000Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Marlin</name>
+    </author>
     <category term="AI" scheme="https://deymocn.github.io/articles/AI/"/>
     <id>https://deymocn.github.io/2026/08/17/LM-Studio-OpenCode 接入指南/</id>
     <link href="https://deymocn.github.io/2026/08/17/LM-Studio-OpenCode 接入指南/"/>
@@ -28,47 +40,11 @@
       <name>Marlin</name>
     </author>
     <category term="Markdown语法" scheme="https://deymocn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://deymocn.github.io/2026/08/17/Markdown 入门指南/</id>
-    <link href="https://deymocn.github.io/2026/08/17/Markdown 入门指南/"/>
+    <id>https://deymocn.github.io/2026/08/17/Markdown 实用语法/</id>
+    <link href="https://deymocn.github.io/2026/08/17/Markdown 实用语法/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>Markdown 概述、工作原理以及用途。 Markdown 是什么？ Markdown 是一种轻量级的标记语言，可用于在纯文本文档中添加格式化元素。Markdown 由 John</summary>
-    <title>Markdown 入门指南</title>
-    <updated>2026-08-17T00:00:00.000Z</updated>
-  </entry>
-  <entry>
-    <author>
-      <name>Marlin</name>
-    </author>
-    <category term="Markdown语法" scheme="https://deymocn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://deymocn.github.io/2026/08/17/Markdown 扩展语法/</id>
-    <link href="https://deymocn.github.io/2026/08/17/Markdown 扩展语法/"/>
-    <published>2026-08-17T00:00:00.000Z</published>
-    <summary>构建在 Markdown 基本语法上的扩展功能。 概述 即便 John Gruber 的原始设计文档中所列出的 Markdown 基本语法 已经囊括了许多满足日常所需的元素，但对于</summary>
-    <title>Markdown 扩展语法</title>
-    <updated>2026-08-17T00:00:00.000Z</updated>
-  </entry>
-  <entry>
-    <author>
-      <name>Marlin</name>
-    </author>
-    <category term="Markdown语法" scheme="https://deymocn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://deymocn.github.io/2026/08/17/Markdown 语法速查表/</id>
-    <link href="https://deymocn.github.io/2026/08/17/Markdown 语法速查表/"/>
-    <published>2026-08-17T00:00:00.000Z</published>
-    <summary>Markdown 语法参考手册 / 速查表。 总览 此 Markdown 语法速查表提供了所有 Markdown 语法元素的快速参考。但是此速查表无法涵盖所有极限用法，因此，如果您</summary>
-    <title>Markdown 语法速查表</title>
-    <updated>2026-08-17T00:00:00.000Z</updated>
-  </entry>
-  <entry>
-    <author>
-      <name>Marlin</name>
-    </author>
-    <category term="工具" scheme="https://deymocn.github.io/articles/%E5%B7%A5%E5%85%B7/"/>
-    <id>https://deymocn.github.io/2026/08/17/变声器操作记录/</id>
-    <link href="https://deymocn.github.io/2026/08/17/变声器操作记录/"/>
-    <published>2026-08-17T00:00:00.000Z</published>
-    <summary>一、前置 1.1软件 virtual voice 音频转接 voicemeeter bannana 音频转接 Retrieval-based-Voice-Conversion-We</summary>
-    <title>变声器操作记录</title>
+    <summary>本文以Typora作演示书写页面，不能完成的操作切换到源代码模式界面进行（打开\关闭源代码界面： ctrl + / ），在这个界面，你可以一窥端倪 一、段落和字体格式 格式 书写界</summary>
+    <title>Markdown 实用语法</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
@@ -87,12 +63,12 @@
     <author>
       <name>Marlin</name>
     </author>
-    <category term="杂记" scheme="https://deymocn.github.io/articles/%E6%9D%82%E8%AE%B0/"/>
-    <id>https://deymocn.github.io/2026/08/17/红石科技/</id>
-    <link href="https://deymocn.github.io/2026/08/17/红石科技/"/>
+    <category term="Markdown语法" scheme="https://deymocn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
+    <id>https://deymocn.github.io/2026/08/17/Markdown 语法速查表/</id>
+    <link href="https://deymocn.github.io/2026/08/17/Markdown 语法速查表/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary></summary>
-    <title>红石科技</title>
+    <summary>Markdown 语法参考手册 / 速查表。 总览 此 Markdown 语法速查表提供了所有 Markdown 语法元素的快速参考。但是此速查表无法涵盖所有极限用法，因此，如果您</summary>
+    <title>Markdown 语法速查表</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
@@ -100,11 +76,35 @@
       <name>Marlin</name>
     </author>
     <category term="Markdown语法" scheme="https://deymocn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://deymocn.github.io/2026/08/17/Markdown 实用语法/</id>
-    <link href="https://deymocn.github.io/2026/08/17/Markdown 实用语法/"/>
+    <id>https://deymocn.github.io/2026/08/17/Markdown 扩展语法/</id>
+    <link href="https://deymocn.github.io/2026/08/17/Markdown 扩展语法/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>本文以Typora作演示书写页面，不能完成的操作切换到源代码模式界面进行（打开\关闭源代码界面： ctrl + / ），在这个界面，你可以一窥端倪 一、段落和字体格式 格式 书写界</summary>
-    <title>Markdown 实用语法</title>
+    <summary>构建在 Markdown 基本语法上的扩展功能。 概述 即便 John Gruber 的原始设计文档中所列出的 Markdown 基本语法 已经囊括了许多满足日常所需的元素，但对于</summary>
+    <title>Markdown 扩展语法</title>
+    <updated>2026-08-17T00:00:00.000Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Marlin</name>
+    </author>
+    <category term="工具" scheme="https://deymocn.github.io/articles/%E5%B7%A5%E5%85%B7/"/>
+    <id>https://deymocn.github.io/2026/08/17/变声器操作记录/</id>
+    <link href="https://deymocn.github.io/2026/08/17/变声器操作记录/"/>
+    <published>2026-08-17T00:00:00.000Z</published>
+    <summary>一、前置 1.1软件 virtual voice 音频转接 voicemeeter bannana 音频转接 Retrieval-based-Voice-Conversion-We</summary>
+    <title>变声器操作记录</title>
+    <updated>2026-08-17T00:00:00.000Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Marlin</name>
+    </author>
+    <category term="杂记" scheme="https://deymocn.github.io/articles/%E6%9D%82%E8%AE%B0/"/>
+    <id>https://deymocn.github.io/2026/08/17/红石科技/</id>
+    <link href="https://deymocn.github.io/2026/08/17/红石科技/"/>
+    <published>2026-08-17T00:00:00.000Z</published>
+    <summary></summary>
+    <title>红石科技</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
