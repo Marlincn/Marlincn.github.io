@@ -276,6 +276,7 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-08-21 | 首页粒子迭代:深色适度增强(95-115 玫瑰系+星座连线);浅色重设计——左半屏+右上小区域尘埃,修复根因(粒子创建时按主题定参数,切浅色后不重建导致不可见;主题切换现自动重建)与崩溃(连线 dx/dy/b 未定义);浅色最终为 8105 尘埃样式(浅蓝、30% 星带十字芒、85-110 个、白色连线) | `rose-galaxy/js/galaxy-canvas.js`、`rose-galaxy/css/nova-home.css`、`layout/home-parts/bottom.html`、`layout/home.pug` |
 | 2026-08-21 | P2.6 构建压缩:esbuild 压缩全部 JS(188KB→99KB);CSS 保留未压缩(避免颜色舍入差异,gzip 已兜底);build 链接入 minify | `package.json`、`scripts/minify.js`(esbuild) |
 | 2026-08-21 | P2.5 URL 编码规范:sitemap loc、标签页 og:url/canonical/LDJSON、相关标签、索引卡片链接全部 encodeURI;补首页/标签页 canonical | `scripts/nova-tags.js`、`layout/tag.pug`、`layout/tags-index.pug`、`layout/home.pug` |
 | 2026-08-21 | P2.2 布局化重构:head 收敛为 `_partials/head.pug`(参数化,9 份→1 份);标签/索引页迁 pug 布局;5 个静态页改布局渲染;删除 nova-templates 占位符模板;域名从 config 读取;版本号全站统一 5.7.0 | `layout/base.pug`、`_partials/`、`layout/*.pug`、`*-parts/`、`scripts/*-generator.js`、`source/`(静态页删) |
