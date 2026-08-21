@@ -138,7 +138,7 @@
   padding-inline:max(28px,calc((100vw - 1480px)/2 + 34px));
   background:linear-gradient(to bottom,rgba(5,7,14,.58),rgba(5,7,14,.12),transparent);
 }
-.nova-home-active #nav .site-page{font-size:14px}
+.nova-home-active #nav .site-page{font-size:17px}
 .nova-home-active #nav .menus_item>a i,.nova-home-active #nav .menus_item>.site-page>i:not(.fa-chevron-down){display:none}
 .nova-home-active #nav .menus_item:first-child>a::after{content:"";position:absolute;right:12px;left:12px;background:#d85b7d;bottom:8px;height:1px;box-shadow:none}
 .hero-inner{
@@ -708,14 +708,14 @@ html[data-theme="dark"] body.nova-home-active #nav a,
 html[data-theme="dark"] body.nova-home-active #nav .site-page{
   color:#d2ced5;
   font-family:"Inter","Noto Sans SC",sans-serif;
-  font-size:15px;
+  font-size:17px;
   font-weight:500;
   letter-spacing:.01em;
 }
 html[data-theme="dark"] body.nova-home-active #nav .site-name{
   color:#eee8e7;
   font-family:"Cormorant Garamond","Playfair Display",Georgia,serif;
-  font-size:16px;
+  font-size:18px;
   font-weight:600;
   letter-spacing:.06em;
 }
@@ -824,10 +824,10 @@ html[data-theme="light"] body.nova-home-active .nova-particle-layer .hero-galaxy
   opacity:0!important;
 }
 html[data-theme="light"] body.nova-home-active #nav{
-  color:#403a48;
+  color:#1f1d24;
   font-family:"Inter","Noto Sans SC","Source Han Sans SC","Microsoft YaHei",sans-serif;
   background:linear-gradient(180deg,rgba(218,219,226,.18),rgba(226,224,230,.06) 72%,transparent);
-  text-shadow:0 1px 2px rgba(245,241,244,.38);
+  text-shadow:none;
   -webkit-backdrop-filter:blur(3px);
   backdrop-filter:blur(3px);
   transition:color .28s ease,background .28s ease,box-shadow .28s ease;
@@ -835,17 +835,17 @@ html[data-theme="light"] body.nova-home-active #nav{
 html[data-theme="light"] body.nova-home-active #nav a,
 html[data-theme="light"] body.nova-home-active #nav .site-page,
 html[data-theme="light"] body.nova-home-active #nav .site-name{
-  color:#443e4b;
+  color:#1f1d24;
   opacity:1;
 }
 html[data-theme="light"] body.nova-home-active #nav .site-page{
-  font-size:15px;
+  font-size:17px;
   font-weight:500;
   letter-spacing:.01em;
 }
 html[data-theme="light"] body.nova-home-active #nav .site-name{
   font-family:"Cormorant Garamond","Playfair Display",Georgia,serif;
-  font-size:16px;
+  font-size:18px;
   font-weight:600;
   line-height:1;
   letter-spacing:.06em;
@@ -864,7 +864,7 @@ html[data-theme="light"] body.nova-home-active #nav .menus_item:first-child > a:
   background:#a66f82;
 }
 html[data-theme="light"] body.nova-home-active #page-header.nav-fixed #nav{
-  color:#403b47;
+  color:#1f1d24;
   background:rgba(235,232,237,.86);
   border-bottom:1px solid rgba(78,68,84,.09);
   box-shadow:0 6px 20px rgba(58,50,65,.055);
@@ -874,7 +874,7 @@ html[data-theme="light"] body.nova-home-active #page-header.nav-fixed #nav{
 html[data-theme="light"] body.nova-home-active #page-header.nav-fixed #nav a,
 html[data-theme="light"] body.nova-home-active #page-header.nav-fixed #nav .site-page,
 html[data-theme="light"] body.nova-home-active #page-header.nav-fixed #nav .site-name{
-  color:#49434f;
+  color:#1f1d24;
 }
 html[data-theme="light"] body.nova-home-active .nova-observatory{
   position:relative;

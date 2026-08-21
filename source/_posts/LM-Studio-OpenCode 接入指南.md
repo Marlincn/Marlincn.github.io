@@ -1,6 +1,7 @@
 ---
 title: LM Studio 接入 OpenCode 指南
 date: 2026-08-17 00:00:00
+order: 6
 tags:
   - AI
 ---

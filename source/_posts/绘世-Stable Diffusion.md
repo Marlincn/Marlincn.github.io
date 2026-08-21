@@ -1,6 +1,7 @@
 ---
 title: 绘世 Stable Diffusion
 date: 2026-08-17 00:00:00
+order: 7
 tags:
   - AI绘画
 ---

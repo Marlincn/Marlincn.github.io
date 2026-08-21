@@ -847,14 +847,7 @@ html[data-theme="light"] #local-search .local-search-hit-item:hover {
   width: 280px;
   min-width: 0;
   padding: 0;
-}
-#body-wrap.post #aside-content .sticky_layout {
-  position: sticky;
-  top: 20px;
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
+  align-self: stretch;
 }
 
 #body-wrap.post #aside-content .card-widget {
@@ -902,18 +895,30 @@ html[data-theme="light"] #local-search .local-search-hit-item:hover {
 }
 
 #body-wrap.post #aside-content .sticky_layout {
-  position: sticky;
-  top: 20px;
+  position: static;
+}
+@media(min-width:1101px) and (min-height:820px) {
+  #body-wrap.post #aside-content .sticky_layout {
+    position: sticky;
+    top: 88px;
+    align-self: start;
+    max-height: calc(100vh - 112px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  #body-wrap.post #aside-content .sticky_layout::-webkit-scrollbar {
+    display: none;
+  }
 }
 #body-wrap.post #card-toc {
   position: static;
 }
 
 #body-wrap.post #card-toc .toc-content {
-  max-height: calc(100vh - 110px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
+  max-height: none;
+  overflow: visible;
 }
 
 #body-wrap.post #card-toc .toc-link {
@@ -1659,6 +1664,33 @@ html[data-theme="light"] body:not(.nova-home-active) #page-header:not(.nav-fixed
 html[data-theme="light"] body:not(.nova-home-active) #page-header:not(.nav-fixed) #nav .site-page:hover {
   color: rgba(255,255,255,0.7) !important;
   text-shadow: none !important;
+}
+
+/* ===== 当前页导航高亮:进入各页对应菜单标玫瑰色 (2026-08-19) =====
+   与首页"首页"高亮同款色值:深色 #ce8299 / 浅色 #9a6177。
+   JS 按路径给匹配的 .menus_item 加 .active(桌面 #page-header #nav + 移动 #sidebar)。
+   特异性:浅色规则带 #page-header 以压过 1653 行 (2,3,3) 的浅色未滚动白字规则。 */
+body:not(.nova-home-active) #page-header #nav .menus_item.active > a,
+body:not(.nova-home-active) #sidebar #sidebar-menus .menus_item.active > a {
+  color: #ce8299 !important;
+  text-shadow: none !important;
+}
+html[data-theme="light"] body:not(.nova-home-active) #page-header #nav .menus_item.active > a,
+html[data-theme="light"] body:not(.nova-home-active) #sidebar #sidebar-menus .menus_item.active > a {
+  color: #9a6177 !important;
+}
+/* 滚动后(浅色毛玻璃条)也保持高亮 */
+html[data-theme="light"] body:not(.nova-home-active) #page-header.nav-fixed #nav .menus_item.active > a {
+  color: #9a6177 !important;
+}
+/* hover 时保持高亮色,不退回普通色 */
+body:not(.nova-home-active) #page-header #nav .menus_item.active > a:hover,
+body:not(.nova-home-active) #sidebar #sidebar-menus .menus_item.active > a:hover {
+  color: #ce8299 !important;
+}
+html[data-theme="light"] body:not(.nova-home-active) #page-header #nav .menus_item.active > a:hover,
+html[data-theme="light"] body:not(.nova-home-active) #sidebar #sidebar-menus .menus_item.active > a:hover {
+  color: #9a6177 !important;
 }
 
 /* ---- 入场动画轻量化(2026-08-18):保留动画,减小位移/缩放幅度,消除"先错位后归位" ---- */

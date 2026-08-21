@@ -4,7 +4,7 @@
   "private": true,
   "description": "Personal site rebuilt from Marlin static source (Hexo 8.1.2 + Butterfly)",
   "scripts": {
-    "build": "hexo generate",
+    "build": "hexo generate && node scripts/minify.js",
     "clean": "hexo clean",
     "server": "hexo server",
     "deploy": "hexo deploy"
@@ -21,5 +21,8 @@
     "hexo-renderer-stylus": "3.0.1",
     "hexo-server": "3.0.0",
     "hexo-theme-butterfly": "5.7.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }

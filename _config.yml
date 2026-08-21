@@ -6,14 +6,14 @@
 # Site
 title: Marlin
 subtitle: ''
-description: '记录 Go 后端学习、数据结构与算法、LeetCode 练习及个人技术成长过程的博客。'
+description: '记录 Markdown 学习笔记、AI 工具实践与日常折腾的个人博客。'
 keywords:
 author: Marlin
 language: zh-CN
 timezone: Asia/Shanghai
 
 # URL
-url: https://deymocn.github.io/
+url: https://marlincn.github.io/
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:

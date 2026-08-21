@@ -1,0 +1,8 @@
+extends ./base.pug
+
+block headOpts
+  - page.bodyClass = 'nova-shuoshuo-route'
+  - page.headOpts = { title: '说说 | Marlin', siteTitle: '说说', description: '记录学习之外的日常想法、生活片段与随手札记。', ogUrl: siteUrl + '/shuoshuo/', pageType: 'page' }
+
+block content
+  != page.body

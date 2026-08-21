@@ -1,0 +1,10 @@
+//- 基础布局(P2.2):统一 html/head(body class 参数化)
+include ./_partials/head.pug
+include ./_partials/helpers.pug
+- var siteUrl = (config.url || '').replace(/\/+$/, '')
+doctype html
+html(lang='zh-CN' data-theme='dark')
+  block headOpts
+  +head(page.headOpts || {})
+  body(class=page.bodyClass)
+    block content

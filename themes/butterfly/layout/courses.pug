@@ -1,0 +1,8 @@
+extends ./base.pug
+
+block headOpts
+  - page.bodyClass = 'nova-course-route'
+  - page.headOpts = { title: '课程 | Marlin', siteTitle: '课程', description: '课程合集（Courses）数组 快慢指针(数组) 左右双指针 滑动窗口 前缀和 ', ogUrl: siteUrl + '/courses/', pageType: 'page' }
+
+block content
+  != page.body

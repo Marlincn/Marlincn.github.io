@@ -3,20 +3,20 @@
 ## 结构
 
 ```
-仓库 deymocn/deymocn.github.io
+仓库 marlincn/marlincn.github.io
 ├── main 分支    = 本站源码(本目录;public/、node_modules/ 不入库)
 └── gh-pages 分支 = 构建产物(hexo generate 输出,hexo deployer-git 自动推送)
 ```
 
-站点:https://deymocn.github.io/
-B 站音乐试验页:https://deymocn.github.io/bili-music/(需配合 Cloudflare Worker 代理)
+站点:https://marlincn.github.io/
+B 站音乐试验页:https://marlincn.github.io/bili-music/(需配合 Cloudflare Worker 代理)
 
 ## 一、GitHub 侧(需要你的账号,一次性)
 
-1. GitHub 上创建空仓库,名字必须是 `deymocn.github.io`(用户名仓库,不要勾选任何初始化文件)。
+1. GitHub 上创建空仓库,名字必须是 `marlincn.github.io`(用户名仓库,不要勾选任何初始化文件)。
 2. 本机执行(已配置 remote 后):
    ```bash
-   git remote add origin https://github.com/deymocn/deymocn.github.io.git
+   git remote add origin https://github.com/marlincn/marlincn.github.io.git
    git push -u origin main
    ```
 3. 仓库 Settings → Pages → Build and deployment → Source 选 "Deploy from a branch" → Branch 选 `gh-pages` / `/ (root)` → Save。
@@ -37,7 +37,7 @@ hexo clean && hexo generate && hexo deploy
 
 ## 四、B 站音乐试验页
 
-1. 访问 https://deymocn.github.io/bili-music/
+1. 访问 https://marlincn.github.io/bili-music/
 2. 在"代理地址"输入框填入 Worker 地址(如 `https://xxx.workers.dev`)。
 3. 输入 BVID(如 BV1GJ411x7h7)添加歌曲试听。
 

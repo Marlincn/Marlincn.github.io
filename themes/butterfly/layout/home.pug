@@ -1,0 +1,40 @@
+extends ./base.pug
+
+block headOpts
+  - page.bodyClass = 'nova-home-active'
+  - page.headOpts = { title: 'Marlin', siteTitle: 'Marlin', description: '记录 Markdown 学习笔记、AI 工具实践与日常折腾的个人博客。', ogUrl: siteUrl + '/', canonical: siteUrl + '/', pageType: 'home', extraCss: '<link rel="stylesheet" href="/rose-galaxy/css/nova-home.css?v=20260817-footer2" data-nova-home-style="">', extraHead: '<link rel="alternate" href="' + siteUrl + '/atom.xml" title="Marlin" type="application/atom+xml"><link rel="preload" as="font" href="/rose-galaxy/fonts/cormorant-garamond-latin.woff2" type="font/woff2" crossorigin=""><link rel="preload" as="font" href="/rose-galaxy/fonts/inter-latin.woff2" type="font/woff2" crossorigin=""><link rel="stylesheet" href="/rose-galaxy/css/nova-fonts.css?v=20260813-prince-quotes-v1"><link rel="preload" as="image" href="/img/background02.webp" fetchpriority="high" type="image/webp"><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","@id":"' + siteUrl + '/#website","name":"Marlin","url":"' + siteUrl + '/","description":"记录 Markdown 学习笔记、AI 工具实践与日常折腾的个人博客。","inLanguage":"zh-CN","creator":{"@type":"Person","name":"Marlin","url":"' + siteUrl + '/"}}</script>' }
+
+block content
+  - var posts = page.posts
+  - var latest = posts.length ? posts[0] : null
+  - var postUrl = function(p) { return encodeURI('/' + p.path.replace(/\/?index\.html$/, '')) }
+  - var coverFor = function(p) { var n = p.tags.toArray().map(function(t){ return t.name }).join(' '); if (/MySQL|sql|PostgreSQL|数据库/i.test(n)) return 'tech-mysql.webp'; if (/数组|链表|栈|字符串|算法|LeetCode|KMP|队列/i.test(n)) return 'tech-algorithm.webp'; if (/Go/i.test(n)) return 'tech-go.webp'; return 'tech-notes.webp' }
+  - var stripHtml = function(s) { var ent = function(m){ return ({ '&#x2F;':'/', '&#x2f;':'/', '&#47;':'/', '&nbsp;':' ', '&amp;':'&', '&lt;':'<', '&gt;':'>', '&quot;':'"' })[m] || m }; return String(s || '').replace(/<figure class="highlight[^>]*>[\s\S]*?<\/figure>/g, ' ').replace(/<pre[^>]*>[\s\S]*?<\/pre>/g, ' ').replace(/<code[^>]*>[\s\S]*?<\/code>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&(#x2F|#47|#X2F|nbsp|amp|lt|gt|quot);/gi, ent).replace(/[#>*_~|]/g, ' ').replace(/\s+/g, ' ').trim() }
+  - var summaryOf = function(p) { var src = (p.excerpt && p.excerpt.trim()) ? p.excerpt : p.content; return (p.title + ' ' + stripHtml(src)).slice(0, 70) }
+  - var tagName = function(p) { var t = p.tags.toArray(); return (t[0] || {}).name || '' }
+  != page.top
+  if latest
+    a.nova-latest-signal(href=postUrl(latest) aria-label='最新文章：' + latest.title + '，发布于 ' + date(latest.date, 'YYYY-MM-DD'))
+      span LATEST SIGNAL
+      strong= latest.title
+      time= date(latest.date, 'YYYY-MM-DD')
+  != page.mid
+  each post, i in posts
+    - var mod = i === 0 ? 'nova-note-card--lead' : 'nova-note-card--side'
+    div.nova-note-card(class=mod data-href=postUrl(post) role='link' tabindex='0' aria-label='阅读文章：' + post.title)
+      .post_cover
+        a(href=postUrl(post) title=post.title)
+          img.post-bg(src='/img/covers/' + coverFor(post) onerror="this.onerror=null;this.src='/img/404.jpg'" alt=post.title loading='lazy' decoding='async' width='1200' height='900')
+      .recent-post-info
+        a.article-title(href=postUrl(post) title=post.title)= post.title
+        .article-meta-wrap
+          span.post-meta-date
+            i.far.fa-calendar-alt
+            span.article-meta-label 发表于
+            time(datetime=date(post.date, 'YYYY-MM-DD') + 'T00:00:00.000Z' title='发表于 ' + full_date(post.date))= date(post.date, 'YYYY-MM-DD')
+          span.article-meta
+            span.article-meta-separator |
+            i.fas.fa-inbox
+            span.article-meta__categories= tagName(post)
+        .content= summaryOf(post)
+  != page.bottom

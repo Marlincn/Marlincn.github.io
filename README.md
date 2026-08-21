@@ -28,7 +28,7 @@
 - 玫瑰星系粒子画布:尘埃 / 雾气 / 花瓣三类粒子 + 星座连线 + 鼠标吸引,30fps 节流,`prefers-reduced-motion` 降级
 - Hero 打字机副标题、滚动显现动画、LATEST SIGNAL 最新文章卡
 - 全站本地搜索(search.xml,无后端)、PJAX 无刷新导航、访问统计(busuanzi)
-- 9 篇文章(Markdown 写作工作流)+ 文章 / 音乐 / 说说 / 关于 页面;导航:首页 / 文章 / 音乐 / 说说 / 关于
+- 8 篇文章(Markdown 写作工作流)+ 文章 / 音乐 / 说说 / 关于 页面;导航:首页 / 文章 / 音乐 / 说说 / 关于
 - Hero 背景图:深色主题 `night.webp`、浅色主题 `day.webp`(webp 压缩,质量 95)
 - 已移除:鼠标点击粒子迸发、点击浮字、玫瑰绽放花瓣彩蛋、小王子彩蛋、归档/分类/模板/照片板块(见定制记录)
 
@@ -76,7 +76,8 @@ fmt.Println("代码块示例")
 | 字段 | 必填 | 说明 |
 | --- | --- | --- |
 | `title` | 是 | 文章标题,显示在页面、卡片、feed |
-| `date` | 是 | 发布日期,决定文章 URL(`/2026/08/17/标题/`)与排序 |
+| date | 是 | 发布日期,决定文章 URL(/2026/08/17/标题/)与排序 |
+| order | 否 | 首页精选记录排序(小在前);新文章加 order 即可自动上首页,缺省排在最后 |
 | `tags` | 否 | 标签列表,决定归属的标签页(见下) |
 
 **2. 构建:**
@@ -92,7 +93,7 @@ hexo clean && hexo generate
 - 标签页自动更新(已存在则计数 +1;新标签自动建页)
 - `/articles/` 索引、`search.xml`、`sitemap.xml`、`atom.xml` 同步更新
 
-**4. 首页同步(唯一的手工步骤):** 首页的 LATEST SIGNAL 与"精选记录"卡片是静态的,新文章上线后按[首页更新实例](#首页)手动同步。
+**4. 首页自动同步:** 首页 LATEST SIGNAL 与"精选记录"卡片由模板按 `order` 自动生成,新文章加 `order` 后 `hexo generate` 即自动上首页,无需手工编辑页面。
 
 ---
 
@@ -154,7 +155,11 @@ tags:
 
 ### 首页
 
-- 静态 HTML(`source/index.html`),**两处需要手工维护**:
+- 由 hexo 布局渲染(`themes/butterfly/layout/home.pug` + `scripts/home-generator.js`,P2.1 起),**LATEST SIGNAL 与精选记录卡片全部自动生成**,不再手工维护:
+  - LATEST SIGNAL = `order` 最小(排最前)的文章
+  - 精选记录 = 全部文章按 front matter `order` 升序输出(每篇一张卡片)
+  - 卡片摘要 = 标题 + 正文纯文本前 70 字(剔除代码块,实体解码),封面按标签映射(`nova-tags.js` 同规则)
+  - 静态骨架存于 `themes/butterfly/layout/home-parts/{top,mid,bottom}.html`,改动请保持 DOM 结构
 
 **a. LATEST SIGNAL**(hero 内最新文章卡):
 
@@ -164,7 +169,7 @@ tags:
 </a>
 ```
 
-**b. 精选记录**(`nova-featured-grid` 内的 `nova-note-card`,9 张卡片):
+**b. 精选记录**(`nova-featured-grid` 内的 `nova-note-card`,8 张卡片):
 
 ```html
 <div class="nova-note-card nova-note-card--lead" data-href="/2026/08/17/..." role="link" tabindex="0" aria-label="阅读文章：标题">
@@ -232,18 +237,22 @@ Marlin-web/
 ├── _config.butterfly.yml    Butterfly 主题配置(导航/搜索/注入)
 ├── package.json             Hexo 8.1.2 + 插件 + hexo-cli
 ├── scripts/
-│   ├── nova-tags.js         ★ 生成器:标签页/索引/搜索/sitemap/atom
-│   └── inject-theme.js      ★ 文章页首帧主题脚本注入(head_begin)
+│   ├── nova-tags.js         ★ 生成器:标签/索引(layout 渲染)/search/sitemap/atom
+│   ├── home-generator.js    首页生成器(body 骨架 + posts → layout)
+│   ├── page-generator.js    静态页生成器(music/shuoshuo/about/courses/404)
+│   ├── inject-theme.js      文章页首帧主题脚本注入(head_begin)
+│   └── minify.js            ★ 构建后 JS 压缩(esbuild)
 ├── py-tools/                 Python 工具脚本(insert/update_first_frame,hexo 不加载)
-├── nova-templates/          ★ 生成器模板(tag-template / index-template)
 ├── source/                  网站源文件
-│   ├── index.html           首页(静态;LATEST SIGNAL + 精选记录手工维护)
-│   ├── _posts/              9 篇文章 Markdown(front matter: title/date/tags)
+│   ├── _posts/              8 篇文章 Markdown(front matter: title/date/tags/order)
 │   ├── css/ js/ img/        Butterfly 基座资源 + 站点图片(day.webp / night.webp)
 │   ├── rose-galaxy/         ★ nova 定制层(css / js / fonts / img)
-│   ├── music/ about/ shuoshuo/ courses/ 404.html
 │   └── robots.txt           (search/sitemap/atom 由生成器输出,不在 source)
-├── themes/butterfly         Butterfly 主题(由 node_modules 复制,source 已清空防冲突)
+├── themes/butterfly/layout/
+│   ├── base.pug             ★ 基础布局(html + head partial + body)
+│   ├── _partials/           head.pug(统一 head)/helpers.pug(共享函数)
+│   ├── home.pug / tag.pug / tags-index.pug / music.pug / shuoshuo.pug / about.pug / courses.pug / nova-404.pug
+│   └── {home,tag,idx,page}-parts/   各页 body 静态骨架片段
 └── docs/                    预览截图
 ```
 
@@ -267,6 +276,12 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-08-21 | P2.6 构建压缩:esbuild 压缩全部 JS(188KB→99KB);CSS 保留未压缩(避免颜色舍入差异,gzip 已兜底);build 链接入 minify | `package.json`、`scripts/minify.js`(esbuild) |
+| 2026-08-21 | P2.5 URL 编码规范:sitemap loc、标签页 og:url/canonical/LDJSON、相关标签、索引卡片链接全部 encodeURI;补首页/标签页 canonical | `scripts/nova-tags.js`、`layout/tag.pug`、`layout/tags-index.pug`、`layout/home.pug` |
+| 2026-08-21 | P2.2 布局化重构:head 收敛为 `_partials/head.pug`(参数化,9 份→1 份);标签/索引页迁 pug 布局;5 个静态页改布局渲染;删除 nova-templates 占位符模板;域名从 config 读取;版本号全站统一 5.7.0 | `layout/base.pug`、`_partials/`、`layout/*.pug`、`*-parts/`、`scripts/*-generator.js`、`source/`(静态页删) |
+| 2026-08-21 | 首页 build 化(P2.1):删除手工静态首页,改由 hexo 布局渲染;LATEST/精选卡片按文章 order 自动输出;摘要统一 70 字 | `layout/home.pug`、`home-parts/`、`scripts/home-generator.js`、`source/index.html`(删)、`_posts/`(加 order) |
+| 2026-08-21 | P1 内容清理:删红石科技空文章+首页坏 HTML 卡片;变声器删失效本地图引用;绘世卡片摘要修正;站点描述与实际内容一致;删 7MB 冗余资源 15 项 | `_posts/`、`source/index.html`、`source/img/`、`source/bili-music/`(删) |
+| 2026-08-21 | P0 域名修复:全站 deymocn.github.io → marlincn.github.io(72 处/13 文件,含生成器/模板/og/canonical/sitemap/atom/robots) | 全站源码 |
 | 2026-08-19 | 导航当前页高亮:进入各页面时对应菜单标玫瑰色(深 #ce8299 / 浅 #9a6177,与首页"首页"同款),覆盖未滚动/滚动后/hover;JS 按路径匹配(文章含索引页/标签页/详情页),桌面与移动端同步,pjax 自动更新 | `nova-ux.js`、`custom.css` |
 | 2026-08-19 | 首页导航文字:浅色未选中菜单改近黑 #1f1d24(含滚动后),移除 text-shadow;菜单 14/15px→17px、站名 16px→18px(深浅一致) | `nova-home.css` |
 | 2026-08-19 | 首页生活碎片板块文案:进入播放空间→进入音乐、进入日常记录→进入说说 | `index.html` |
