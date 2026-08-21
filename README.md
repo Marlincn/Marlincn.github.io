@@ -276,6 +276,7 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-08-21 | 浅色模式花瓣飘落:删尘埃粒子改花瓣(渐变/3形状/3档色/自转/高光/间歇风/下落缓急,尺寸6-10/40-60片,进入即满屏、重置60%顶部下落);深色模式保持;精选记录布局(板块距大图30px、文字区顶46px底14px、摘要上边距4px、标题与图片距增大);运动自然化(风速-0.02~-0.008/自转±0.0009/摇摆±0.6/下落3.4) | `rose-galaxy/js/galaxy-canvas.js`、`rose-galaxy/css/nova-home.css`、`layout/home-parts/bottom.html`、`layout/home.pug` |
 | 2026-08-21 | 首页粒子迭代:深色适度增强(95-115 玫瑰系+星座连线);浅色重设计——左半屏+右上小区域尘埃,修复根因(粒子创建时按主题定参数,切浅色后不重建导致不可见;主题切换现自动重建)与崩溃(连线 dx/dy/b 未定义);浅色最终为 8105 尘埃样式(浅蓝、30% 星带十字芒、85-110 个、白色连线) | `rose-galaxy/js/galaxy-canvas.js`、`rose-galaxy/css/nova-home.css`、`layout/home-parts/bottom.html`、`layout/home.pug` |
 | 2026-08-21 | P2.6 构建压缩:esbuild 压缩全部 JS(188KB→99KB);CSS 保留未压缩(避免颜色舍入差异,gzip 已兜底);build 链接入 minify | `package.json`、`scripts/minify.js`(esbuild) |
 | 2026-08-21 | P2.5 URL 编码规范:sitemap loc、标签页 og:url/canonical/LDJSON、相关标签、索引卡片链接全部 encodeURI;补首页/标签页 canonical | `scripts/nova-tags.js`、`layout/tag.pug`、`layout/tags-index.pug`、`layout/home.pug` |

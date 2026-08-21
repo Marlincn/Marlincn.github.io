@@ -35,13 +35,13 @@
     { r: 188, g: 166, b: 204 },
   ];
   const LIGHT_STAR_COLORS = [
-    { r: 150, g: 180, b: 225, a: 1 },
-    { r: 140, g: 170, b: 215, a: 0.96 },
-    { r: 160, g: 190, b: 230, a: 0.92 },
+    { r: 150, g: 190, b: 240, a: 1 },
+    { r: 140, g: 180, b: 235, a: 0.96 },
+    { r: 160, g: 200, b: 245, a: 0.92 },
   ];
   const LIGHT_LINK_COLORS = [
-    { r: 130, g: 165, b: 215 },
-    { r: 150, g: 180, b: 225 },
+    { r: 135, g: 175, b: 230 },
+    { r: 155, g: 190, b: 238 },
   ];
   const DARK_GLOW_COLORS = [
     { r: 242, g: 232, b: 233 },
@@ -50,8 +50,13 @@
     { r: 196, g: 176, b: 205 },
   ];
   const LIGHT_GLOW_COLORS = [
-    { r: 145, g: 175, b: 220 },
-    { r: 165, g: 195, b: 235 },
+    { r: 145, g: 180, b: 235 },
+    { r: 165, g: 200, b: 245 },
+  ];
+  const LIGHT_PETAL_COLORS = [
+    { r: 145, g: 38, b: 70 },
+    { r: 168, g: 52, b: 88 },
+    { r: 192, g: 70, b: 108 },
   ];
 
   const scenes = [];
@@ -244,7 +249,7 @@
         if (this.mode === "footer") return Math.round(random(20, 28));
         return Math.round(random(20, 32));
       }
-      if (this.mode === "hero") return isLightTheme() ? Math.round(random(115, 140)) : Math.round(random(95, 115));
+      if (this.mode === "hero") return isLightTheme() ? Math.round(random(40, 60)) : Math.round(random(95, 115));
       if (this.mode === "footer") return Math.round(random(55, 65));
       return Math.round(random(55, 75));
     }
@@ -255,14 +260,17 @@
       return Math.round(random(25, 35));
     }
 
-    pickHeroPosition() {
-      /* 浅色模式: 尘埃粒子只分布在左半屏 + 右上小区域 */
+    pickHeroPosition(initial) {
+      /* 浅色模式: 初始即满屏下落分布; 重置时顶部下落为主(60%) */
       if (isLightTheme()) {
-        const roll = Math.random();
-        if (roll < 0.7) {
-          return { x: random(this.width * 0.02, this.width * 0.48), y: random(this.height * 0.08, this.height * 0.9) };
+        if (initial) {
+          return { x: random(this.width * 0.02, this.width * 0.98), y: random(this.height * 0.03, this.height * 0.97) };
         }
-        return { x: random(this.width * 0.72, this.width * 0.98), y: random(this.height * 0.05, this.height * 0.42) };
+        const roll = Math.random();
+        if (roll < 0.6) {
+          return { x: random(this.width * 0.05, this.width * 0.95), y: random(-this.height * 0.05, this.height * 0.1) };
+        }
+        return { x: random(this.width * 0.02, this.width * 0.98), y: random(this.height * 0.03, this.height * 0.97) };
       }
       const roll = Math.random();
       if (roll < 0.43) {
@@ -280,10 +288,10 @@
     createHeroParticle(index, total) {
       const depth = random(0.42, 1);
       const kindRoll = Math.random();
-      /* 浅色模式: 只应用尘埃粒子 */
-      const kind = isLightTheme() ? "dust" : (kindRoll < 0.07 ? "petal" : (kindRoll < 0.24 ? "haze" : "dust"));
-      const isStar = isLightTheme() && Math.random() < 0.3;
-      const position = this.pickHeroPosition();
+      /* 浅色模式: 花瓣飘落(用已有 petal 绘制); 深色: 尘埃/雾气/花瓣混合 */
+      const kind = isLightTheme() ? "petal" : (kindRoll < 0.07 ? "petal" : (kindRoll < 0.24 ? "haze" : "dust"));
+      const isStar = !isLightTheme() && Math.random() < 0.3;
+      const position = this.pickHeroPosition(true);
       const x = position.x;
       const y = position.y;
 
@@ -297,16 +305,20 @@
         prevX: x,
         prevY: y,
         depth,
-        size: isLightTheme() ? (isStar ? random(1.4, 2.6) : random(0.9, 1.8)) * depth : (kind === "petal" ? random(3.8, 5.7) * depth : (kind === "haze" ? random(2.2, 3.9) : random(1.1, 2.3)) * depth),
-        alpha: isLightTheme() ? random(0.75, 1) : (kind === "petal" ? random(0.28, 0.46) : (kind === "haze" ? random(0.24, 0.42) : random(0.42, 0.76))),
+        petalShape: isLightTheme() ? Math.floor(Math.random() * 3) : 0,
+        petalHue: isLightTheme() ? Math.floor(Math.random() * LIGHT_PETAL_COLORS.length) : 0,
+        vr: isLightTheme() ? random(-0.0009, 0.0009) : 0,
+        size: isLightTheme() ? random(6, 10) * depth : (kind === "petal" ? random(3.8, 5.7) * depth : (kind === "haze" ? random(2.2, 3.9) : random(1.1, 2.3)) * depth),
+        alpha: isLightTheme() ? random(0.75, 0.95) : (kind === "petal" ? random(0.28, 0.46) : (kind === "haze" ? random(0.24, 0.42) : random(0.42, 0.76))),
         phase: (index / total) * Math.PI * 2 + random(-Math.PI, Math.PI),
         verticalSpeed: random(-0.012, 0.018) * depth,
         lightFallSpeed: random(0.008, 0.018) * depth,
-        sway: random(10, 38) * depth,
+        sway: isLightTheme() ? random(6, 16) : random(10, 38) * depth,
         swaySpeed: random(0.00019, 0.00046),
-        breeze: random(-0.006, 0.009),
+        breeze: isLightTheme() ? random(-0.02, -0.008) : random(-0.006, 0.009),
         twinkle: random(0.00125, 0.0034),
-        halo: isLightTheme() ? 2.6 : (kind === "haze" ? random(10, 17) : random(6, 10)),
+        lifeSpeed: 0,
+        halo: kind === "haze" ? random(10, 17) : random(6, 10),
         colorIndex: index % DARK_GLOW_COLORS.length,
         themeSeed: Math.random(),
         linkable: kind !== "petal" && Math.random() < 0.5,
@@ -457,7 +469,7 @@
     }
 
     resetHeroParticle(p) {
-      const position = this.pickHeroPosition();
+      const position = this.pickHeroPosition(false);
       p.baseX = position.x;
       p.baseY = position.y;
       p.x = p.baseX;
@@ -471,12 +483,16 @@
 
     updateHeroParticle(p, time, dt) {
       const light = isLightTheme();
-      const themeMotion = light ? 0.26 : 0.72;
+      /* 浅色: 花瓣飘落(下落为主, 微风轻吹); 深色: 缓慢漂移 */
+      const themeMotion = light ? 3.4 : 0.72;
       p.prevX = p.x;
       p.prevY = p.y;
       const verticalSpeed = light ? p.lightFallSpeed : p.verticalSpeed;
-      p.baseY += verticalSpeed * dt * this.motionScale() * themeMotion;
-      p.baseX += p.breeze * dt * this.motionScale() * themeMotion;
+      /* 浅色: 间歇风 + 下落缓急 */
+      const windWave = light ? 0.65 + 0.35 * Math.sin(time * 0.0009 + p.phase) : 1;
+      const fallWave = light ? 0.8 + 0.4 * Math.sin(time * 0.0011 + p.phase * 2) : 1;
+      p.baseY += verticalSpeed * dt * this.motionScale() * themeMotion * fallWave;
+      p.baseX += p.breeze * dt * this.motionScale() * themeMotion * windWave;
 
       const naturalX = p.baseX + Math.sin(time * p.swaySpeed + p.phase) * p.sway * themeMotion;
       const naturalY = p.baseY + Math.cos(time * p.swaySpeed * 0.72 + p.phase) * p.sway * 0.16 * themeMotion;
@@ -790,11 +806,14 @@
     }
 
     heroParticleVisible(p) {
-      return !isLightTheme() || p.themeSeed < 0.92;
+      /* 浅色花瓣与深色粒子全部显示 */
+      return true;
     }
 
     drawHeroConstellation(time) {
       const light = isLightTheme();
+      /* 浅色为花瓣飘落, 不画连线 */
+      if (light) return;
       const ctx = this.ctx;
       const candidates = this.particles.filter((p) => p.linkable && this.heroParticleVisible(p));
       const linkCount = new Map();
@@ -871,49 +890,58 @@
         const focusBoost = p.focus * (light ? 0.28 : 0.43);
         const alpha = clamp((p.alpha * pulse + focusBoost) * factor, 0.03, light ? 0.92 : 0.86);
 
-        if (light) {
-          /* 8105 尘埃样式: 白色核心 + 外辉光 + 星点十字光 */
-          const tw = 0.7 + 0.3 * Math.sin(time * 0.001 * (p.twinkle * 100) + p.phase + p.x * 0.01);
-          const a = clamp(tw, 0.35, 1) * clamp(p.alpha * factor, 0.03, 1);
-          /* 外辉光 */
-          ctx.globalAlpha = a * 0.4;
-          ctx.fillStyle = rgba(glowColors[p.colorIndex % glowColors.length], 1);
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size * 2.6, 0, Math.PI * 2);
-          ctx.fill();
-          /* 白色内核 */
-          ctx.globalAlpha = a;
-          ctx.fillStyle = rgba(LIGHT_STAR_COLORS[p.colorIndex % LIGHT_STAR_COLORS.length], 1);
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-          /* 星点十字光 */
-          if (p.isStar && p.size > 2.0) {
-            ctx.globalAlpha = a * 0.55;
-            ctx.fillStyle = "rgba(185,210,245,0.9)";
-            const r = p.size * 2.6;
-            ctx.fillRect(p.x - r, p.y - 0.5, r * 2, 1);
-            ctx.fillRect(p.x - 0.5, p.y - r, 1, r * 2);
-          }
-          ctx.globalAlpha = 1;
-          continue;
-        }
-
         if (p.kind === "petal") {
+          /* 花瓣: 深色保持原样; 浅色大幅增强(渐变/3形状/高光/持续自转) */
+          const petalColor = light
+            ? LIGHT_PETAL_COLORS[p.petalHue % LIGHT_PETAL_COLORS.length]
+            : color;
+          const s = p.size;
           ctx.save();
           ctx.translate(p.x, p.y);
-          const breezeTilt = Math.sin(time * p.swaySpeed + p.phase) * 0.7;
-          ctx.rotate(breezeTilt);
-          ctx.strokeStyle = rgba(color, alpha * 0.62);
-          ctx.fillStyle = rgba(color, alpha * 0.12);
-          ctx.lineWidth = Math.max(0.45, p.size * 0.14);
+          const breezeTilt = Math.sin(time * p.swaySpeed + p.phase) * (light ? 0.6 : 0.7);
+          ctx.rotate(breezeTilt + (light ? time * p.vr : 0));
+          ctx.lineWidth = Math.max(0.45, s * 0.14);
+          if (light) {
+            const grad = ctx.createLinearGradient(0, s, 0, -s);
+            grad.addColorStop(0, rgba(petalColor, alpha * 0.88));
+            grad.addColorStop(1, rgba({ r: petalColor.r + 42, g: petalColor.g + 30, b: petalColor.b + 40 }, alpha * 0.6));
+            ctx.fillStyle = grad;
+            ctx.strokeStyle = rgba(petalColor, alpha * 0.8);
+          } else {
+            ctx.fillStyle = rgba(color, alpha * 0.12);
+            ctx.strokeStyle = rgba(color, alpha * 0.62);
+          }
           ctx.beginPath();
-          ctx.moveTo(0, p.size);
-          ctx.bezierCurveTo(-p.size * 0.72, p.size * 0.28, -p.size * 0.7, -p.size * 0.58, -p.size * 0.2, -p.size * 0.78);
-          ctx.quadraticCurveTo(0, -p.size * 0.45, p.size * 0.2, -p.size * 0.78);
-          ctx.bezierCurveTo(p.size * 0.7, -p.size * 0.58, p.size * 0.72, p.size * 0.28, 0, p.size);
+          if (light && p.petalShape === 1) {
+            /* 圆润瓣 */
+            ctx.moveTo(0, s);
+            ctx.bezierCurveTo(-s * 0.82, s * 0.3, -s * 0.78, -s * 0.3, -s * 0.16, -s * 0.6);
+            ctx.quadraticCurveTo(0, -s * 0.36, s * 0.16, -s * 0.6);
+            ctx.bezierCurveTo(s * 0.78, -s * 0.3, s * 0.82, s * 0.3, 0, s);
+          } else if (light && p.petalShape === 2) {
+            /* 细长瓣 */
+            ctx.moveTo(0, s);
+            ctx.bezierCurveTo(-s * 0.46, s * 0.36, -s * 0.5, -s * 0.5, -s * 0.12, -s * 0.86);
+            ctx.quadraticCurveTo(0, -s * 0.55, s * 0.12, -s * 0.86);
+            ctx.bezierCurveTo(s * 0.5, -s * 0.5, s * 0.46, s * 0.36, 0, s);
+          } else {
+            /* 尖瓣(默认, 深色共用) */
+            ctx.moveTo(0, s);
+            ctx.bezierCurveTo(-s * 0.72, s * 0.28, -s * 0.7, -s * 0.58, -s * 0.2, -s * 0.78);
+            ctx.quadraticCurveTo(0, -s * 0.45, s * 0.2, -s * 0.78);
+            ctx.bezierCurveTo(s * 0.7, -s * 0.58, s * 0.72, s * 0.28, 0, s);
+          }
           ctx.fill();
           ctx.stroke();
+          if (light) {
+            /* 中线高光 */
+            ctx.strokeStyle = "rgba(255,240,246,0.4)";
+            ctx.lineWidth = Math.max(0.5, s * 0.1);
+            ctx.beginPath();
+            ctx.moveTo(0, s * 0.28);
+            ctx.quadraticCurveTo(0, 0, 0, -s * 0.55);
+            ctx.stroke();
+          }
           ctx.restore();
           continue;
         }
