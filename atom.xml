@@ -40,18 +40,6 @@
       <name>Marlin</name>
     </author>
     <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://marlincn.github.io/2026/08/17/Markdown 扩展语法/</id>
-    <link href="https://marlincn.github.io/2026/08/17/Markdown 扩展语法/"/>
-    <published>2026-08-17T00:00:00.000Z</published>
-    <summary>构建在 Markdown 基本语法上的扩展功能。 概述 即便 John Gruber 的原始设计文档中所列出的 Markdown 基本语法 已经囊括了许多满足日常所需的元素，但对于</summary>
-    <title>Markdown 扩展语法</title>
-    <updated>2026-08-17T00:00:00.000Z</updated>
-  </entry>
-  <entry>
-    <author>
-      <name>Marlin</name>
-    </author>
-    <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
     <id>https://marlincn.github.io/2026/08/17/Markdown 入门指南/</id>
     <link href="https://marlincn.github.io/2026/08/17/Markdown 入门指南/"/>
     <published>2026-08-17T00:00:00.000Z</published>
@@ -93,6 +81,18 @@
     <published>2026-08-17T00:00:00.000Z</published>
     <summary>一、前置 1.1软件 virtual voice 音频转接 voicemeeter bannana 音频转接 Retrieval-based-Voice-Conversion-We</summary>
     <title>变声器操作记录</title>
+    <updated>2026-08-17T00:00:00.000Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Marlin</name>
+    </author>
+    <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
+    <id>https://marlincn.github.io/2026/08/17/Markdown 扩展语法/</id>
+    <link href="https://marlincn.github.io/2026/08/17/Markdown 扩展语法/"/>
+    <published>2026-08-17T00:00:00.000Z</published>
+    <summary>构建在 Markdown 基本语法上的扩展功能。 概述 即便 John Gruber 的原始设计文档中所列出的 Markdown 基本语法 已经囊括了许多满足日常所需的元素，但对于</summary>
+    <title>Markdown 扩展语法</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
