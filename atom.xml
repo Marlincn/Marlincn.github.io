@@ -40,11 +40,11 @@
       <name>Marlin</name>
     </author>
     <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://marlincn.github.io/2026/08/17/Markdown 实用语法/</id>
-    <link href="https://marlincn.github.io/2026/08/17/Markdown 实用语法/"/>
+    <id>https://marlincn.github.io/2026/08/17/Markdown 基本语法/</id>
+    <link href="https://marlincn.github.io/2026/08/17/Markdown 基本语法/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>本文以Typora作演示书写页面，不能完成的操作切换到源代码模式界面进行（打开\关闭源代码界面： ctrl + / ），在这个界面，你可以一窥端倪 一、段落和字体格式 格式 书写界</summary>
-    <title>Markdown 实用语法</title>
+    <summary>John Gruber 的 Markdown 设计文档中列出的所有 Markdown 元素。 总览 几乎所有 Markdown 应用程序都支持 John Gruber 原始设计文档</summary>
+    <title>Markdown 基本语法</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
@@ -64,11 +64,11 @@
       <name>Marlin</name>
     </author>
     <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://marlincn.github.io/2026/08/17/Markdown 基本语法/</id>
-    <link href="https://marlincn.github.io/2026/08/17/Markdown 基本语法/"/>
+    <id>https://marlincn.github.io/2026/08/17/Markdown 实用语法/</id>
+    <link href="https://marlincn.github.io/2026/08/17/Markdown 实用语法/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>John Gruber 的 Markdown 设计文档中列出的所有 Markdown 元素。 总览 几乎所有 Markdown 应用程序都支持 John Gruber 原始设计文档</summary>
-    <title>Markdown 基本语法</title>
+    <summary>本文以Typora作演示书写页面，不能完成的操作切换到源代码模式界面进行（打开\关闭源代码界面： ctrl + / ），在这个界面，你可以一窥端倪 一、段落和字体格式 格式 书写界</summary>
+    <title>Markdown 实用语法</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
@@ -87,12 +87,12 @@
     <author>
       <name>Marlin</name>
     </author>
-    <category term="杂记" scheme="https://marlincn.github.io/articles/%E6%9D%82%E8%AE%B0/"/>
-    <id>https://marlincn.github.io/2026/08/17/红石科技/</id>
-    <link href="https://marlincn.github.io/2026/08/17/红石科技/"/>
+    <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
+    <id>https://marlincn.github.io/2026/08/17/Markdown 扩展语法/</id>
+    <link href="https://marlincn.github.io/2026/08/17/Markdown 扩展语法/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary></summary>
-    <title>红石科技</title>
+    <summary>构建在 Markdown 基本语法上的扩展功能。 概述 即便 John Gruber 的原始设计文档中所列出的 Markdown 基本语法 已经囊括了许多满足日常所需的元素，但对于</summary>
+    <title>Markdown 扩展语法</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
@@ -105,18 +105,6 @@
     <published>2026-08-17T00:00:00.000Z</published>
     <summary>一、提示词 1.0概念 提示词(tag)：相对独立的词或短语，告诉AI画什么 权重：单独提示词在总提示词中突出的程度，说明主要画什么 采样：采集文字特征，得到清晰图像的过程，不同采</summary>
     <title>绘世 Stable Diffusion</title>
-    <updated>2026-08-17T00:00:00.000Z</updated>
-  </entry>
-  <entry>
-    <author>
-      <name>Marlin</name>
-    </author>
-    <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://marlincn.github.io/2026/08/17/Markdown 扩展语法/</id>
-    <link href="https://marlincn.github.io/2026/08/17/Markdown 扩展语法/"/>
-    <published>2026-08-17T00:00:00.000Z</published>
-    <summary>构建在 Markdown 基本语法上的扩展功能。 概述 即便 John Gruber 的原始设计文档中所列出的 Markdown 基本语法 已经囊括了许多满足日常所需的元素，但对于</summary>
-    <title>Markdown 扩展语法</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
 </feed>
