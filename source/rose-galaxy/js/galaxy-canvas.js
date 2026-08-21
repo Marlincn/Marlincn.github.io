@@ -244,7 +244,7 @@
         if (this.mode === "footer") return Math.round(random(20, 28));
         return Math.round(random(20, 32));
       }
-      if (this.mode === "hero") return isLightTheme() ? Math.round(random(85, 110)) : Math.round(random(95, 115));
+      if (this.mode === "hero") return isLightTheme() ? Math.round(random(115, 140)) : Math.round(random(95, 115));
       if (this.mode === "footer") return Math.round(random(55, 65));
       return Math.round(random(55, 75));
     }
