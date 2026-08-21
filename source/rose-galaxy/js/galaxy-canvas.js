@@ -35,16 +35,13 @@
     { r: 188, g: 166, b: 204 },
   ];
   const LIGHT_STAR_COLORS = [
-    { r: 151, g: 103, b: 122, a: 0.48 },
-    { r: 169, g: 135, b: 158, a: 0.44 },
-    { r: 139, g: 128, b: 171, a: 0.42 },
-    { r: 190, g: 171, b: 183, a: 0.38 },
-    { r: 236, g: 226, b: 221, a: 0.34 },
+    { r: 150, g: 180, b: 225, a: 1 },
+    { r: 140, g: 170, b: 215, a: 0.96 },
+    { r: 160, g: 190, b: 230, a: 0.92 },
   ];
   const LIGHT_LINK_COLORS = [
-    { r: 145, g: 112, b: 129 },
-    { r: 151, g: 137, b: 173 },
-    { r: 184, g: 153, b: 164 },
+    { r: 130, g: 165, b: 215 },
+    { r: 150, g: 180, b: 225 },
   ];
   const DARK_GLOW_COLORS = [
     { r: 242, g: 232, b: 233 },
@@ -53,10 +50,8 @@
     { r: 196, g: 176, b: 205 },
   ];
   const LIGHT_GLOW_COLORS = [
-    { r: 248, g: 243, b: 236 },
-    { r: 232, g: 202, b: 205 },
-    { r: 229, g: 205, b: 177 },
-    { r: 202, g: 194, b: 188 },
+    { r: 145, g: 175, b: 220 },
+    { r: 165, g: 195, b: 235 },
   ];
 
   const scenes = [];
@@ -172,6 +167,7 @@
 
       this.updateTextRects();
       this.buildParticles();
+      window.__novaParticleTheme = document.documentElement.dataset.theme;
       this.draw(performance.now(), false);
     }
 
@@ -197,7 +193,7 @@
     textFactor(x, y) {
       for (const r of this.textRects) {
         if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
-          if (this.mode === "hero") return isLightTheme() ? 0.08 : 0.14;
+          if (this.mode === "hero") return isLightTheme() ? 0.3 : 0.14;
           return 0.62;
         }
       }
@@ -244,11 +240,11 @@
 
     particleTotal() {
       if (isMobile()) {
-        if (this.mode === "hero") return Math.round(random(40, 48));
+        if (this.mode === "hero") return Math.round(random(55, 65));
         if (this.mode === "footer") return Math.round(random(20, 28));
         return Math.round(random(20, 32));
       }
-      if (this.mode === "hero") return Math.round(random(68, 80));
+      if (this.mode === "hero") return isLightTheme() ? Math.round(random(85, 110)) : Math.round(random(95, 115));
       if (this.mode === "footer") return Math.round(random(55, 65));
       return Math.round(random(55, 75));
     }
@@ -260,6 +256,14 @@
     }
 
     pickHeroPosition() {
+      /* 浅色模式: 尘埃粒子只分布在左半屏 + 右上小区域 */
+      if (isLightTheme()) {
+        const roll = Math.random();
+        if (roll < 0.7) {
+          return { x: random(this.width * 0.02, this.width * 0.48), y: random(this.height * 0.08, this.height * 0.9) };
+        }
+        return { x: random(this.width * 0.72, this.width * 0.98), y: random(this.height * 0.05, this.height * 0.42) };
+      }
       const roll = Math.random();
       if (roll < 0.43) {
         return { x: random(this.width * 0.42, this.width * 0.98), y: random(this.height * 0.07, this.height * 0.42) };
@@ -276,13 +280,16 @@
     createHeroParticle(index, total) {
       const depth = random(0.42, 1);
       const kindRoll = Math.random();
-      const kind = kindRoll < 0.055 ? "petal" : (kindRoll < 0.2 ? "haze" : "dust");
+      /* 浅色模式: 只应用尘埃粒子 */
+      const kind = isLightTheme() ? "dust" : (kindRoll < 0.07 ? "petal" : (kindRoll < 0.24 ? "haze" : "dust"));
+      const isStar = isLightTheme() && Math.random() < 0.3;
       const position = this.pickHeroPosition();
       const x = position.x;
       const y = position.y;
 
       return {
         kind,
+        isStar,
         baseX: x,
         baseY: y,
         x,
@@ -290,8 +297,8 @@
         prevX: x,
         prevY: y,
         depth,
-        size: kind === "petal" ? random(3.2, 5) * depth : (kind === "haze" ? random(1.8, 3.4) : random(0.9, 2)) * depth,
-        alpha: kind === "petal" ? random(0.22, 0.38) : (kind === "haze" ? random(0.18, 0.34) : random(0.34, 0.65)),
+        size: isLightTheme() ? (isStar ? random(1.4, 2.6) : random(0.9, 1.8)) * depth : (kind === "petal" ? random(3.8, 5.7) * depth : (kind === "haze" ? random(2.2, 3.9) : random(1.1, 2.3)) * depth),
+        alpha: isLightTheme() ? random(0.75, 1) : (kind === "petal" ? random(0.28, 0.46) : (kind === "haze" ? random(0.24, 0.42) : random(0.42, 0.76))),
         phase: (index / total) * Math.PI * 2 + random(-Math.PI, Math.PI),
         verticalSpeed: random(-0.012, 0.018) * depth,
         lightFallSpeed: random(0.008, 0.018) * depth,
@@ -299,10 +306,10 @@
         swaySpeed: random(0.00019, 0.00046),
         breeze: random(-0.006, 0.009),
         twinkle: random(0.00125, 0.0034),
-        halo: kind === "haze" ? random(8, 14) : random(5, 8.5),
+        halo: isLightTheme() ? 2.6 : (kind === "haze" ? random(10, 17) : random(6, 10)),
         colorIndex: index % DARK_GLOW_COLORS.length,
         themeSeed: Math.random(),
-        linkable: kind !== "petal" && Math.random() < 0.42,
+        linkable: kind !== "petal" && Math.random() < 0.5,
         linkSeed: Math.random(),
         focus: 0,
         attractX: 0,
@@ -481,10 +488,10 @@
         const dx = this.mouse.x - naturalX;
         const dy = this.mouse.y - naturalY;
         const dist = Math.hypot(dx, dy) || 1;
-        const radius = 230;
+        const radius = 250;
         if (dist < radius) {
           const influence = Math.pow(1 - dist / radius, 1.35);
-          const interaction = light ? 0.035 : 0.1;
+          const interaction = light ? 0.04 : 0.12;
           targetAttractX = dx * influence * interaction;
           targetAttractY = dy * influence * interaction;
           targetFocus = influence * (light ? 0.3 : 1);
@@ -783,7 +790,7 @@
     }
 
     heroParticleVisible(p) {
-      return !isLightTheme() || p.themeSeed < 0.62;
+      return !isLightTheme() || p.themeSeed < 0.92;
     }
 
     drawHeroConstellation(time) {
@@ -801,16 +808,17 @@
         const a = candidates[i];
         for (let j = i + 1; j < candidates.length; j += 1) {
           const b = candidates[j];
+          const distMax = light ? 178 : 155;
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const dist = Math.hypot(dx, dy);
-          if (dist > 145) continue;
+          if (dist > distMax) continue;
 
           const mouseDist = Math.min(
             Math.hypot(a.x - this.mouse.x, a.y - this.mouse.y),
             Math.hypot(b.x - this.mouse.x, b.y - this.mouse.y),
           );
-          const nearMouse = mouseActive && mouseDist < 230;
+          const nearMouse = mouseActive && mouseDist < 245;
           if (!nearMouse && Math.abs(a.linkSeed - b.linkSeed) > 0.21) continue;
           if (!nearMouse && a.x < this.width * 0.43 && b.x < this.width * 0.43) continue;
 
@@ -818,12 +826,12 @@
           if ((linkCount.get(a) || 0) >= maxLinks || (linkCount.get(b) || 0) >= maxLinks) continue;
 
           const breathe = 0.64 + Math.sin(time * 0.0012 + a.phase + b.phase) * 0.24;
-          const proximity = 1 - dist / 145;
-          const mouseBoost = nearMouse ? (1 - mouseDist / 230) * 0.12 : 0;
+          const proximity = 1 - dist / distMax;
+          const mouseBoost = nearMouse ? (1 - mouseDist / 245) * 0.14 : 0;
           const factor = Math.min(this.textFactor(a.x, a.y), this.textFactor(b.x, b.y));
-          let alpha = clamp((0.045 + proximity * 0.12 + mouseBoost) * breathe * factor, 0.028, 0.22);
-          if (light) alpha *= 0.18;
-          if (alpha < (light ? 0.005 : 0.024)) continue;
+          let alpha = clamp((0.06 + proximity * 0.15 + mouseBoost) * breathe * factor, 0.04, light ? 0.38 : 0.28);
+          if (light) alpha *= 0.85;
+          if (alpha < (light ? 0.035 : 0.028)) continue;
 
           const colors = light ? LIGHT_LINK_COLORS : LINK_COLORS;
           const color = colors[(i + j) % colors.length];
@@ -832,7 +840,7 @@
           gradient.addColorStop(0.5, rgba(color, alpha));
           gradient.addColorStop(1, rgba(color, alpha * 0.45));
           ctx.strokeStyle = gradient;
-          ctx.lineWidth = light ? 0.46 : (nearMouse ? 0.94 : 0.74);
+          ctx.lineWidth = light ? 1.3 : (nearMouse ? 1.05 : 0.85);
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
@@ -856,20 +864,48 @@
         const factor = this.textFactor(p.x, p.y);
         const lightPetal = light && (p.kind === "petal" || p.themeSeed < 0.14);
         const color = lightPetal
-          ? { r: 218, g: 171, b: 180 }
+          ? { r: 196, g: 122, b: 152 }
           : glowColors[p.colorIndex % glowColors.length];
         const wave = 0.5 + Math.sin(time * p.twinkle + p.phase) * 0.5;
-        const pulse = light ? 0.62 + wave * 0.3 : 0.48 + wave * 0.52;
-        const focusBoost = p.focus * (light ? 0.16 : 0.42);
-        const alpha = clamp((p.alpha * pulse + focusBoost) * factor, 0.024, light ? 0.38 : 0.76);
+        const pulse = light ? 0.72 + wave * 0.3 : 0.5 + wave * 0.52;
+        const focusBoost = p.focus * (light ? 0.28 : 0.43);
+        const alpha = clamp((p.alpha * pulse + focusBoost) * factor, 0.03, light ? 0.92 : 0.86);
 
-        if (p.kind === "petal" || lightPetal) {
+        if (light) {
+          /* 8105 尘埃样式: 白色核心 + 外辉光 + 星点十字光 */
+          const tw = 0.7 + 0.3 * Math.sin(time * 0.001 * (p.twinkle * 100) + p.phase + p.x * 0.01);
+          const a = clamp(tw, 0.35, 1) * clamp(p.alpha * factor, 0.03, 1);
+          /* 外辉光 */
+          ctx.globalAlpha = a * 0.4;
+          ctx.fillStyle = rgba(glowColors[p.colorIndex % glowColors.length], 1);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 2.6, 0, Math.PI * 2);
+          ctx.fill();
+          /* 白色内核 */
+          ctx.globalAlpha = a;
+          ctx.fillStyle = rgba(LIGHT_STAR_COLORS[p.colorIndex % LIGHT_STAR_COLORS.length], 1);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+          /* 星点十字光 */
+          if (p.isStar && p.size > 2.0) {
+            ctx.globalAlpha = a * 0.55;
+            ctx.fillStyle = "rgba(185,210,245,0.9)";
+            const r = p.size * 2.6;
+            ctx.fillRect(p.x - r, p.y - 0.5, r * 2, 1);
+            ctx.fillRect(p.x - 0.5, p.y - r, 1, r * 2);
+          }
+          ctx.globalAlpha = 1;
+          continue;
+        }
+
+        if (p.kind === "petal") {
           ctx.save();
           ctx.translate(p.x, p.y);
-          const breezeTilt = Math.sin(time * p.swaySpeed + p.phase) * (light ? 0.9 : 0.7);
+          const breezeTilt = Math.sin(time * p.swaySpeed + p.phase) * 0.7;
           ctx.rotate(breezeTilt);
-          ctx.strokeStyle = rgba(color, alpha * (light ? 0.3 : 0.62));
-          ctx.fillStyle = rgba(color, alpha * (light ? 0.13 : 0.12));
+          ctx.strokeStyle = rgba(color, alpha * 0.62);
+          ctx.fillStyle = rgba(color, alpha * 0.12);
           ctx.lineWidth = Math.max(0.45, p.size * 0.14);
           ctx.beginPath();
           ctx.moveTo(0, p.size);
@@ -893,9 +929,9 @@
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = rgba(color, alpha * (p.kind === "haze" ? 0.22 : 0.82));
+        ctx.fillStyle = rgba(color, alpha * (p.kind === "haze" ? 0.26 : light ? 0.95 : 0.86));
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * (p.kind === "haze" ? 0.3 : 0.46), 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size * (p.kind === "haze" ? 0.34 : 0.52), 0, Math.PI * 2);
         ctx.fill();
 
         if (!light && p.linkable && wave > 0.87) {
@@ -1031,7 +1067,7 @@
   }
 
   function handleVisibility() {
-    if (!reducedMotionQuery.matches && !isLightTheme() && !document.hidden && !rafId && scenes.length) {
+    if (!reducedMotionQuery.matches && !document.hidden && !rafId && scenes.length) {
       lastFrameTime = 0;
       rafId = window.requestAnimationFrame(loop);
       window.__novaRoseGalaxy.rafId = rafId;
@@ -1050,7 +1086,7 @@
   }
 
   function init() {
-    if (reducedMotionQuery.matches || isLightTheme()) {
+    if (reducedMotionQuery.matches) {
       destroy();
       return;
     }
@@ -1065,6 +1101,13 @@
     destroy();
     setupScenes();
     if (!scenes.length) return;
+    /* 布局延迟: hero 初始可能未布局(尺寸 0), 粒子会挤在 0 尺寸画布。
+       ResizeObserver 在 hero 尺寸就绪时自动重建粒子。 */
+    const heroEl = document.getElementById("hero");
+    if (heroEl && !window.__novaHeroRO) {
+      window.__novaHeroRO = new ResizeObserver(() => resizeAll());
+      window.__novaHeroRO.observe(heroEl);
+    }
     window.__novaRoseGalaxy.running = true;
     lastFrameTime = 0;
     rafId = window.requestAnimationFrame(loop);
@@ -1073,8 +1116,13 @@
 
   const syncTheme = () => {
     if (!window.document?.documentElement) return;
-    if (isLightTheme()) destroy();
-    else init();
+    const theme = document.documentElement.dataset.theme;
+    /* 粒子创建时按 isLightTheme() 定参数; 主题切换后必须重建,
+       否则粒子保持旧主题的小尺寸/低透明度。 */
+    if (window.__novaParticleTheme && window.__novaParticleTheme !== theme) {
+      for (const scene of scenes) scene.resize();
+    }
+    init();
   };
 
   const themeObserver = new MutationObserver((records) => {

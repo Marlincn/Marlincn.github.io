@@ -820,8 +820,10 @@ html[data-theme="light"] body.nova-home-active .nova-hero .nova-latest-signal st
   content:"\00b7";
 }
 html[data-theme="light"] body.nova-home-active .nova-particle-layer .hero-galaxy-canvas{
-  display:none!important;
-  opacity:0!important;
+  display:block!important;
+  opacity:1!important;
+  mix-blend-mode:normal;
+  filter:none;
 }
 html[data-theme="light"] body.nova-home-active #nav{
   color:#1f1d24;
