@@ -66,20 +66,15 @@ function filterShuoshuoList(ctx) {
 }
 
 async function shuoshuoGuard(ctx, next) {
-  const p = typeof ctx.query.path === 'string' ? ctx.query.path : 'none';
-  console.error('[shuoshuo-guard] enter url=' + ctx.url + ' path=' + p);
   try {
     await next();
   } catch (err) {
+    // thinkjs 在 controller 正常完成后抛出 PREVENT_NEXT_PROCESS 终止中间件链, 属预期信号
     if (!err || err.message !== 'PREVENT_NEXT_PROCESS') {
-      console.error('[shuoshuo-guard] error=' + (err && err.message));
       throw err;
     }
-    console.error('[shuoshuo-guard] prevent-caught');
   }
-  console.error('[shuoshuo-guard] body=' + typeof ctx.body + ' data=' + (ctx.body ? typeof ctx.body.data : '-'));
-  const ok = filterShuoshuoList(ctx);
-  console.error('[shuoshuo-guard] filtered=' + ok);
+  filterShuoshuoList(ctx);
 }
 
 module.exports = Application({
