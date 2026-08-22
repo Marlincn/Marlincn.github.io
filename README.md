@@ -227,6 +227,13 @@ tags:
 | `/courses/` | 课程(Phase 2 骨架) | — |
 | `/404.html` | 404 | Butterfly 默认 |
 
+### 评论系统 (Waline)
+
+- 后端:Waline v2 部署于 Vercel(`marlincn-github-io.vercel.app`,仓库 `waline` 分支,3 文件 serverless 模板),数据存 Neon PostgreSQL(免费额度);管理后台 `{serverURL}/ui/`(需注册管理员)
+- 配置:`_config.butterfly.yml` → `comments.use: [Waline]` + `waline.serverURL`;文章/普通页评论由主题渲染(`#post-comment` + `#waline-wrap`),开启评论数(count)
+- 说说/音乐/关于页:body 片段内嵌 Waline 挂载(serverURL 与主题配置一致)
+- 说说页"评论即说说":`shuoshuo.html` 内脚本拉取 `/shuoshuo/` 路径评论动态渲染为说说卡片(按年月分组、最新条带 LATEST、点赞本地 localStorage),留言区发评论自动上墙;旧硬编码说说已清除
+
 ---
 
 ## 项目结构
@@ -276,6 +283,7 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-08-22 | P2.7 评论系统:Waline v2 自建后端(Vercel serverless + Neon PostgreSQL,仓库 waline 分支 → marlincn-github-io.vercel.app);启用主题评论(文章/普通页,评论数);说说/音乐/关于页接入;说说页改"评论即说说"(留言评论动态渲染为说说条目,按月分组/LATEST/本地点赞,清除旧硬编码说说);移除 SECURE_DOMAINS(与相对路径评论冲突) | `_config.butterfly.yml`、`layout/page-parts/{about,shuoshuo,music}.html` |
 | 2026-08-21 | 浅色模式花瓣飘落:删尘埃粒子改花瓣(渐变/3形状/3档色/自转/高光/间歇风/下落缓急,尺寸6-10/40-60片,进入即满屏、重置60%顶部下落);深色模式保持;精选记录布局(板块距大图30px、文字区顶46px底14px、摘要上边距4px、标题与图片距增大);运动自然化(风速-0.02~-0.008/自转±0.0009/摇摆±0.6/下落3.4) | `rose-galaxy/js/galaxy-canvas.js`、`rose-galaxy/css/nova-home.css`、`layout/home-parts/bottom.html`、`layout/home.pug` |
 | 2026-08-21 | 首页粒子迭代:深色适度增强(95-115 玫瑰系+星座连线);浅色重设计——左半屏+右上小区域尘埃,修复根因(粒子创建时按主题定参数,切浅色后不重建导致不可见;主题切换现自动重建)与崩溃(连线 dx/dy/b 未定义);浅色最终为 8105 尘埃样式(浅蓝、30% 星带十字芒、85-110 个、白色连线) | `rose-galaxy/js/galaxy-canvas.js`、`rose-galaxy/css/nova-home.css`、`layout/home-parts/bottom.html`、`layout/home.pug` |
 | 2026-08-21 | P2.6 构建压缩:esbuild 压缩全部 JS(188KB→99KB);CSS 保留未压缩(避免颜色舍入差异,gzip 已兜底);build 链接入 minify | `package.json`、`scripts/minify.js`(esbuild) |

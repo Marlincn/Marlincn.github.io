@@ -95,3 +95,15 @@ aside:
     enable: false
   card_categories:
     enable: false
+
+# ---- 评论系统 (P2.7: Waline v2 后端 + Neon PostgreSQL) ----
+comments:
+  use: [Waline]
+  text: true
+  lazyload: false
+  count: true
+  card_post_count: true
+waline:
+  serverURL: https://marlincn-github-io.vercel.app
+  pageview: false
+  option:
