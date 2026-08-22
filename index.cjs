@@ -66,7 +66,14 @@ function filterShuoshuoList(ctx) {
 }
 
 async function shuoshuoGuard(ctx, next) {
-  await next();
+  try {
+    await next();
+  } catch (err) {
+    // thinkjs 在 controller 正常完成后抛出 PREVENT_NEXT_PROCESS 终止中间件链, 属预期信号
+    if (!err || err.message !== 'PREVENT_NEXT_PROCESS') {
+      throw err;
+    }
+  }
   filterShuoshuoList(ctx);
 }
 
