@@ -81,7 +81,7 @@ default_top_img: /img/leetcode.webp
 
 inject:
   head:
-    - <link rel="stylesheet" href="/css/custom.css?v=20260833-nav">
+    - <link rel="stylesheet" href="/css/custom.css?v=20260833-nav2">
     - <link rel="stylesheet" href="/rose-galaxy/css/night-visitor.css?v=20260813-prince-quotes-v1">
   bottom:
     - <script src="/rose-galaxy/js/nova-ux.js?v=20260817-theme-pref"></script>

@@ -535,7 +535,6 @@ html[data-theme="light"] body.nova-about-route .nova-about-status.nova-about-con
 }
 
 .nova-about-comments .wl-panel {
-  overflow: hidden;
   border: 1px solid var(--about-line);
   border-radius: 16px;
   background: var(--about-card-soft);

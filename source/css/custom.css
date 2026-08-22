@@ -269,7 +269,6 @@ html[data-theme="light"] {
 }
 
 :is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-panel {
-  overflow: hidden;
   border: 1px solid var(--nova-comment-border) !important;
   border-radius: var(--nova-radius-control) !important;
   background: var(--nova-comment-panel) !important;
@@ -1728,3 +1727,12 @@ body.nova-about-route .nova-about-profile {
 }
 
 
+
+
+/* ---- Waline emoji panel: z-index fix (P2.7) ---- */
+#waline-wrap .wl-emoji-popup{
+  z-index:9999!important;
+}
+#waline-wrap .wl-emoji-popup img.wl-emoji{
+  cursor:pointer;
+}
