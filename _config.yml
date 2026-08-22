@@ -97,7 +97,7 @@ theme: butterfly
 deploy:
   type: git
   repo: https://github.com/Marlincn/Marlincn.github.io.git
-  branch: gh-pages
+  branch: public
   ignore_hidden: false
 
 # Local search data file (static search.xml, maintained by hand)

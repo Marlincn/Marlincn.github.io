@@ -770,3 +770,6 @@ html[data-theme="light"] body.nova-shuoshuo-route footer#footer {
     padding: 22px 16px;
   }
 }
+
+/* 说说卡片正文表情图片 */
+.nova-shuoshuo-card-body img{display:inline-block;width:1.6em;height:1.6em;vertical-align:middle;margin:0 2px;background:none;border:none}

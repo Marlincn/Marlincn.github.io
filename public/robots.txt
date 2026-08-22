@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://marlincn.github.io/sitemap.xml

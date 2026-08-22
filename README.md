@@ -283,6 +283,10 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-08-23 | 阅读模式配色改成 marlin-minted 陶土橙系:右侧书籍按钮开启的 `body.read-mode` 下的文章正文(`#article-container`)由玫红改陶土橙(浅色米白 #faf8f4 + #d97757 / 深色蓝黑 #171c2e + #e59b7d);`.read-mode` 补覆盖 `--post-*` 变量使正文真正生效;普通文章页/首页等非阅读模式保持玫红不变。配套 Typora 主题 `marlin-minted-light/dark.css`(编辑器用) | `themes/butterfly/_config.yml`、`source/css/index.css`、`source/css/custom.css`、`nova-ux.js` |
+| 2026-08-23 | 首页加载顺序修复(方案 A):首屏 loading 图案(`MARLIN / LOADING THE NIGHT...`)等 hero 背景图(`night.webp`/`day.webp`)真正加载完成后再淡出,消除"粒子先动、图片后到"的错位;新增 `HOME_BG` `whenHomeBgReady` 守卫 + 3s 兜底,非首页不受影响 | `source/rose-galaxy/js/nova-ux.js` |
+| 2026-08-23 | 部署目标修正:`gh-pages` → `public`(线上 GitHub Pages 实际使用 public 分支;原配置指向不存在的 gh-pages,导致 hexo deploy 推错方向) | `_config.yml`、`.deploy_git` |
+| 2026-08-23 | 文章页精选 & 阅读体验:①关相关推荐(related_post.enable=false);②版权卡片仅保留「文章作者/文章链接」两行,删「版权声明」行(post-copyright__notice);③上一篇/下一篇内容介绍由两行改三行(line-clamp 2→3,超出第三行末尾省略号);④文章相关页(详情页 `#body-wrap.post` + 列表/分类页 `#content-inner.nova-tag-content`)右侧垂直滚动条参考 DSH 加宽(8px、圆角、浅玫瑰 `rgba(190,112,138,.45)` → 悬停深玫瑰 `rgba(164,90,120,.92)`),首页/音乐/说说/课程/关于等版块不变 | `themes/butterfly/_config.yml`、`layout/includes/post/post-copyright.pug`、`source/css/index.css`、`source/css/custom.css` |
 | 2026-08-22 | P2.7 评论系统:Waline v2 自建后端(Vercel serverless + Neon PostgreSQL,仓库 waline 分支 → marlincn-github-io.vercel.app);启用主题评论(文章/普通页,评论数);说说/音乐/关于页接入;说说页改"评论即说说"(留言评论动态渲染为说说条目,按月分组/LATEST/本地点赞,清除旧硬编码说说);移除 SECURE_DOMAINS(与相对路径评论冲突) | `_config.butterfly.yml`、`layout/page-parts/{about,shuoshuo,music}.html` |
 | 2026-08-21 | 浅色模式花瓣飘落:删尘埃粒子改花瓣(渐变/3形状/3档色/自转/高光/间歇风/下落缓急,尺寸6-10/40-60片,进入即满屏、重置60%顶部下落);深色模式保持;精选记录布局(板块距大图30px、文字区顶46px底14px、摘要上边距4px、标题与图片距增大);运动自然化(风速-0.02~-0.008/自转±0.0009/摇摆±0.6/下落3.4) | `rose-galaxy/js/galaxy-canvas.js`、`rose-galaxy/css/nova-home.css`、`layout/home-parts/bottom.html`、`layout/home.pug` |
 | 2026-08-21 | 首页粒子迭代:深色适度增强(95-115 玫瑰系+星座连线);浅色重设计——左半屏+右上小区域尘埃,修复根因(粒子创建时按主题定参数,切浅色后不重建导致不可见;主题切换现自动重建)与崩溃(连线 dx/dy/b 未定义);浅色最终为 8105 尘埃样式(浅蓝、30% 星带十字芒、85-110 个、白色连线) | `rose-galaxy/js/galaxy-canvas.js`、`rose-galaxy/css/nova-home.css`、`layout/home-parts/bottom.html`、`layout/home.pug` |
@@ -340,14 +344,8 @@ Marlin-web/
 
 ## 后续计划
 
-1. **评论功能换成自己的**
-   现在评论用的是 Waline(公共实例,归 Fliex),数据不在自己手里。打算自己部署一套 Waline,评论数据和站点一起管,样式跟网站统一,深浅色都好看。文章页和说说页都能用。
-2. **音乐页升级成专业播放器**
+1. **音乐页升级成专业播放器**
    现在只是收藏夹列表 + 简单播放。要加上完整播放器体验:上一首/下一首、进度条可拖、音量、循环/随机、播放队列;保留现有 B 站收藏夹 + 云函数代理的播放链路,补上封面和歌名;再来点氛围感(歌词、动画、迷你播放条)。
-3. **新增"工程"板块**
+2. **新增"工程"板块**
    建一个工程页面,展示自己做的项目,和文章、音乐、说说并列。维护方式跟文章一样——写个 md 文件就行,自动生成卡片,不用手改页面。
-4. **文章页新增阅读主题**
-   给文章阅读页claude风格主题,让长文读起来更舒适。
-5. ~~整理堆积的代码~~ (已完成)
-   P2.2 布局化重构已完成主要清理:head 样板 9 份收敛为 1 份(`_partials/head.pug`)、删除 nova-templates 占位符模板、静态页全部布局化、版本号统一 5.7.0。
 

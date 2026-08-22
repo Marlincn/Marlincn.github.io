@@ -1,15 +1,17 @@
-# 部署指引(GitHub Pages + Cloudflare Worker)
+# 部署指引(GitHub Pages)
 
 ## 结构
 
 ```
 仓库 marlincn/marlincn.github.io
 ├── main 分支    = 本站源码(本目录;public/、node_modules/ 不入库)
-└── gh-pages 分支 = 构建产物(hexo generate 输出,hexo deployer-git 自动推送)
+├── public 分支  = 构建产物(hexo generate 输出,hexo deployer-git 自动推送)← GitHub Pages 使用此分支
+└── waline 分支  = 评论后端(Waline serverless 模板,Vercel)
 ```
 
 站点:https://marlincn.github.io/
-B 站音乐试验页:https://marlincn.github.io/bili-music/(需配合 Cloudflare Worker 代理)
+
+> ⚠️ 注意:线上 GitHub Pages 使用 **public** 分支。`_config.yml` 的 `deploy.branch` 必须为 `public`(曾误配为 `gh-pages`,该分支线上不存在,导致 deploy 推错方向),`.deploy_git` 的分支与 merge 也须指向 `public`。
 
 ## 一、GitHub 侧(需要你的账号,一次性)
 
@@ -19,14 +21,14 @@ B 站音乐试验页:https://marlincn.github.io/bili-music/(需配合 Cloudflare
    git remote add origin https://github.com/marlincn/marlincn.github.io.git
    git push -u origin main
    ```
-3. 仓库 Settings → Pages → Build and deployment → Source 选 "Deploy from a branch" → Branch 选 `gh-pages` / `/ (root)` → Save。
+3. 仓库 Settings → Pages → Build and deployment → Source 选 "Deploy from a branch" → Branch 选 `public` / `/ (root)` → Save。
 
 ## 二、构建与部署(以后每次更新站点)
 
 ```bash
 hexo clean && hexo generate && hexo deploy
 ```
-`hexo deploy` 会把 `public/` 推送到 gh-pages 分支,Pages 自动生效。
+`hexo deploy` 会把 `public/` 推送到 public 分支,Pages 自动生效。
 (第一次 push 会提示输入 GitHub 账号/令牌;HTTPS 推送到 GitHub 建议用 Personal Access Token 作为密码。)
 
 ## 三、Cloudflare Worker(B 站音乐代理,免费)

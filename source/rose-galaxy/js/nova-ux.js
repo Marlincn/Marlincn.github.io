@@ -7,6 +7,11 @@
   const INITIAL_MIN_DURATION = 150
   const INITIAL_MAX_DURATION = 2000
   const EXIT_DURATION = 180
+  // 首页 hero 背景图(深色 night.webp / 浅色 day.webp):loading 需等其渲染完成再退场,
+  // 否则首屏会"粒子先动、图片后到"。最长等待 HOME_BG_MAX_WAIT 兜底防弱网卡死。
+  const HOME_BG = { dark: '/img/night.webp', light: '/img/day.webp' }
+  const HOME_BG_MAX_WAIT = 3000
+  let homeBgReady = false
   const ROUTE_CLASSES = [
     'nova-home-active',
     'nova-music-route',
@@ -96,7 +101,39 @@
     searchObserver = null
   }
 
+  // 等待首页 hero 背景图加载完成(方案 A)。仅首页生效;非首页立即回调。
+  // 用真实 <img> 预加载当前主题背景图,onload 后才让 loading 退场;
+  // 超过 HOME_BG_MAX_WAIT 也回调,防弱网/失败卡死在 loading。
+  let homeBgWaitScheduled = false
+  function whenHomeBgReady(cb) {
+    if (homeBgReady || !isHomePage()) {
+      cb()
+      return
+    }
+    if (homeBgWaitScheduled) return
+    homeBgWaitScheduled = true
+
+    const theme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
+    const src = HOME_BG[theme]
+    const img = new Image()
+    const done = () => {
+      homeBgReady = true
+      cb()
+    }
+    img.onload = done
+    img.onerror = done
+    img.src = src
+    // 兜底:无论加载成败,最长等 HOME_BG_MAX_WAIT 后放行,避免弱网卡 loading
+    window.setTimeout(done, HOME_BG_MAX_WAIT)
+  }
+
   function finishInitialLoading() {
+    // 首页首屏:先等 hero 背景图渲染完成,再让 loading 退场,
+    // 避免"粒子先动、图片后到"的错位。非首页或已完成则直接进入退场。
+    if (!homeBgReady && isHomePage()) {
+      whenHomeBgReady(finishInitialLoading)
+      return
+    }
     window.clearTimeout(window.__novaLoaderDelayTimer)
     window.__novaLoaderDelayTimer = 0
     const loader = document.querySelector('[data-nova-loading]')

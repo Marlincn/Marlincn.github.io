@@ -1736,3 +1736,42 @@ body.nova-about-route .nova-about-profile {
 #waline-wrap .wl-emoji-popup img.wl-emoji{
   cursor:pointer;
 }
+
+/* ---- 文章相关页右侧滚动条 (P2.8):参考 DSH 宽度,圆角,浅玫瑰->悬停深玫瑰 ----
+   覆盖范围:
+     . 文章详情页    => #body-wrap.post
+     . 文章列表/分类页 => #content-inner.nova-tag-content(仅 articles 系列使用)
+   首页/说说/音乐/课程/关于 等版块不命中,保持原细滚动条。
+   注意:不要与 scrollbar-width/scrollbar-color(标准属性)混用,否则
+   Chrome 会忽略 ::-webkit-scrollbar 的宽度定制。 */
+body:has(#body-wrap.post,
+        #content-inner.nova-tag-content)::-webkit-scrollbar{
+  width:8px;
+  height:8px;
+}
+body:has(#body-wrap.post,
+        #content-inner.nova-tag-content)::-webkit-scrollbar-thumb{
+  background: rgba(190,112,138,.45);
+  border-radius:4px;
+}
+body:has(#body-wrap.post,
+        #content-inner.nova-tag-content)::-webkit-scrollbar-thumb:hover{
+  background: rgba(164,90,120,.92);
+}
+body:has(#body-wrap.post,
+        #content-inner.nova-tag-content)::-webkit-scrollbar-track{
+  background-color:transparent;
+  border-radius:4px;
+}
+body:has(#body-wrap.post,
+        #content-inner.nova-tag-content)::-webkit-scrollbar-corner{
+  background-color:transparent;
+}
+/* Firefox 不支持 ::-webkit-scrollbar,用标准属性(宽度只能 auto/thin) */
+@-moz-document url-prefix(){
+  body:has(#body-wrap.post,
+          #content-inner.nova-tag-content){
+    scrollbar-width:auto;
+    scrollbar-color: rgba(190,112,138,.45) transparent;
+  }
+}
