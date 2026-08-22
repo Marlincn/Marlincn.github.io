@@ -665,6 +665,17 @@ const asideStatus = saveToLocal.get('aside-status')
 
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
   const stripHtml = s => { const d = document.createElement('div'); d.innerHTML = s || ''; return d.textContent || '' }
+  /* 说说正文: 保留表情图片, 其余 HTML 转文本, 并清除 img 事件属性防 XSS */
+  const cleanComment = s => {
+    const d = document.createElement('div')
+    d.innerHTML = s || ''
+    d.querySelectorAll('img').forEach(im => { im.removeAttribute('onerror'); im.removeAttribute('onload'); im.removeAttribute('onclick') })
+    d.querySelectorAll('*').forEach(el => {
+      if (el.tagName === 'IMG') return
+      el.replaceWith(document.createTextNode(el.textContent || ' '))
+    })
+    return d.innerHTML
+  }
   const pad = n => String(n).padStart(2, '0')
   const fmtDate = d => d.getFullYear() + '.' + pad(d.getMonth() + 1) + '.' + pad(d.getDate())
 
@@ -701,7 +712,7 @@ const asideStatus = saveToLocal.get('aside-status')
           '<header class="nova-shuoshuo-card-head"><time datetime="' + new Date(c.time).toISOString() + '"><b>' + fmtDate(d) + '</b><span>' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + '</span></time>' +
           (list[0] === c ? '<span class="nova-shuoshuo-latest-mark">LATEST</span>' : '') +
           '</header>' +
-          '<div class="nova-shuoshuo-card-body">' + esc(stripHtml(c.comment)) + '</div>' +
+          '<div class="nova-shuoshuo-card-body">' + cleanComment(c.comment) + '</div>' +
           '<footer class="nova-shuoshuo-card-meta"><span>' + esc(c.nick || '匿名') + '</span></footer>' +
           '<button class="nova-shuoshuo-like" type="button" data-storage-key="nova-shuoshuo-liked-' + c.objectId + '" data-base-count="' + (c.like || 0) + '" aria-label="喜欢这条说说" aria-pressed="false"><span aria-hidden="true">♡</span><b>' + (c.like || 0) + '</b></button>'
         flow.appendChild(card)
@@ -752,13 +763,16 @@ const asideStatus = saveToLocal.get('aside-status')
   }
 
   const loadMoments = () => {
-    fetch(serverURL + '/api/comment?path=/shuoshuo/')
+    fetch(serverURL + '/api/comment?path=/shuoshuo/&moments=1')
       .then(r => r.json())
       .then(j => {
-        /* Waline path 查询返回分页对象: data.data 为评论数组 */
-        const list = (j && j.data && Array.isArray(j.data.data))
+        /* Waline path 查询返回分页对象: data.data 为评论数组;
+           moments=1 时后端只返回管理员评论(说说), 匿名评论留在留言区 */
+        let list = (j && j.data && Array.isArray(j.data.data))
           ? j.data.data
           : (Array.isArray(j.data) ? j.data : [])
+        /* 双保险: 仅登录用户(管理员)的评论上墙为说说 */
+        list = list.filter(c => c && c.user_id)
         renderMoments(list)
       })
       .catch(() => {})
