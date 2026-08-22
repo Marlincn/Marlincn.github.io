@@ -1,0 +1,15 @@
+{
+  "name": "waline",
+  "private": true,
+  "dependencies": {
+    "@waline/vercel": "latest"
+  },
+  "trustedDependencies": [
+    "better-sqlite3",
+    "core-js-pure"
+  ],
+  "allowScripts": {
+    "better-sqlite3": true,
+    "core-js-pure": true
+  }
+}
