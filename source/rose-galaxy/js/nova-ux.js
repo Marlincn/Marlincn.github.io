@@ -6,7 +6,10 @@
 
   const INITIAL_MIN_DURATION = 150
   const INITIAL_MAX_DURATION = 2000
-  const EXIT_DURATION = 180
+  const EXIT_DURATION = 480
+  // 首页首屏 loading 最小展示时长:即使内容/背景图已就绪,loading 也至少展示这么久,
+  // 避免"一闪而过"显得不稳定。退场时同时满足"已展示 ≥ INITIAL_MIN_SHOW" 与"背景图 ready"。
+  const INITIAL_MIN_SHOW = 400
   // 首页 hero 背景图(深色 night.webp / 浅色 day.webp):loading 需等其渲染完成再退场,
   // 否则首屏会"粒子先动、图片后到"。最长等待 HOME_BG_MAX_WAIT 兜底防弱网卡死。
   const HOME_BG = { dark: '/img/night.webp', light: '/img/day.webp' }
@@ -128,11 +131,19 @@
   }
 
   function finishInitialLoading() {
-    // 首页首屏:先等 hero 背景图渲染完成,再让 loading 退场,
-    // 避免"粒子先动、图片后到"的错位。非首页或已完成则直接进入退场。
-    if (!homeBgReady && isHomePage()) {
-      whenHomeBgReady(finishInitialLoading)
-      return
+    // 首页首屏:退场须同时满足 ①背景图渲染完成 ②已展示 ≥ INITIAL_MIN_SHOW 最小时长,
+    // 否则会"粒子先动、图片后到"或"loading 一闪而过"。非首页直接进入退场。
+    if (isHomePage()) {
+      const shownFor = Date.now() - (Number(window.__novaLoaderVisibleAt) || 0)
+      const minNotMet = shownFor < INITIAL_MIN_SHOW
+      if (!homeBgReady) {
+        whenHomeBgReady(finishInitialLoading)
+        return
+      }
+      if (minNotMet) {
+        window.setTimeout(finishInitialLoading, INITIAL_MIN_SHOW - shownFor)
+        return
+      }
     }
     window.clearTimeout(window.__novaLoaderDelayTimer)
     window.__novaLoaderDelayTimer = 0
@@ -506,6 +517,31 @@
     applyTimeTheme()
     scheduleThemeTick()
   }
+
+  // 方案3:首页加载时,用浏览器原生 <link rel="prefetch"> 预取导航的其他页 HTML。
+  // 只预取一级导航页(文章/音乐/说说/关于),不预取子页;浏览器空闲时进行,不阻塞首屏。
+  // 预取资源进入 HTTP 缓存,用户跳转时加载更快、避免未渲染界面。
+  const NAV_PREFETCH = ['/articles/', '/music/', '/shuoshuo/', '/about/']
+  function prefetchNavPages() {
+    if (!isHomePage()) return
+    const run = () => {
+      if (document.hidden) return
+      NAV_PREFETCH.forEach(href => {
+        if (href === location.pathname) return
+        if (document.querySelector(`link[rel="prefetch"][href="${href}"]`)) return
+        const link = document.createElement('link')
+        link.rel = 'prefetch'
+        link.href = href
+        link.as = 'document'
+        document.head.appendChild(link)
+      })
+    }
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(run, { timeout: 3000 })
+    } else {
+      window.setTimeout(run, 800)
+    }
+  }
   window.addEventListener('visibilitychange', () => {
     if (!document.hidden) applyTimeTheme()
   })
@@ -513,6 +549,7 @@
 
   initInitialLoading()
   initThemeSchedule()
+  prefetchNavPages()
   if (document.readyState !== 'loading') {
     enhanceSearch()
     initRightsideEnhancement()

@@ -283,6 +283,7 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-08-23 | 首页 loading 强化 + 动画优化:①首屏 loading 改为立即显示(去顶部 1200ms 延迟,避免被 DOMContentLoaded 提前取消致一闪而过);②新增最小展示时长 `INITIAL_MIN_SHOW=400`(退场须同时满足背景图 ready 且展示≥400ms);③loading 退场改整体渐隐淡出(480ms)+ MARLIN 内容先 260ms 淡出;④首页空闲时用 `<link rel="prefetch" as="document">` 预取导航其他页(`/articles/`、`/music/`、`/shuoshuo/`、`/about/`,不预取子页),跳转更快 | `themes/butterfly/layout/home-parts/top.html`、`source/rose-galaxy/js/nova-ux.js`、`source/css/custom.css` |
 | 2026-08-23 | 阅读模式配色改成 marlin-minted 陶土橙系:右侧书籍按钮开启的 `body.read-mode` 下的文章正文(`#article-container`)由玫红改陶土橙(浅色米白 #faf8f4 + #d97757 / 深色蓝黑 #171c2e + #e59b7d);`.read-mode` 补覆盖 `--post-*` 变量使正文真正生效;普通文章页/首页等非阅读模式保持玫红不变。配套 Typora 主题 `marlin-minted-light/dark.css`(编辑器用) | `themes/butterfly/_config.yml`、`source/css/index.css`、`source/css/custom.css`、`nova-ux.js` |
 | 2026-08-23 | 首页加载顺序修复(方案 A):首屏 loading 图案(`MARLIN / LOADING THE NIGHT...`)等 hero 背景图(`night.webp`/`day.webp`)真正加载完成后再淡出,消除"粒子先动、图片后到"的错位;新增 `HOME_BG` `whenHomeBgReady` 守卫 + 3s 兜底,非首页不受影响 | `source/rose-galaxy/js/nova-ux.js` |
 | 2026-08-23 | 部署目标修正:`gh-pages` → `public`(线上 GitHub Pages 实际使用 public 分支;原配置指向不存在的 gh-pages,导致 hexo deploy 推错方向) | `_config.yml`、`.deploy_git` |

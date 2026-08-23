@@ -348,10 +348,10 @@ body.nova-loading-active {
   justify-content: center;
   visibility: hidden;
   opacity: 0;
+  /* 柔和深蓝玫瑰氛围(避免纯黑死板):中心偏亮,带环境光 */
   background:
-    radial-gradient(circle at 50% 42%,rgba(92,39,57,.1) 0%,rgba(10,16,28,.98) 36%,#050912 78%);
-  transform: scale(1.01);
-  transition: opacity 180ms ease, visibility 0s linear 180ms, transform 180ms ease;
+    radial-gradient(circle at 50% 40%, rgba(120,58,84,.22) 0%, rgba(14,20,34,.94) 40%, #0a0f1e 82%);
+  transition: opacity 180ms ease, visibility 0s linear 180ms;
   pointer-events: none;
   isolation: isolate;
 }
@@ -359,16 +359,15 @@ body.nova-loading-active {
 .nova-page-loading.is-visible {
   visibility: visible;
   opacity: 1;
-  transform: scale(1);
-  transition: opacity 160ms ease, transform 160ms ease;
+  transition: opacity 220ms ease;
   pointer-events: auto;
 }
 
+/* 退场:整体渐隐淡出,让下方页面平滑浮现 */
 .nova-page-loading.is-leaving {
   visibility: hidden;
   opacity: 0;
-  transform: scale(.995);
-  transition: opacity 180ms ease, visibility 0s linear 180ms, transform 180ms ease;
+  transition: opacity 480ms ease, visibility 0s linear 480ms;
   pointer-events: none;
 }
 
@@ -381,13 +380,13 @@ body.nova-loading-active {
   flex-direction: column;
   text-align: center;
   opacity: 1;
-  transform: scale(1);
-  transition: opacity 180ms ease, transform 180ms ease;
+  transition: opacity 220ms ease;
 }
 
+/* 退场时 MARLIN 内容先快速淡出,避免标记残留 */
 .nova-page-loading.is-leaving .nova-page-loading__inner {
   opacity: 0;
-  transform: translateY(-2px) scale(.985);
+  transition: opacity 260ms ease;
 }
 
 .nova-page-loading__mark {
