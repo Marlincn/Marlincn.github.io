@@ -16,7 +16,15 @@
       return
     }
     window.__novaLoaderBootstrapped = true
-    // 首屏 loading:立即显示(不等延迟),保证确定出现;时长下限由 nova-ux.js 控制
+    // 以 __novaLoadingShown 为唯一基准:仅"从网站首次进入"(本次会话第一次)显示;
+    // 之后整页刷新/返回首页都读到此标志 → 跳过显示并移除,避免再次弹 loading。
+    // 标志的写入统一由 nova-ux.js 的 initInitialLoading 负责,这里只读不写,避免双重判定冲突。
+    let alreadyShown = false
+    try { alreadyShown = sessionStorage.getItem('__novaLoadingShown') === '1' } catch (_) {}
+    if (alreadyShown) {
+      loader?.remove()
+      return
+    }
     if (!loader.isConnected || loader.dataset.novaLoadingState === 'leaving') return
     window.__novaLoaderVisibleAt = Date.now()
     loader.dataset.novaLoadingState = 'visible'

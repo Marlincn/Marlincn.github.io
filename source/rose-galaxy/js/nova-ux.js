@@ -195,6 +195,19 @@
   }
 
   function initInitialLoading() {
+    // 只在"从网站首次进入"时显示 loading(本次会话第一次);
+    // 之后站内 PJAX 回首页不再弹。用 sessionStorage 记录本次会话已显示。
+    let alreadyShown = false
+    try { alreadyShown = sessionStorage.getItem('__novaLoadingShown') === '1' } catch (_) {}
+    if (alreadyShown) {
+      // 非首次:清理可能残留的 loading,直接放行
+      const stale = document.querySelector('[data-nova-loading]')
+      if (stale) stale.remove()
+      document.body.classList.remove('nova-loading-active')
+      return
+    }
+    try { sessionStorage.setItem('__novaLoadingShown', '1') } catch (_) {}
+
     const loader = getLoader()
     loader.classList.remove('is-leaving')
     if (loader.classList.contains('is-visible')) {
