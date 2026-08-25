@@ -1,4 +1,4 @@
-# Butterfly theme config - reconstructed from the Marlin static build.
+﻿# Butterfly theme config - reconstructed from the Marlin static build.
 # Phase 1: static pages (source/) do not consume this file; it documents the
 # original theme settings so generated pages (posts, archives) match later.
 # Phase 2 will complete/verify every key against the original site.
@@ -77,7 +77,7 @@ display_mode: dark
 
 # 文章页统一背景图:marlin 参考站 go语法总结 同款 leetcode.webp,同位置
 # (header 400px, background center/cover, 暗色遮罩),2026-08-17
-default_top_img: /img/leetcode.webp
+default_top_img: /img/fenlei.webp
 
 inject:
   head:

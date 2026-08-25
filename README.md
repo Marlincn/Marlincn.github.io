@@ -283,6 +283,7 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-08-23 | 页面 hero 背景图更换(webp):音乐页背景换为 IMG_20260825_121749(转 webp);文章一级页 hero 换 fenlei.webp、二级页 hero 换 leetcode.webp(原 tech-mysql);文章三级页(default_top_img)背景换 fenlei.webp(与一级页统一);fliex 素材图源。统一 cover 展示、舍弃工程页试验代码 | `source/img/`、`_config.butterfly.yml`、`themes/butterfly/layout/idx-parts/top.html`、`tag-parts/top.html` |
 | 2026-08-23 | 首页 loading 改为"仅从网站首次进入时弹一次":此前首屏 loading 在站内 PJAX 返回首页/整页刷新时会重复弹出;引入会话级标志 `sessionStorage.__novaLoadingShown`,由 `nova-ux.js` 统一负责读/写判定,`top.html` 内联脚本只读该标志并据此决定是否显示,消除两处判定冲突。首次进入弹一次,返回首页/刷新不弹 | `themes/butterfly/layout/home-parts/top.html`、`source/rose-galaxy/js/nova-ux.js` |
 | 2026-08-23 | 首页 loading 强化 + 动画优化:①首屏 loading 改为立即显示(去顶部 1200ms 延迟,避免被 DOMContentLoaded 提前取消致一闪而过);②新增最小展示时长 `INITIAL_MIN_SHOW=400`(退场须同时满足背景图 ready 且展示≥400ms);③loading 退场改整体渐隐淡出(480ms)+ MARLIN 内容先 260ms 淡出;④首页空闲时用 `<link rel="prefetch" as="document">` 预取导航其他页(`/articles/`、`/music/`、`/shuoshuo/`、`/about/`,不预取子页),跳转更快 | `themes/butterfly/layout/home-parts/top.html`、`source/rose-galaxy/js/nova-ux.js`、`source/css/custom.css` |
 | 2026-08-23 | 阅读模式配色改成 marlin-minted 陶土橙系:右侧书籍按钮开启的 `body.read-mode` 下的文章正文(`#article-container`)由玫红改陶土橙(浅色米白 #faf8f4 + #d97757 / 深色蓝黑 #171c2e + #e59b7d);`.read-mode` 补覆盖 `--post-*` 变量使正文真正生效;普通文章页/首页等非阅读模式保持玫红不变。配套 Typora 主题 `marlin-minted-light/dark.css`(编辑器用) | `themes/butterfly/_config.yml`、`source/css/index.css`、`source/css/custom.css`、`nova-ux.js` |

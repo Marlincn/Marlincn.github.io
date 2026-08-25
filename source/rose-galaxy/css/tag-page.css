@@ -365,3 +365,9 @@ html[data-theme="light"] .nova-tags-card {
     display: none;
   }
 }
+
+/* 文章二级页 hero:背景图 cover 铺满,适当裁切(与一级页一致)。仅命中二级页,强化无差异。 */
+body.nova-tag-route:not(.nova-tags-route) #page-header.nova-tag-hero {
+  background-size: cover !important;
+  background-position: center 50% !important;
+}
