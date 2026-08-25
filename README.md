@@ -283,6 +283,7 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-08-26 | 新增"工程"板块(/projects/):5 个工程(单片机 3 + 建模 2);hero 背景用自定义图(转 webp q80,`/img/projects-hero.webp`);概览条(项目/分类/标签/WIP 自动统计);卡片排版参考 KurTips 课程列表(封面大图+标题+简介+日期/分类页脚,平铺 3 列网格),点卡片打开原生 dialog 详情(完整描述/标签/GitHub、嘉立创、下载按钮,牛头刨床 11 项资料用 details 折叠);数据快照自 deymo-site portfolio info.json(描述原文)+ manifest(下载清单),维护只需改 `scripts/projects-data.js` 与放封面 webp;全站导航加"工程"(config menu + 8 个 *-parts 硬编码菜单 ×2 处 + pjax 排除 8 处 + nova-ux 路由类/routeMarkers) | `scripts/projects-data.js`、`scripts/projects-generator.js`、`layout/projects.pug`、`layout/project-parts/top.html`、`source/rose-galaxy/css/projects-page.css`、`source/rose-galaxy/js/projects-page.js`、`source/img/projects/`、`source/img/projects-hero.webp`、`_config.butterfly.yml`、`layout/{idx,tag,home}-parts/{top,bottom}.html`、`layout/page-parts/{music,shuoshuo,about,courses,404}.html`、`source/rose-galaxy/js/nova-ux.js` |
 | 2026-08-23 | 页面 hero 背景图更换(webp):音乐页背景换为 IMG_20260825_121749(转 webp);文章一级页 hero 换 fenlei.webp、二级页 hero 换 leetcode.webp(原 tech-mysql);文章三级页(default_top_img)背景换 fenlei.webp(与一级页统一);fliex 素材图源。统一 cover 展示、舍弃工程页试验代码 | `source/img/`、`_config.butterfly.yml`、`themes/butterfly/layout/idx-parts/top.html`、`tag-parts/top.html` |
 | 2026-08-23 | 首页 loading 改为"仅从网站首次进入时弹一次":此前首屏 loading 在站内 PJAX 返回首页/整页刷新时会重复弹出;引入会话级标志 `sessionStorage.__novaLoadingShown`,由 `nova-ux.js` 统一负责读/写判定,`top.html` 内联脚本只读该标志并据此决定是否显示,消除两处判定冲突。首次进入弹一次,返回首页/刷新不弹 | `themes/butterfly/layout/home-parts/top.html`、`source/rose-galaxy/js/nova-ux.js` |
 | 2026-08-23 | 首页 loading 强化 + 动画优化:①首屏 loading 改为立即显示(去顶部 1200ms 延迟,避免被 DOMContentLoaded 提前取消致一闪而过);②新增最小展示时长 `INITIAL_MIN_SHOW=400`(退场须同时满足背景图 ready 且展示≥400ms);③loading 退场改整体渐隐淡出(480ms)+ MARLIN 内容先 260ms 淡出;④首页空闲时用 `<link rel="prefetch" as="document">` 预取导航其他页(`/articles/`、`/music/`、`/shuoshuo/`、`/about/`,不预取子页),跳转更快 | `themes/butterfly/layout/home-parts/top.html`、`source/rose-galaxy/js/nova-ux.js`、`source/css/custom.css` |
@@ -349,6 +350,5 @@ Marlin-web/
 
 1. **音乐页升级成专业播放器**
    现在只是收藏夹列表 + 简单播放。要加上完整播放器体验:上一首/下一首、进度条可拖、音量、循环/随机、播放队列;保留现有 B 站收藏夹 + 云函数代理的播放链路,补上封面和歌名;再来点氛围感(歌词、动画、迷你播放条)。
-2. **新增"工程"板块**
-   建一个工程页面,展示自己做的项目,和文章、音乐、说说并列。维护方式跟文章一样——写个 md 文件就行,自动生成卡片,不用手改页面。
+2. **新增"工程"板块** ✅ 2026-08-26 完成:见上方历史记录,`/projects/` 由 `scripts/projects-generator.js` + `layout/projects.pug` 渲染,维护只需改 `scripts/projects-data.js`(封面转 webp 放 `source/img/projects/`)。
 

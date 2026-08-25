@@ -1,0 +1,450 @@
+/* Projects overview (工程页):复用 tag-page.css 的 hero/概览条/配色体系。
+   卡片排版参考 KurTips 课程列表:封面大图 + 标题 + 简介 + 日期/分类页脚;
+   详情(源码/资料下载/标签)放点击打开的 dialog 弹窗。 */
+
+body.nova-tag-route main.nova-projects-overview {
+  min-height: 60vh;
+}
+
+/* ---- 卡片网格(面板容器复用 .nova-tags-index 样式,这里扩宽/加大内边距) ---- */
+.nova-tags-index.nova-projects-index {
+  width: min(1300px, calc(100% - 64px));
+  padding: 34px 34px 26px;
+}
+
+.nova-projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 26px;
+}
+
+.nova-project-card {
+  display: flex;
+  min-width: 0;
+  overflow: hidden;
+  flex-direction: column;
+  border: 1px solid rgba(224, 194, 210, .09);
+  border-radius: 18px;
+  background: linear-gradient(145deg, rgba(16, 23, 43, .82), rgba(11, 18, 35, .78));
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .15);
+  cursor: pointer;
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+
+.nova-project-card:hover,
+.nova-project-card:focus-visible {
+  transform: translateY(-3px);
+  border-color: rgba(205, 105, 143, .28);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .22);
+  outline: none;
+}
+
+.nova-project-cover {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+  background: #0c1323;
+}
+
+.nova-project-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(8, 12, 27, .03), rgba(8, 12, 27, .26));
+}
+
+.nova-project-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(.82) saturate(.88) contrast(1.03);
+  transition: transform .35s ease;
+}
+
+.nova-project-card:hover .nova-project-cover img {
+  transform: scale(1.04);
+}
+
+.nova-project-body {
+  display: flex;
+  padding: 20px 24px 18px;
+  flex: 1;
+  flex-direction: column;
+}
+
+.nova-project-body h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: var(--nova-tag-text);
+  font: 500 19px/1.5 "Noto Serif SC", "Songti SC", serif;
+  letter-spacing: .02em;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.nova-project-desc {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 10px 0 16px;
+  color: var(--nova-tag-secondary);
+  font-size: 13.5px;
+  line-height: 1.8;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.nova-project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-top: auto;
+  color: var(--nova-tag-muted);
+  font-size: 12.5px;
+  letter-spacing: .02em;
+}
+
+.nova-project-meta-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nova-project-meta-live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--nova-tag-accent);
+  box-shadow: 0 0 0 4px rgba(205, 105, 143, .12);
+}
+
+.nova-projects-hint {
+  margin: 26px 0 0;
+  color: var(--nova-tag-muted);
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-align: center;
+}
+
+/* ---- 详情弹窗 ---- */
+.nova-project-modal {
+  width: min(760px, calc(100vw - 40px));
+  max-height: min(86vh, 900px);
+  padding: 0;
+  overflow: hidden auto;
+  border: 1px solid rgba(224, 194, 210, .16);
+  border-radius: 22px;
+  color: var(--nova-tag-text);
+  background: linear-gradient(160deg, #101830, #0a1220);
+  box-shadow: 0 34px 90px rgba(0, 0, 0, .5);
+}
+
+.nova-project-modal::backdrop {
+  background: rgba(4, 7, 16, .68);
+  backdrop-filter: blur(7px);
+}
+
+.nova-project-modal__close {
+  position: sticky;
+  z-index: 2;
+  top: 14px;
+  float: right;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  margin: 14px 14px 0 0;
+  place-items: center;
+  border: 1px solid rgba(224, 194, 210, .2);
+  border-radius: 50%;
+  color: var(--nova-tag-secondary);
+  background: rgba(8, 13, 27, .72);
+  backdrop-filter: blur(4px);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease;
+}
+
+.nova-project-modal__close:hover {
+  color: var(--nova-tag-text);
+  border-color: rgba(205, 105, 143, .4);
+}
+
+.nova-project-modal__cover {
+  display: block;
+  width: 100%;
+  max-height: 42vh;
+  overflow: hidden;
+  background: #0c1323;
+}
+
+.nova-project-modal__cover img {
+  display: block;
+  width: 100%;
+  max-height: 42vh;
+  object-fit: cover;
+}
+
+.nova-project-modal__body {
+  display: block;
+  padding: 22px 28px 28px;
+}
+
+.nova-project-modal__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px 12px;
+  color: var(--nova-tag-muted);
+  font-size: 11px;
+}
+
+.nova-project-modal__meta span {
+  color: var(--nova-tag-slate);
+  letter-spacing: .08em;
+}
+
+.nova-project-modal__body h3 {
+  margin: 10px 0 0;
+  color: var(--nova-tag-text);
+  font: 500 22px/1.45 "Noto Serif SC", "Songti SC", serif;
+}
+
+.nova-project-modal__body > p {
+  margin: 12px 0 0;
+  color: var(--nova-tag-secondary);
+  font-size: 13.5px;
+  line-height: 1.85;
+}
+
+.nova-project-modal__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.nova-project-modal__tags span {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border: 1px solid var(--nova-tag-line);
+  border-radius: 999px;
+  color: var(--nova-tag-secondary);
+  background: rgba(255, 255, 255, .035);
+  font-size: 10px;
+}
+
+.nova-project-modal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(224, 194, 210, .1);
+}
+
+.nova-project-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 15px;
+  border: 1px solid var(--nova-tag-line);
+  border-radius: 999px;
+  color: var(--nova-tag-secondary);
+  background: rgba(255, 255, 255, .035);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: .06em;
+  cursor: pointer;
+  transition: color .2s ease, border-color .2s ease, background .2s ease;
+}
+
+.nova-project-btn i {
+  font-style: normal;
+  color: var(--nova-tag-accent);
+  font-size: 10px;
+  line-height: 1;
+}
+
+.nova-project-btn:hover {
+  color: var(--nova-tag-text);
+  border-color: rgba(205, 105, 143, .32);
+  background: rgba(197, 99, 137, .08);
+}
+
+.nova-project-modal__resources {
+  margin-top: 22px;
+}
+
+.nova-project-modal__resources summary {
+  cursor: pointer;
+  user-select: none;
+}
+
+.nova-project-modal__resources summary::-webkit-details-marker {
+  display: none;
+}
+
+.nova-project-modal__resources summary i {
+  transition: transform .2s ease;
+}
+
+.nova-project-modal__resources[open] summary i {
+  transform: rotate(180deg);
+}
+
+.nova-project-modal__resources ul {
+  display: grid;
+  width: 100%;
+  margin: 12px 0 0;
+  padding: 0;
+  gap: 6px;
+  list-style: none;
+}
+
+.nova-project-modal__resources li a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 13px;
+  border: 1px solid rgba(224, 194, 210, .08);
+  border-radius: 10px;
+  color: var(--nova-tag-secondary);
+  font-size: 11.5px;
+  transition: background .2s ease, color .2s ease;
+}
+
+.nova-project-modal__resources li a span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nova-project-modal__resources li a small {
+  flex-shrink: 0;
+  color: var(--nova-tag-muted);
+  font-size: 9.5px;
+}
+
+.nova-project-modal__resources li a:hover {
+  color: var(--nova-tag-text);
+  background: rgba(197, 99, 137, .07);
+}
+
+/* ---- light 主题 ---- */
+html[data-theme="light"] .nova-project-card {
+  border-color: rgba(75, 62, 83, .08);
+  background: rgba(255, 255, 255, .88);
+  box-shadow: 0 14px 34px rgba(53, 43, 62, .1);
+}
+
+html[data-theme="light"] .nova-project-card:hover,
+html[data-theme="light"] .nova-project-card:focus-visible {
+  border-color: rgba(179, 83, 119, .26);
+  box-shadow: 0 18px 42px rgba(53, 43, 62, .14);
+}
+
+html[data-theme="light"] .nova-project-cover {
+  background: #ece9ee;
+}
+
+html[data-theme="light"] .nova-project-modal {
+  border-color: rgba(75, 62, 83, .12);
+  background: linear-gradient(160deg, #ffffff, #f6f3f8);
+  box-shadow: 0 34px 90px rgba(53, 43, 62, .24);
+}
+
+html[data-theme="light"] .nova-project-modal::backdrop {
+  background: rgba(28, 24, 36, .42);
+}
+
+html[data-theme="light"] .nova-project-modal__close {
+  border-color: rgba(75, 62, 83, .16);
+  background: rgba(255, 255, 255, .8);
+}
+
+html[data-theme="light"] .nova-project-modal__tags span {
+  border-color: rgba(75, 62, 83, .12);
+  background: rgba(75, 62, 83, .04);
+}
+
+html[data-theme="light"] .nova-project-modal__actions {
+  border-top-color: rgba(75, 62, 83, .09);
+}
+
+html[data-theme="light"] .nova-project-btn {
+  border-color: rgba(75, 62, 83, .14);
+  background: rgba(255, 255, 255, .6);
+}
+
+html[data-theme="light"] .nova-project-btn:hover {
+  border-color: rgba(179, 83, 119, .34);
+  background: rgba(179, 83, 119, .07);
+}
+
+html[data-theme="light"] .nova-project-modal__resources li a {
+  border-color: rgba(75, 62, 83, .09);
+}
+
+html[data-theme="light"] .nova-project-modal__resources li a:hover {
+  background: rgba(179, 83, 119, .07);
+}
+
+/* ---- 响应式 ---- */
+@media (max-width: 1180px) {
+  .nova-tags-index.nova-projects-index {
+    width: calc(100% - 40px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .nova-projects-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .nova-tags-index.nova-projects-index {
+    width: calc(100% - 28px);
+    margin-top: 28px;
+    padding: 20px 18px;
+  }
+}
+
+@media (max-width: 640px) {
+  .nova-projects-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .nova-project-modal {
+    width: calc(100vw - 24px);
+  }
+
+  .nova-project-modal__body {
+    padding: 18px 18px 22px;
+  }
+
+  .nova-project-modal__body h3 {
+    font-size: 19px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nova-project-card,
+  .nova-project-cover img {
+    transition: none !important;
+  }
+
+  .nova-project-card:hover,
+  .nova-project-card:focus-visible,
+  .nova-project-card:hover .nova-project-cover img {
+    transform: none !important;
+  }
+}

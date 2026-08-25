@@ -1,0 +1,40 @@
+extends ./base.pug
+
+block headOpts
+  - page.bodyClass = 'nova-tag-route nova-projects-route'
+  - page.headOpts = { title: '工程 | Marlin', siteTitle: '工程', description: '单片机与建模的动手实录：从开源复刻到课程设计。', ogUrl: siteUrl + '/projects/', pageType: 'page', extraCss: '<link href="/rose-galaxy/css/projects-page.css?v=20260826-projects-v2" rel="stylesheet" data-nova-projects-style="">', extraHead: page.ldjson }
+
+block content
+  != page.idxTop
+  section.nova-tag-summary.nova-projects-summary(aria-label='工程概览')
+    each cell, i in page.stats
+      div
+        strong= cell.value
+        span= cell.en
+        small= cell.zh
+  section.nova-tags-index.nova-projects-index#nova-projects-index(aria-label='工程列表')
+    header
+      span PROJECT COLLECTION
+      h2 工程列表
+      p 按卡片浏览全部工程实践记录。
+    div.nova-projects-grid
+      each p, i in page.projects
+        article.nova-project-card(data-project=p.id role='button' tabindex='0' aria-label='查看 ' + p.title + ' 详情')
+          div.nova-project-cover
+            img(src=p.cover alt=p.title width=p.coverW height=p.coverH loading='lazy' decoding='async' onerror="this.onerror=null;this.src='/img/404.jpg'")
+          div.nova-project-body
+            h3= p.title
+            p.nova-project-desc= p.description
+            div.nova-project-meta
+              if p.date
+                time= p.date
+              else
+                span.nova-project-meta-live 持续更新中
+              span.nova-project-meta-sep(aria-hidden='true') ·
+              span= p.subtitle || p.category
+    p.nova-projects-hint 点击卡片查看详情、源码与资料下载。
+  script(type='application/json' id='nova-projects-payload')!= page.projectsJson
+  dialog.nova-project-modal#nova-project-modal(aria-label='工程详情')
+  script(data-pjax='' src='/rose-galaxy/js/projects-page.js?v=20260826-projects-v1' defer='')
+  | </main>
+  != page.idxBottom

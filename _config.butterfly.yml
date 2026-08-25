@@ -1,4 +1,4 @@
-﻿# Butterfly theme config - reconstructed from the Marlin static build.
+# Butterfly theme config - reconstructed from the Marlin static build.
 # Phase 1: static pages (source/) do not consume this file; it documents the
 # original theme settings so generated pages (posts, archives) match later.
 # Phase 2 will complete/verify every key against the original site.
@@ -13,6 +13,7 @@ nav:
 menu:
   首页: /
   文章: /articles/
+  工程: /projects/
   音乐: /music/
   说说: /shuoshuo/
   关于: /about/
