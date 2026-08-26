@@ -1371,12 +1371,8 @@ html[data-theme="light"] #body-wrap.post #pagination .pagination-related {
 
 /* Navigation dropdown */
 
-/* Remove the theme's hover underline (3px bar under nav items): on high-DPI
-   screens it reads as a red frame and makes the item look taller than its
-   neighbours. Hover feedback stays as a color change only. */
-#nav .site-page:not(.child)::after {
-  display: none !important;
-}
+/* 导航悬停下划线滑动效果(主题默认): ::after 下划线 width 0 -> 100% 滑动,
+   颜色沿用主题(玫瑰系)。2026-08-27 按要求重新开启。 */
 
 /* Unify nav font size across all routes (theme default 0.78em renders
    16-17px on some pages; homepage fixed 14px). */

@@ -3,7 +3,7 @@ extends ./base.pug
 block headOpts
   - page.bodyClass = 'nova-project-detail-route'
   - var detailUrl = encodeURI(siteUrl + '/projects/' + page.projectId + '/')
-  - page.headOpts = { title: '工程: ' + page.title + ' | Marlin', siteTitle: '工程: ' + page.title, description: page.description, ogUrl: detailUrl, canonical: detailUrl, ogTitle: page.title, pageType: 'page', extraCss: '<link href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v14" rel="stylesheet" data-nova-project-detail-style="">' }
+  - page.headOpts = { title: '工程: ' + page.title + ' | Marlin', siteTitle: '工程: ' + page.title, description: page.description, ogUrl: detailUrl, canonical: detailUrl, ogTitle: page.title, pageType: 'page', extraCss: '<link href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v16" rel="stylesheet" data-nova-project-detail-style="">' }
 
 block content
   div#sidebar
@@ -121,7 +121,9 @@ block content
                         li= item
                   - else
                     p= block.text
-            h2.nova-project-detail-actions-title 工程地址
+            h2.nova-project-detail-actions-title
+              i.fas.fa-link.fa-fw(aria-hidden='true')
+              span 工程链接
             div.nova-project-detail-actions
               if page.link
                 a.nova-project-detail-btn(href=page.link target='_blank' rel='noopener')
@@ -132,7 +134,7 @@ block content
                   i.fas.fa-puzzle-piece.fa-fw
                   span= page.link2Label || '更多信息'
               if !page.link && !page.link2
-                span.nova-project-detail-btn.nova-project-detail-btn--placeholder 地址整理中
+                span.nova-project-detail-btn.nova-project-detail-btn--placeholder 链接整理中
             if page.downloads && page.downloads.length
               h2.nova-project-detail-dl-title
                 i.fas.fa-download.fa-fw(aria-hidden='true')
