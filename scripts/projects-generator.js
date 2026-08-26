@@ -51,6 +51,7 @@ hexo.extend.generator.register('nova-projects', function () {
     subtitle: p.subtitle,
     date: p.date,
     description: p.description,
+    intro: p.intro || '',
     tags: p.tags,
     link: p.link,
     linkLabel: p.linkLabel || 'GitHub',
@@ -72,16 +73,19 @@ hexo.extend.generator.register('nova-projects', function () {
     { value: 'WIP', en: 'IN PROGRESS', zh: '持续更新中' }
   ]
 
-  return {
-    path: 'projects/index.html',
-    layout: 'projects',
-    data: {
-      stats: stats,
-      projects: prepared,
-      projectsJson: JSON.stringify(prepared),
-      ldjson: projectLdjson(),
-      idxTop: PROJECT_TOP,
-      idxBottom: IDX_BOTTOM
+  const files = [
+    {
+      path: 'projects/index.html',
+      layout: 'projects',
+      data: {
+        stats: stats,
+        projects: prepared,
+        ldjson: projectLdjson(),
+        idxTop: PROJECT_TOP,
+        idxBottom: IDX_BOTTOM
+      }
     }
-  }
+  ]
+
+  return files
 })

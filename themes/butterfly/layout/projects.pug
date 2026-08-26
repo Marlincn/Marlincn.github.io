@@ -19,7 +19,8 @@ block content
       p 按卡片浏览全部工程实践记录。
     div.nova-projects-grid
       each p, i in page.projects
-        article.nova-project-card(data-project=p.id role='button' tabindex='0' aria-label='查看 ' + p.title + ' 详情')
+        - var cardHref = p.link || p.link2 || (p.downloads.length ? p.downloads[0].href : '/projects/')
+        a.nova-project-card(href=cardHref target='_blank' rel='noopener' aria-label='前往 ' + p.title + ' 的源码或资料')
           div.nova-project-cover
             img(src=p.cover alt=p.title width=p.coverW height=p.coverH loading='lazy' decoding='async' onerror="this.onerror=null;this.src='/img/404.jpg'")
           div.nova-project-body
@@ -32,9 +33,5 @@ block content
                 span.nova-project-meta-live 持续更新中
               span.nova-project-meta-sep(aria-hidden='true') ·
               span= p.subtitle || p.category
-    p.nova-projects-hint 点击卡片查看详情、源码与资料下载。
-  script(type='application/json' id='nova-projects-payload')!= page.projectsJson
-  dialog.nova-project-modal#nova-project-modal(aria-label='工程详情')
-  script(data-pjax='' src='/rose-galaxy/js/projects-page.js?v=20260826-projects-v1' defer='')
   | </main>
   != page.idxBottom
