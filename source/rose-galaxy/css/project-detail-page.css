@@ -6,6 +6,17 @@ body.nova-project-detail-route {
   --pd-accent: #cd6990;            /* 本站玫瑰色(深色主题) */
 }
 
+/* 详情页 footer: 背景图 cover 且不重复, 消除"横幅上下重复两层" */
+body.nova-project-detail-route footer#footer {
+  background: url(/img/guidang.webp) center bottom / cover no-repeat #080c17;
+  color: #bcb5bf;
+}
+
+html[data-theme="light"] body.nova-project-detail-route footer#footer {
+  background: url(/img/guidang.webp) center bottom / cover no-repeat #d5d4de;
+  color: #514c59;
+}
+
 .nova-project-detail {
   width: min(1120px, calc(100% - 64px));
   margin: 46px auto 60px;
@@ -254,6 +265,37 @@ html[data-theme="light"] .nova-project-detail-list li > a:focus-visible {
 html[data-theme="light"] .nova-project-detail-list img {
   background: #ece9ee;
   filter: brightness(.98) saturate(.96);
+}
+
+/* ---- 评论区块(参照文章页结构) ---- */
+.nova-project-detail-comments {
+  width: min(1120px, calc(100% - 64px));
+  margin: 50px auto 70px;
+}
+
+.nova-project-detail-comments .comment-headline {
+  margin-bottom: 14px;
+  color: var(--nova-tag-text);
+  font: 600 18px/1.6 "Noto Serif SC", "Songti SC", serif;
+  letter-spacing: .05em;
+}
+
+.nova-project-detail-comments .comment-headline i {
+  margin-right: 8px;
+  color: var(--nova-tag-accent, #cd6990);
+}
+
+@media (max-width: 1180px) {
+  .nova-project-detail-comments {
+    width: calc(100% - 40px);
+  }
+}
+
+@media (max-width: 768px) {
+  .nova-project-detail-comments {
+    width: calc(100% - 28px);
+    margin: 34px auto 46px;
+  }
 }
 
 /* ---- 响应式 ---- */
