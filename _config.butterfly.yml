@@ -84,7 +84,9 @@ inject:
   head:
     - <link rel="stylesheet" href="/css/custom.css?v=20260833-nav2">
     - <link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v16">
+    - <link rel="stylesheet" href="/rose-galaxy/css/nova-player.css?v=20260827-mini-player-v1">
     - <link rel="stylesheet" href="/rose-galaxy/css/night-visitor.css?v=20260813-prince-quotes-v1">
+    - <script defer src="/rose-galaxy/js/nova-player.js?v=20260827-mini-player-v2"></script>
   bottom:
     - <script src="/rose-galaxy/js/nova-ux.js?v=20260817-theme-pref"></script>
     - <script src="/rose-galaxy/js/night-visitor.js?v=20260813-prince-quotes-v1"></script>

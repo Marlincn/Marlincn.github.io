@@ -1,15 +1,15 @@
+/* =============================================================
+   Nova Music Page UI (2026-08-27 重构)
+   - 播放核心上移 window.__novaPlayer(全局单例, 跨页常驻)
+   - 本文件仅负责音乐页 UI: 卡片渲染/进度/上一首下一首/键盘
+   - 通过 player.subscribe() 桥接全局状态
+   ============================================================= */
 (function () {
   "use strict";
 
-  if (window.__novaMusicBootstrap) {
-    window.__novaMusicBootstrap.init();
-    return;
-  }
-
-  // ===== 配置:腾讯云函数代理 + B 站收藏夹 =====
-  const BILI_PROXY = "https://1470690781-6b1hcscil5.ap-guangzhou.tencentscf.com"; // 云函数地址
-  const BILI_UID = "3546712446601247"; // B 站 UID
-  const BILI_FOLDER = "music"; // 收藏夹名
+  const BILI_PROXY = "https://1470690781-6b1hcscil5.ap-guangzhou.tencentscf.com";
+  const BILI_UID = "3546712446601247";
+  const BILI_FOLDER = "music";
 
   const visualImages = [
     "/img/music1.webp",
@@ -29,27 +29,18 @@
   function preloadVisualImage(image) {
     if (loadedVisualImages.has(image)) return Promise.resolve(image);
     if (pendingVisualImages.has(image)) return pendingVisualImages.get(image);
-
     const request = new Promise((resolve, reject) => {
       const loader = new Image();
       loader.decoding = "async";
       loader.onload = async () => {
-        try {
-          await loader.decode?.();
-        } catch (_) {
-          // The decoded image is still usable when decode() is unsupported or interrupted.
-        }
+        try { await loader.decode?.(); } catch (_) {}
         loadedVisualImages.add(image);
         pendingVisualImages.delete(image);
         resolve(image);
       };
-      loader.onerror = () => {
-        pendingVisualImages.delete(image);
-        reject(new Error(`Nova music: failed to preload ${image}`));
-      };
+      loader.onerror = () => { pendingVisualImages.delete(image); reject(new Error(`Nova music: failed to preload ${image}`)); };
       loader.src = image;
     });
-
     pendingVisualImages.set(image, request);
     return request;
   }
@@ -60,7 +51,6 @@
     image.width = 640;
     image.height = 960;
     image.decoding = "async";
-
     if (currentSource === source) {
       image.loading = isCurrent ? "eager" : "lazy";
       if (!isCurrent) image.removeAttribute("fetchpriority");
@@ -68,25 +58,18 @@
       else image.addEventListener("load", () => loadedVisualImages.add(source), { once: true });
       return;
     }
-
-    // 换图:旧图淡出,新图就绪后淡入
     image.loading = isCurrent ? "eager" : "lazy";
     image.removeAttribute("fetchpriority");
     const target = loadedVisualImages.has(source) ? source : previewImage(source);
     image.classList.add("nova-card-img-swap");
     image.src = target;
-    void image.offsetWidth; // 强制应用 opacity:0,作为过渡起点
-    const reveal = () => {
-      if (image.dataset.src === source) image.classList.remove("nova-card-img-swap");
-    };
+    void image.offsetWidth;
+    const reveal = () => { if (image.dataset.src === source) image.classList.remove("nova-card-img-swap"); };
     if (image.complete && image.naturalWidth) requestAnimationFrame(reveal);
     else image.addEventListener("load", reveal, { once: true });
-
     if (!isCurrent && !shouldPreload) return;
     preloadVisualImage(source)
-      .then(loadedSource => {
-        if (image.dataset.src === loadedSource) image.src = loadedSource;
-      })
+      .then(loadedSource => { if (image.dataset.src === loadedSource) image.src = loadedSource; })
       .catch(error => console.warn(error.message));
   }
 
@@ -94,37 +77,19 @@
     const source = image?.dataset.src;
     if (!source || loadedVisualImages.has(source)) return;
     preloadVisualImage(source)
-      .then(loadedSource => {
-        if (image.dataset.src === loadedSource) image.src = loadedSource;
-      })
+      .then(loadedSource => { if (image.dataset.src === loadedSource) image.src = loadedSource; })
       .catch(error => console.warn(error.message));
-  }
-
-  function normalizeIndex(index, length) {
-    return length ? ((index % length) + length) % length : 0;
   }
 
   function formatTime(seconds) {
     if (!Number.isFinite(seconds) || seconds < 0) return "00:00";
-    const minutes = Math.floor(seconds / 60);
-    const rest = Math.floor(seconds % 60).toString().padStart(2, "0");
-    return `${minutes}:${rest}`;
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
   }
 
   function createMusicPageController(root) {
-    const state = {
-      root,
-      audio: null,
-      songs: [],
-      currentIndex: 0,
-      lastRenderedIndex: undefined,
-      loadAbort: null,
-      objectUrls: new Set(),
-      listeners: [],
-      timer: 0,
-      destroyed: false,
-    };
-
+    const player = window.__novaPlayer;
     const els = {
       title: root.querySelector(".nova-music-current-title"),
       artist: root.querySelector(".nova-music-current-artist"),
@@ -141,17 +106,21 @@
       cards: [...root.querySelectorAll(".nova-music-card")],
     };
 
+    const listeners = [];
     const on = (target, type, handler, options) => {
       target?.addEventListener(type, handler, options);
-      if (target) state.listeners.push(() => target.removeEventListener(type, handler, options));
+      listeners.push(() => target?.removeEventListener(type, handler, options));
     };
 
     const songName = song => song?.name || song?.title || "未命名歌曲";
     const songArtist = song => song?.artist || song?.author || "未知歌手";
     const songCover = (song, index) => song?.cover || song?.pic || visualImages[normalizeIndex(index, visualImages.length)];
 
+    function normalizeIndex(index, length) {
+      return length ? ((index % length) + length) % length : 0;
+    }
+
     function showLoadingState() {
-      window.clearTimeout(state.timer);
       els.title.textContent = "歌单载入中";
       els.artist.textContent = `B站收藏夹 · ${BILI_FOLDER}`;
       if (els.retry) els.retry.hidden = true;
@@ -164,13 +133,14 @@
     }
 
     function renderCurrentSong() {
-      const song = state.songs[state.currentIndex];
+      const snap = player.state;
+      const song = snap.song;
       if (!song) return;
       const name = songName(song);
       const artist = songArtist(song);
       els.title.textContent = name;
       els.artist.textContent = artist;
-      const cover = songCover(song, state.currentIndex);
+      const cover = songCover(song, snap.currentIndex);
       if (els.cover) {
         const hasSquarePlaylistCover = Boolean(song?.cover || song?.pic);
         els.cover.src = cover;
@@ -178,22 +148,28 @@
         els.cover.height = hasSquarePlaylistCover ? 640 : 960;
         els.cover.alt = `${name} - ${artist}`;
       }
-      els.count.textContent = `共 ${state.songs.length} 首 · 当前第 ${state.currentIndex + 1} 首`;
-      if (els.notesCount) els.notesCount.textContent = `${state.songs.length} TRACKS`;
-      state.root.classList.toggle("is-playing", Boolean(state.audio && !state.audio.paused));
-      els.toggle.textContent = state.audio && !state.audio.paused ? "Ⅱ" : "▶";
-      els.toggle.setAttribute("aria-label", state.audio && !state.audio.paused ? "暂停" : "播放");
+      els.count.textContent = `共 ${snap.songs.length} 首 · 当前第 ${snap.currentIndex + 1} 首`;
+      if (els.notesCount) els.notesCount.textContent = `${snap.songs.length} TRACKS`;
+      root.classList.toggle("is-playing", snap.playing);
+      const toggleIcon = els.toggle.querySelector("i");
+      if (toggleIcon) {
+        toggleIcon.className = snap.playing ? "fas fa-pause" : "fas fa-play";
+      } else {
+        els.toggle.textContent = snap.playing ? "Ⅱ" : "▶";
+      }
+      els.toggle.setAttribute("aria-label", snap.playing ? "暂停" : "播放");
     }
 
     function renderVisibleCards() {
-      const total = state.songs.length;
+      const snap = player.state;
+      const total = snap.songs.length;
       els.cards.forEach((card, slot) => {
         const previousIndex = card.dataset.songIndex;
-        const index = normalizeIndex(state.currentIndex + visibleOffsets[slot], total);
-        const song = state.songs[index];
+        const index = normalizeIndex(snap.currentIndex + visibleOffsets[slot], total);
+        const song = snap.songs[index];
         const name = songName(song);
         const artist = songArtist(song);
-        const image = songCover(song, index); // B站视频封面优先,回退本地视觉图
+        const image = songCover(song, index);
         card.dataset.songIndex = String(index);
         card.setAttribute("aria-label", slot === 2 ? `${name}，播放或暂停` : `播放 ${name} - ${artist}`);
         card.toggleAttribute("aria-current", slot === 2);
@@ -203,7 +179,6 @@
         card.querySelector("strong").textContent = slot === 2 ? name : "";
         card.querySelector("small").textContent = slot === 2 ? artist : "";
         if (slot === 2 && previousIndex !== String(index)) {
-          // 主卡切换:呼吸放大(remove+reflow+add 支持连续快速切换重启动画)
           card.classList.remove("nova-card-pop");
           void card.offsetWidth;
           card.classList.add("nova-card-pop");
@@ -213,8 +188,9 @@
     }
 
     function updateProgress() {
-      const current = Number.isFinite(state.audio?.currentTime) ? state.audio.currentTime : 0;
-      const duration = Number.isFinite(state.audio?.duration) ? state.audio.duration : 0;
+      const snap = player.state;
+      const current = Number.isFinite(snap.currentTime) ? snap.currentTime : 0;
+      const duration = Number.isFinite(snap.duration) ? snap.duration : 0;
       els.currentTime.textContent = formatTime(current);
       els.duration.textContent = formatTime(duration);
       const value = duration > 0 ? Math.round((current / duration) * 1000) : 0;
@@ -222,137 +198,43 @@
       els.progress.style.setProperty("--nova-music-progress", `${value / 10}%`);
     }
 
-    // ---- 云函数:取音频(base64 -> Blob)----
-    async function fetchAudioBlob(bvid, signal) {
-      const resp = await fetch(BILI_PROXY + "/stream2?bvid=" + bvid, { signal });
-      if (!resp.ok) throw new Error("音频请求失败 HTTP " + resp.status);
-      const ct = resp.headers.get("Content-Type") || "";
-      if (ct.includes("json")) {
-        const text = await resp.text();
-        if (text.trim().startsWith("{")) {
-          const j = JSON.parse(text);
-          throw new Error(j.error || "音频获取失败");
-        }
-        const bin = atob(text.trim());
-        const bytes = new Uint8Array(bin.length);
-        for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-        return new Blob([bytes], { type: "audio/mp4" });
-      }
-      return resp.blob();
-    }
-
-    function setAudioSource(blob) {
-      const url = URL.createObjectURL(blob);
-      state.objectUrls.add(url);
-      state.audio.src = url;
-    }
-
-    // 连续切换:每次点击立即响应,上一次未完成的加载被中断(最新优先)
-    async function playSongAt(index, autoplay) {
-      if (!state.songs.length) return;
-      state.loadAbort?.abort();
-      const ac = new AbortController();
-      state.loadAbort = ac;
-      state.currentIndex = normalizeIndex(index, state.songs.length);
-      const song = state.songs[state.currentIndex];
-      renderCurrentSong();
-      renderVisibleCards();
-      updateProgress();
-      els.artist.textContent = "音频加载中…";
-      try {
-        const blob = await fetchAudioBlob(song.bvid, ac.signal);
-        if (ac.signal.aborted) return;
-        setAudioSource(blob);
-        if (autoplay !== false) {
-          const result = state.audio.play();
-          if (result?.catch) result.catch(() => console.warn("Nova music: playback was blocked."));
-        }
-        renderCurrentSong();
-      } catch (e) {
-        if (ac.signal.aborted) return; // 被更新的切换取代,不视为错误
-        els.title.textContent = "当前歌曲暂时无法播放";
-        els.artist.textContent = String(e?.message || e).slice(0, 90);
-        console.error("Nova music: audio failed.", e);
-      } finally {
-        if (state.loadAbort === ac) state.loadAbort = null;
-      }
-    }
-
-    function playNext() {
-      playSongAt(state.currentIndex + 1, true);
-    }
-
-    function playPrevious() {
-      playSongAt(state.currentIndex - 1, true);
-    }
-
-    function togglePlayback() {
-      if (!state.audio || state.loadAbort) return;
-      if (state.audio.paused) {
-        const result = state.audio.play();
-        if (result?.catch) result.catch(() => console.warn("Nova music: playback failed."));
-      } else {
-        state.audio.pause();
-      }
-    }
-
-    function seekTo(percent) {
-      const duration = Number.isFinite(state.audio?.duration) ? state.audio.duration : 0;
-      if (!duration) return;
-      state.audio.currentTime = Math.max(0, Math.min(1, percent)) * duration;
-    }
-
     function bindMusicControls() {
-      on(els.previous, "click", playPrevious);
-      on(els.next, "click", playNext);
-      on(els.toggle, "click", togglePlayback);
-      on(els.progress, "input", event => seekTo(Number(event.target.value) / 1000));
+      on(els.previous, "click", () => player.playPrevious());
+      on(els.next, "click", () => player.playNext());
+      on(els.toggle, "click", () => player.togglePlayback());
+      on(els.progress, "input", event => player.seekTo(Number(event.target.value) / 1000));
       els.cards.forEach((card, slot) => {
         const warm = () => warmCardImage(card.querySelector("img"));
         on(card, "pointerenter", warm);
         on(card, "focusin", warm);
         on(card, "click", () => {
-          if (slot === 2) togglePlayback();
-          else playSongAt(Number(card.dataset.songIndex), true);
+          const idx = Number(card.dataset.songIndex);
+          if (slot === 2) player.togglePlayback();
+          else player.playSongAt(idx, true);
         });
       });
       on(document, "keydown", event => {
-        if (!state.root.isConnected || event.target?.matches("input, textarea, [contenteditable]")) return;
-        if (event.key === "ArrowLeft") playPrevious();
-        if (event.key === "ArrowRight") playNext();
-      });
-    }
-
-    function bindPlayerEvents() {
-      on(state.audio, "play", renderCurrentSong);
-      on(state.audio, "pause", renderCurrentSong);
-      on(state.audio, "timeupdate", updateProgress);
-      on(state.audio, "durationchange", updateProgress);
-      on(state.audio, "loadedmetadata", updateProgress);
-      on(state.audio, "ended", playNext);
-      on(state.audio, "error", () => {
-        els.title.textContent = "当前歌曲暂时无法播放";
-        els.artist.textContent = "请尝试切换下一首";
-        console.error("Nova music: audio source failed.", state.songs[state.currentIndex]);
+        if (!root.isConnected || event.target?.matches("input, textarea, [contenteditable]")) return;
+        if (event.key === "ArrowLeft") player.playPrevious();
+        if (event.key === "ArrowRight") player.playNext();
       });
     }
 
     function loadPlaylist() {
       showLoadingState();
-      if (!state.audio) state.audio = new Audio();
       fetch(BILI_PROXY + "/api/playlist?uid=" + BILI_UID + "&folder=" + encodeURIComponent(BILI_FOLDER))
         .then(resp => resp.json())
         .then(j => {
           if (j.error) throw new Error(j.error);
           if (!Array.isArray(j.songs) || !j.songs.length) throw new Error("收藏夹为空");
-          state.songs = j.songs;
+          player.setPlaylist(j.songs);
           if (els.retry) els.retry.hidden = true;
           bindMusicControls();
-          bindPlayerEvents();
           renderCurrentSong();
           renderVisibleCards();
           updateProgress();
-          playSongAt(0, false); // 预载第一首,不自动播放
+          // 预载当前歌曲(不自动播): 点击播放时音频已就绪, 立即出声
+          player.playSongAt(player.state.currentIndex, false);
         })
         .catch(e => {
           showLoadFailure("收藏夹加载失败", String(e?.message || e).slice(0, 90));
@@ -361,19 +243,53 @@
     }
 
     function destroyMusicPage() {
-      state.destroyed = true;
-      window.clearTimeout(state.timer);
-      state.loadAbort?.abort();
-      state.loadAbort = null;
-      state.listeners.splice(0).forEach(remove => remove());
-      state.objectUrls.forEach(url => URL.revokeObjectURL(url));
-      state.objectUrls.clear();
-      state.audio?.pause();
-      state.audio = null;
+      listeners.splice(0).forEach(remove => remove());
     }
 
     on(els.retry, "click", loadPlaylist);
     loadPlaylist();
+
+    renderCurrentSong();
+    renderVisibleCards();
+    updateProgress();
+
+    const unsubscribe = player.subscribe((type, snap) => {
+      if (type === "timeupdate") {
+        updateProgress();
+      }
+      if (type === "play" || type === "pause") {
+        renderCurrentSong();
+        updateProgress();
+      }
+      if (type === "playlist") {
+        renderCurrentSong();
+        renderVisibleCards();
+        updateProgress();
+      }
+      if (type === "loadstart") {
+        renderCurrentSong();
+        renderVisibleCards();
+        updateProgress();
+        els.artist.textContent = "音频加载中…";
+      }
+      if (type === "loadend") {
+        renderCurrentSong();
+        updateProgress();
+      }
+      if (type === "load-error") {
+        els.title.textContent = "当前歌曲暂时无法播放";
+        els.artist.textContent = snap?.message || "请尝试切换下一首";
+      }
+      if (type === "error") {
+        els.title.textContent = "当前歌曲暂时无法播放";
+        els.artist.textContent = "请尝试切换下一首";
+      }
+      if (type === "play-blocked") {
+        els.title.textContent = "点击 ▶ 开始播放";
+      }
+    });
+    listeners.push(unsubscribe);
+
     return { root, destroy: destroyMusicPage };
   }
 

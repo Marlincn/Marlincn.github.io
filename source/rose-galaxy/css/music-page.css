@@ -47,10 +47,12 @@ html[data-theme="light"] .nova-music-hero::after{content:"";position:absolute;z-
 .nova-music-progress-input{width:100%;height:3px;margin:0;appearance:none;border-radius:4px;background:linear-gradient(90deg,var(--nova-music-accent) var(--nova-music-progress,0%),rgba(255,255,255,.18) var(--nova-music-progress,0%));cursor:pointer}
 .nova-music-progress-input::-webkit-slider-thumb{width:11px;height:11px;appearance:none;border:0;border-radius:50%;background:#f6eaf0;box-shadow:0 0 0 4px rgba(200,101,134,.14)}
 .nova-music-time{display:flex;justify-content:space-between;margin-top:8px;color:rgba(226,218,228,.7);font-size:12.5px}
-.nova-music-controls{display:flex;align-items:center;justify-content:center;gap:30px;margin:18px 0}
-.nova-music-control{display:grid;width:50px;height:50px;padding:0;place-items:center;border:1px solid rgba(255,255,255,.2);border-radius:50%;outline:0;color:#f5edf2;background:rgba(10,12,24,.3);font-size:25px;cursor:pointer;transition:transform .3s,border-color .3s,background .3s}
-.nova-music-control:hover{transform:translateY(-2px);border-color:rgba(220,137,169,.62);background:rgba(200,101,134,.14)}
-.nova-music-toggle{width:68px;height:68px;border-color:rgba(224,134,169,.76);background:rgba(199,96,130,.14);box-shadow:0 0 28px rgba(200,101,134,.13);font-size:20px}
+.nova-music-controls{display:flex;align-items:center;justify-content:center;gap:26px;margin:18px 0}
+.nova-music-control{display:grid;width:48px;height:48px;padding:0;place-items:center;border:1px solid rgba(205,105,143,.32);border-radius:50%;outline:0;color:var(--nova-tag-text,#f1edf2);background:rgba(205,105,143,.1);font-size:16px;cursor:pointer;transition:transform .3s,border-color .3s,background .3s,box-shadow .3s}
+.nova-music-control i{display:block;line-height:1}
+.nova-music-control:hover{transform:translateY(-2px);border-color:rgba(205,105,143,.56);background:rgba(205,105,143,.2);box-shadow:0 6px 18px rgba(205,105,143,.16)}
+.nova-music-toggle{width:64px;height:64px;border-color:var(--nova-tag-accent,#ce718f);background:var(--nova-tag-accent,#ce718f);color:#fff;font-size:22px;box-shadow:0 0 28px rgba(205,105,143,.28)}
+.nova-music-toggle:hover{background:#df86a3;border-color:#df86a3;box-shadow:0 8px 24px rgba(205,105,143,.34)}
 .nova-music-meta{display:flex;justify-content:space-between;gap:16px;padding-top:17px;border-top:1px solid rgba(255,255,255,.1);color:rgba(219,210,221,.68);font-size:12.5px}
 html[data-theme="light"] .nova-music-player{border-color:rgba(255,255,255,.46);background:linear-gradient(145deg,rgba(242,239,245,.78),rgba(219,216,228,.62));box-shadow:0 24px 64px rgba(26,22,39,.2),inset 0 1px rgba(255,255,255,.42);backdrop-filter:blur(22px) saturate(115%);-webkit-backdrop-filter:blur(22px) saturate(115%)}
 html[data-theme="light"] .nova-music-retry{color:#6c5060;background:rgba(198,95,130,.08)}
@@ -58,8 +60,10 @@ html[data-theme="light"] .nova-music-current h2{color:var(--nova-music-player-ti
 html[data-theme="light"] .nova-music-current p{color:var(--nova-music-player-artist)}
 html[data-theme="light"] .nova-music-time,html[data-theme="light"] .nova-music-meta{color:var(--nova-music-player-muted)}
 html[data-theme="light"] .nova-music-progress-input{background:linear-gradient(90deg,var(--nova-music-accent) var(--nova-music-progress,0%),rgba(72,60,82,.16) var(--nova-music-progress,0%))}
-html[data-theme="light"] .nova-music-control{color:#4a4351;border-color:rgba(75,62,84,.2);background:rgba(224,221,231,.54)}
-html[data-theme="light"] .nova-music-toggle{color:#fff;border-color:rgba(198,95,130,.58);background:var(--nova-music-player-accent)}
+html[data-theme="light"] .nova-music-control{color:#514c59;border-color:rgba(179,83,119,.26);background:rgba(179,83,119,.08)}
+html[data-theme="light"] .nova-music-control:hover{border-color:rgba(179,83,119,.46);background:rgba(179,83,119,.16)}
+html[data-theme="light"] .nova-music-toggle{color:#fff;border-color:#bd607d;background:#bd607d}
+html[data-theme="light"] .nova-music-toggle:hover{background:#d97d99;border-color:#d97d99}
 html[data-theme="light"] .nova-music-meta{border-color:var(--nova-music-player-line)}
 
 .nova-music-card-stage{position:relative;min-height:480px;perspective:1200px}
