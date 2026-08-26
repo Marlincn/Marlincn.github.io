@@ -3,7 +3,7 @@ extends ./base.pug
 block headOpts
   - page.bodyClass = 'nova-project-detail-route'
   - var detailUrl = encodeURI(siteUrl + '/projects/' + page.projectId + '/')
-  - page.headOpts = { title: '工程: ' + page.title + ' | Marlin', siteTitle: '工程: ' + page.title, description: page.description, ogUrl: detailUrl, canonical: detailUrl, ogTitle: page.title, pageType: 'page', extraCss: '<link href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v11" rel="stylesheet" data-nova-project-detail-style="">' }
+  - page.headOpts = { title: '工程: ' + page.title + ' | Marlin', siteTitle: '工程: ' + page.title, description: page.description, ogUrl: detailUrl, canonical: detailUrl, ogTitle: page.title, pageType: 'page', extraCss: '<link href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v14" rel="stylesheet" data-nova-project-detail-style="">' }
 
 block content
   div#sidebar
@@ -133,6 +133,38 @@ block content
                   span= page.link2Label || '更多信息'
               if !page.link && !page.link2
                 span.nova-project-detail-btn.nova-project-detail-btn--placeholder 地址整理中
+            if page.downloads && page.downloads.length
+              h2.nova-project-detail-dl-title
+                i.fas.fa-download.fa-fw(aria-hidden='true')
+                span 资料下载
+              div.nova-project-detail-dl-list
+                each d in page.downloads
+                  div.nova-project-detail-dl-item
+                    div.nova-project-detail-dl-head
+                      div.nova-project-detail-dl-info
+                        strong= d.name
+                        if d.desc
+                          small= d.desc
+                      a.nova-project-detail-dl-btn(href=d.href download)
+                        i.fas.fa-download.fa-fw(aria-hidden='true')
+                        span 下载
+                        if d.sizeLabel
+                          span.nova-project-detail-dl-size= d.sizeLabel
+                    if d.files && d.files.length
+                      details.nova-project-detail-dl-files
+                        summary
+                          i.fas.fa-folder-open.fa-fw(aria-hidden='true')
+                          - var isZip = /\.zip$/i.test(d.name)
+                          span= (isZip ? '压缩包内文件（' : '文件内容（') + d.files.length + '）'
+                          i.fas.fa-chevron-down.fa-fw.nova-project-detail-dl-caret(aria-hidden='true')
+                        ul
+                          each f in d.files
+                            li
+                              span.nova-project-detail-dl-fname= f.name
+                              if f.desc
+                                span.nova-project-detail-dl-fdesc= f.desc
+                              if f.sizeLabel
+                                span.nova-project-detail-dl-fsize= f.sizeLabel
         aside.nova-project-detail-aside
           section.nova-project-detail-side-card.nova-project-detail-profile
             header

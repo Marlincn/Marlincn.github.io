@@ -21,9 +21,10 @@ const PROJECT_DETAIL_CSS = fs.readFileSync(
   path.join(__dirname, '..', 'source', 'rose-galaxy', 'css', 'project-detail-page.css'), 'utf8'
 )
 
-const DL_BASE = 'https://deymocn.github.io'
-
 const SITE = (hexo.config.url || '').replace(/\/+$/, '')
+
+// 下载文件本站托管(source/assets/projects/_files/): deymocn 已删除, 链接指向本站
+const DL_BASE = SITE
 
 // "本时刻" 发表于/更新于: 无 date 的工程(或想保持更新的)用当前时间 YYYY-MM-DD 填充
 const NOW = new Date()
@@ -74,7 +75,13 @@ hexo.extend.generator.register('nova-projects', function () {
     cover: p.cover,
     coverW: p.coverW,
     coverH: p.coverH,
-    downloads: (p.downloads || []).map(d => ({ name: d.name, href: dlHref(d), sizeLabel: d.sizeLabel || '' }))
+    downloads: (p.downloads || []).map(d => ({
+      name: d.name,
+      href: dlHref(d),
+      sizeLabel: d.sizeLabel || '',
+      desc: d.desc || '',
+      files: (d.files || []).map(f => ({ name: f.name, sizeLabel: f.sizeLabel || '', desc: f.desc || '' }))
+    }))
   }))
 
   const uniqueTags = new Set()
@@ -123,6 +130,7 @@ hexo.extend.generator.register('nova-projects', function () {
         link2: p.link2,
         link2Label: p.link2Label,
         introBlocks: INTRO_BLOCKS[p.id] || null,
+        downloads: p.downloads,
         others: prepared.filter(o => o.id !== p.id),
         allProjects: prepared,
         // 侧边栏统计(PROFILE 卡): 工程总数 / 分类数 / 全站标签数

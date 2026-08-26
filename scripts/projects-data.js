@@ -26,8 +26,15 @@ module.exports = [
     downloads: [
       {
         name: '琛光E1_Mini V1.1Y无人机.zip',
-        url: '/assets/projects/_files/mcu/琛光无人机/琛光E1_Mini V1.1Y无人机.zip',
-        sizeLabel: '26.9MB'
+        url: '/assets/projects/files/mcu/琛光无人机/琛光E1_Mini V1.1Y无人机.zip',
+        sizeLabel: '26.9MB',
+        desc: '整机整包：固件、物料清单与烧录工具。',
+        files: [
+          { name: '琛光E1_MINI固件20260507.bin', sizeLabel: '4MB', desc: '飞控固件' },
+          { name: 'CF-Drone-main.zip', sizeLabel: '88KB', desc: '开源完整源码' },
+          { name: '琛光E1_Mini V1.1Y物料清单.xlsx', sizeLabel: '13KB', desc: '物料清单' },
+          { name: '乐鑫烧录工具/', sizeLabel: '25MB', desc: 'flash_download_tool 3.9.11 烧录工具' }
+        ]
       }
     ]
   },
@@ -41,7 +48,7 @@ module.exports = [
     description: '工程训练结课作业的全流程开源项目：四路红外循迹小车。Arduino Uno 主控，红外循迹、蓝牙遥控、超声避障三种玩法一键切换；PWM 调速，全套文件公开。',
     intro: '工程训练结课作业的全流程开源项目：四路红外循迹小车。Arduino Uno 主控（配 R3 v5 拓展板与 L298N 驱动板），红外 TCRT5000、蓝牙 JDY-31、超声波 HC-SR04。三种玩法——蓝牙遥控（X 键切换自动循线/手动遥控）、四路红外自动循迹、超声波避障（16cm 触发）；PWM 连续调速、1–10 档速度与蓝牙心跳保活。全套说明文档、固件与 PWM 拓展代码、连线图与 Proteus 仿真、激光切割结构件与 SolidWorks 完整建模全部公开。',
     tags: ['ESP32', 'PWM', '激光切割', 'SW完整建模'],
-    link: 'https://github.com/deymocn/Arduino-line-follower',
+    link: 'https://github.com/Marlincn/Arduino-line-follower',
     linkLabel: 'Github',
     link2: '',
     link2Label: '',
@@ -51,8 +58,18 @@ module.exports = [
     downloads: [
       {
         name: '循迹小车.zip',
-        url: '/assets/projects/_files/mcu/智能循迹小车/循迹小车.zip',
-        sizeLabel: '66.9MB'
+        url: '/assets/projects/files/mcu/智能循迹小车/循迹小车.zip',
+        sizeLabel: '66.9MB',
+        desc: '整车整包：固件、连线图、激光切割结构件与 SolidWorks 建模。',
+        files: [
+          { name: 'README.md', sizeLabel: '15KB', desc: '全流程说明文档' },
+          { name: 'code.ino + PWM拓展/main_PWM.cpp', sizeLabel: '14KB', desc: '完整固件与 PWM 拓展代码' },
+          { name: '连线图.pdsprj + 连线图_PWM.pdsprj', sizeLabel: '48KB', desc: 'Proteus 连线图工程' },
+          { name: '物料清单.xlsx', sizeLabel: '14KB', desc: '物料清单' },
+          { name: '激光切割图纸/（底板等 4 张）', sizeLabel: '223KB', desc: '激光切割结构件' },
+          { name: '建模.zip + 建模兼容.STEP', sizeLabel: '22MB', desc: 'SolidWorks 完整建模' },
+          { name: 'images/ + PWM拓展/（图纸与示意）', sizeLabel: '47MB', desc: '接线与效果图' }
+        ]
       }
     ]
   },
@@ -76,8 +93,15 @@ module.exports = [
     downloads: [
       {
         name: 'esp32-led-matrix-main.zip',
-        url: '/assets/projects/_files/mcu/LED 点阵屏/esp32-led-matrix-main.zip',
-        sizeLabel: '3.7MB'
+        url: '/assets/projects/files/mcu/LED 点阵屏/esp32-led-matrix-main.zip',
+        sizeLabel: '3.7MB',
+        desc: '源工程整包：固件源码与打板文件。',
+        files: [
+          { name: 'firmware/（完整固件源码）', sizeLabel: '2.6MB', desc: '水波/DOOM 火焰/传感器驱动 + 可选 esp_dsps 加速' },
+          { name: 'hardware/（打板文件）', sizeLabel: '1MB', desc: '灯板 FLIP 嘉立创工程 .epro2 ×2' },
+          { name: '水流灯板简易复刻固件/', sizeLabel: '650KB', desc: 'S 形/Z 形灯板预编译 bin + 接线图' },
+          { name: 'docs/（文档与展示图）', sizeLabel: '2.1MB', desc: '购置清单、README、展示与接线图' }
+        ]
       }
     ]
   },
@@ -91,8 +115,8 @@ module.exports = [
     description: '跟随 Kurtips 老师完成的第一件 Blender 作品：小狐狸。从基础建模、材质、渲染到动画整条链路逐一走通，成品 .blend 源文件公开，方便对照学习。',
     intro: '跟随 Kurtips 老师完成的第一件 Blender 作品：小狐狸。从基础建模开始，依次走通建模材质、渲染合成与动画整条链路（Blender 5.2），把课堂里学到的流程完整练习了一遍。成品 .blend 源文件公开，方便对照学习。',
     tags: ['Blender5.2', '建模材质', '渲染合成', '动画'],
-    link: '',
-    linkLabel: '',
+    link: 'https://kurtwei.com/blender-beginner-tutorial-free-course/',
+    linkLabel: '课程地址',
     link2: '',
     link2Label: '',
     cover: '/img/projects/kurtips-fox.webp',
@@ -101,8 +125,12 @@ module.exports = [
     downloads: [
       {
         name: '小狐狸.blend',
-        url: '/assets/projects/_files/model/Kurtips建模入门/小狐狸.blend',
-        sizeLabel: '26.7MB'
+        url: '/assets/projects/files/model/Kurtips建模入门/小狐狸.blend',
+        sizeLabel: '26.7MB',
+        desc: 'Blender 5.2 成品源文件（.blend），含全部建模与材质操作。',
+        files: [
+          { name: '小狐狸.blend', sizeLabel: '26.7MB', desc: 'Blender 5.2 源文件：建模/材质/渲染/动画全过程' }
+        ]
       }
     ]
   },
@@ -124,17 +152,25 @@ module.exports = [
     coverW: 1193,
     coverH: 936,
     downloads: [
-      { name: '摆杆.SLDPRT', url: '/assets/projects/_files/model/牛头刨床设计/牛头刨床设计/建模/摆杆.SLDPRT', sizeLabel: '89KB' },
-      { name: '曲柄.SLDPRT', url: '/assets/projects/_files/model/牛头刨床设计/牛头刨床设计/建模/曲柄.SLDPRT', sizeLabel: '111KB' },
-      { name: '机架.SLDPRT', url: '/assets/projects/_files/model/牛头刨床设计/牛头刨床设计/建模/机架.SLDPRT', sizeLabel: '110KB' },
-      { name: '滑块.SLDPRT', url: '/assets/projects/_files/model/牛头刨床设计/牛头刨床设计/建模/滑块.SLDPRT', sizeLabel: '61KB' },
-      { name: '滑枕及销.SLDPRT', url: '/assets/projects/_files/model/牛头刨床设计/牛头刨床设计/建模/滑枕及销.SLDPRT', sizeLabel: '67KB' },
-      { name: '牛头刨床.SLDASM', url: '/assets/projects/_files/model/牛头刨床设计/牛头刨床设计/建模/牛头刨床.SLDASM', sizeLabel: '155KB' },
-      { name: '位移分析.mp4', url: '/assets/projects/_files/model/牛头刨床设计/牛头刨床设计/有限元分析/位移分析.mp4', sizeLabel: '2.5MB' },
-      { name: '应力分析.mp4', url: '/assets/projects/_files/model/牛头刨床设计/牛头刨床设计/有限元分析/应力分析.mp4', sizeLabel: '1.6MB' },
-      { name: '应变分析.mp4', url: '/assets/projects/_files/model/牛头刨床设计/牛头刨床设计/有限元分析/应变分析.mp4', sizeLabel: '2.6MB' },
-      { name: '演示动画.mp4', url: '/assets/projects/_files/model/牛头刨床设计/牛头刨床设计/演示动画.mp4', sizeLabel: '1.3MB' },
-      { name: '设计报告.doc', url: '/assets/projects/_files/model/牛头刨床设计/牛头刨床设计/设计报告.doc', sizeLabel: '1.8MB' }
+      {
+        name: '牛头刨床设计-全套资料.zip',
+        url: '/assets/projects/files/model/牛头刨床设计/牛头刨床设计-全套资料.zip',
+        sizeLabel: '10.3MB',
+        desc: '全套课程设计资料：源文件、有限元分析动画与设计报告。',
+        files: [
+          { name: '建模/曲柄.SLDPRT', sizeLabel: '111KB', desc: '曲柄零件' },
+          { name: '建模/摆杆.SLDPRT', sizeLabel: '89KB', desc: '摆杆零件' },
+          { name: '建模/机架.SLDPRT', sizeLabel: '110KB', desc: '机架零件' },
+          { name: '建模/滑块.SLDPRT', sizeLabel: '61KB', desc: '滑块零件' },
+          { name: '建模/滑枕及销.SLDPRT', sizeLabel: '67KB', desc: '滑枕及销零件' },
+          { name: '建模/牛头刨床.SLDASM', sizeLabel: '155KB', desc: '整机装配体' },
+          { name: '有限元分析/位移分析.mp4', sizeLabel: '2.5MB', desc: '位移分析结果动画' },
+          { name: '有限元分析/应力分析.mp4', sizeLabel: '1.6MB', desc: '应力分析结果动画' },
+          { name: '有限元分析/应变分析.mp4', sizeLabel: '2.6MB', desc: '应变分析结果动画' },
+          { name: '演示动画.mp4', sizeLabel: '1.3MB', desc: '机构运动演示动画' },
+          { name: '设计报告.doc', sizeLabel: '1.8MB', desc: '课程设计报告' }
+        ]
+      }
     ]
   }
 ]
