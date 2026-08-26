@@ -1,0 +1,130 @@
+extends ./base.pug
+
+block headOpts
+  - page.bodyClass = 'nova-project-detail-route'
+  - var detailUrl = encodeURI(siteUrl + '/projects/' + page.projectId + '/')
+  - page.headOpts = { title: '工程: ' + page.title + ' | Marlin', siteTitle: '工程: ' + page.title, description: page.description, ogUrl: detailUrl, canonical: detailUrl, ogTitle: page.title, pageType: 'page', extraCss: '<link href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v5" rel="stylesheet" data-nova-project-detail-style="">' }
+
+block content
+  div#sidebar
+    div#menu-mask
+    div#sidebar-menus
+      div.avatar-img.text-center
+        img(src='/img/logo1.jpg' onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt='avatar' width='1080' height='1080' decoding='async')
+      div.site-data.text-center
+        a(href='/projects/')
+          div.headline 工程
+          div.length-num 5
+      div.menus_items
+        div.menus_item
+          a.site-page(href='/')
+            span= ' 首页'
+        div.menus_item
+          a.site-page(href='/articles/')
+            span= ' 文章'
+        div.menus_item
+          a.site-page(href='/projects/')
+            span= ' 工程'
+        div.menus_item
+          a.site-page(href='/music/')
+            span= ' 音乐'
+        div.menus_item
+          a.site-page(href='/shuoshuo/')
+            span= ' 说说'
+        div.menus_item
+          a.site-page(href='/about/')
+            span= ' 关于'
+  div.page.post#body-wrap
+    header.post-bg#page-header(style='background-image:url(/img/projects-detail-hero.webp)')
+      nav#nav
+        span#blog-info
+          a.nav-site-title(href='/')
+            img.site-icon(src='/img/brand/nova-rose-line-128.png' alt='Logo' width='36' height='36' loading='eager' decoding='async')
+            span.site-name Marlin
+        div#menus
+          div#search-button
+            button.site-page.social-icon.search.search-nav-link(type='button' aria-label='打开搜索')
+              svg.search-nav-icon(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
+                circle(cx='11' cy='11' r='7')
+                path(d='m20 20-3.5-3.5')
+              span= ' 搜索'
+          div.menus_items
+            div.menus_item
+              a.site-page(href='/')
+                span= ' 首页'
+            div.menus_item
+              a.site-page(href='/articles/')
+                span= ' 文章'
+            div.menus_item
+              a.site-page(href='/projects/')
+                span= ' 工程'
+            div.menus_item
+              a.site-page(href='/music/')
+                span= ' 音乐'
+            div.menus_item
+              a.site-page(href='/shuoshuo/')
+                span= ' 说说'
+            div.menus_item
+              a.site-page(href='/about/')
+                span= ' 关于'
+          div#toggle-menu
+            span.site-page
+              i.fas.fa-bars.fa-fw
+      div#post-info
+        h1.post-title= page.title
+        div#post-meta
+          div.meta-firstline
+            if page.date
+              span.post-meta-date
+                i.far.fa-calendar-alt.fa-fw.post-meta-icon
+                span.post-meta-label= '创建于'
+                time= page.date
+            span.post-meta-categories
+              if page.date
+                span.post-meta-separator |
+              i.fas.fa-inbox.fa-fw.post-meta-icon
+              span= page.category
+    main#content-inner
+      //- 内联 grid 布局: 两栏(左主区 + 320px 右栏)不依赖外部 CSS 时序, 首帧不堆叠
+      div.nova-project-detail(style='display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:40px;align-items:start;width:min(1120px,calc(100% - 64px));margin:46px auto 60px;max-width:1120px;')
+        section.nova-project-detail-main
+          div.nova-project-detail-demo(style='position:relative;overflow:hidden;width:100%;max-width:760px;')
+            span(style='display:block;padding-top:56.2823%;' aria-hidden='true')
+            img(src=page.demoCover alt=page.title decoding='async' style='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' onerror="this.onerror=null;this.src='/img/projects/drone.webp'")
+          if page.introBlocks && page.introBlocks.length
+            div.nova-project-detail-intro
+              each block, i in page.introBlocks
+                - if (block.tag === 'h2')
+                  h2= block.text
+                - else if (block.tag === 'quote')
+                  blockquote= block.text
+                - else if (block.tag === 'list')
+                  ul
+                    each item in block.items
+                      li= item
+                - else
+                  p= block.text
+          h2.nova-project-detail-actions-title 源工程地址
+          div.nova-project-detail-actions
+            if page.link
+              a.nova-project-detail-btn(href=page.link target='_blank' rel='noopener')
+                i.fab.fa-github.fa-fw
+                span= page.linkLabel || 'GitHub'
+            if page.link2
+              a.nova-project-detail-btn(href=page.link2 target='_blank' rel='noopener')
+                i.fas.fa-puzzle-piece.fa-fw
+                span= page.link2Label || '更多信息'
+            if !page.link && !page.link2
+              span.nova-project-detail-btn.nova-project-detail-btn--placeholder 地址整理中
+        aside.nova-project-detail-aside
+          h3 其他工程
+          ul.nova-project-detail-list
+            each p, i in page.others
+              li
+                a(href=p.detailHref)
+                  //- 内联约束: 右栏缩略图尺寸不依赖外部 CSS 时序(首帧不按固有尺寸撑爆)
+                  img(src=p.cover alt=p.title loading='lazy' decoding='async' style='width:108px;height:72px;flex:none;object-fit:cover;border-radius:8px;' onerror="this.onerror=null;this.src='/img/404.jpg'")
+                  span.nova-project-detail-list-body
+                    strong= p.title
+                    small= p.subtitle || p.category
+  != page.idxBottom

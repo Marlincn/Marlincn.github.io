@@ -8,6 +8,7 @@ const fs = require('fs')
 const path = require('path')
 
 const projects = require('./projects-data')
+const INTRO_BLOCKS = require('./projects-intro')   // 工程介绍文案(自包含, 见 projects-intro.js)
 
 const projectParts = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'project-parts')
 const idxParts = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'idx-parts')
@@ -53,6 +54,7 @@ hexo.extend.generator.register('nova-projects', function () {
     description: p.description,
     intro: p.intro || '',
     tags: p.tags,
+    detailHref: '/projects/' + p.id + '/',
     link: p.link,
     linkLabel: p.linkLabel || 'GitHub',
     link2: p.link2,
@@ -86,6 +88,29 @@ hexo.extend.generator.register('nova-projects', function () {
       }
     }
   ]
+
+  // 工程二级页(详情页):每个工程一页,共 5 页
+  prepared.forEach(p => {
+    files.push({
+      path: 'projects/' + p.id + '/index.html',
+      layout: 'project-detail',
+      data: {
+        projectId: p.id,
+        title: p.title,
+        category: p.category,
+        date: p.date,
+        description: p.description,
+        demoCover: '/img/projects/demo-' + p.id + '.webp',
+        link: p.link,
+        linkLabel: p.linkLabel,
+        link2: p.link2,
+        link2Label: p.link2Label,
+        introBlocks: INTRO_BLOCKS[p.id] || null,
+        others: prepared.filter(o => o.id !== p.id),
+        idxBottom: IDX_BOTTOM
+      }
+    })
+  })
 
   return files
 })

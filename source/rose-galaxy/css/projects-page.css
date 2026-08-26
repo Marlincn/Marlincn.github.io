@@ -43,10 +43,10 @@ body.nova-tag-route main.nova-projects-overview {
 .nova-project-cover {
   position: relative;
   overflow: hidden;
-  aspect-ratio: 3 / 2;
   background: #0c1323;
 }
 
+/* 3:2 占位由模板内联 span 提供(不依赖外部 CSS 时序); 图片绝对定位铺满 */
 .nova-project-cover::after {
   content: "";
   position: absolute;
@@ -56,6 +56,8 @@ body.nova-tag-route main.nova-projects-overview {
 }
 
 .nova-project-cover img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;

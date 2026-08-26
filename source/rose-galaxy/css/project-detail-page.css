@@ -1,0 +1,291 @@
+/* Project detail (工程二级页):参照 KurTips 课程详情页布局。
+   左主区:顶部大图 → 等大演示图 → 「源工程地址」标题 → 方形按钮(本站色);
+   右栏:其他工程列表。文字不加背景框。 */
+
+body.nova-project-detail-route {
+  --pd-accent: #cd6990;            /* 本站玫瑰色(深色主题) */
+}
+
+.nova-project-detail {
+  width: min(1120px, calc(100% - 64px));
+  margin: 46px auto 60px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 40px;
+  align-items: start;
+}
+
+/* ---- 左主区 ---- */
+.nova-project-detail-demo {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(224, 194, 210, .09);
+  border-radius: 18px;
+  background: #0c1323;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .15);
+}
+
+/* 等大演示图: 16:9 占位已由模板内联 span 提供(不依赖外部 CSS 时序);
+   样式仅负责图片绝对定位铺满 */
+.nova-project-detail-demo img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* 工程介绍(三种风格演示):纯文字排版, 无背景框 */
+.nova-project-detail-intro {
+  margin: 34px 0 8px;
+}
+
+.nova-project-detail-intro p {
+  margin: 0 0 14px;
+  color: var(--nova-tag-text);
+  font-size: 15px;
+  line-height: 2;
+  letter-spacing: .01em;
+}
+
+.nova-project-detail-intro h2 {
+  margin: 26px 0 12px;
+  color: var(--nova-tag-text);
+  font: 600 18px/1.6 "Noto Serif SC", "Songti SC", serif;
+  letter-spacing: .05em;
+}
+
+.nova-project-detail-intro blockquote {
+  margin: 0 0 16px;
+  padding: 10px 16px;
+  border-left: 3px solid var(--nova-tag-accent, #cd6990);
+  color: var(--nova-tag-secondary);
+  font-size: 14px;
+  line-height: 1.9;
+  background: none;
+}
+
+.nova-project-detail-intro ul {
+  margin: 0 0 16px;
+  padding: 0 0 0 4px;
+  list-style: none;
+}
+
+.nova-project-detail-intro ul li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 8px;
+  color: var(--nova-tag-text);
+  font-size: 14.5px;
+  line-height: 1.9;
+}
+
+.nova-project-detail-intro ul li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 12px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--nova-tag-accent, #cd6990);
+}
+
+/* ---- light 主题 ---- */
+html[data-theme="light"] .nova-project-detail-intro blockquote {
+  border-left-color: #a9527a;
+}
+
+/* 「源工程地址」标题:纯文字, 无背景框 */
+.nova-project-detail-actions-title {
+  margin: 26px 0 14px;
+  color: var(--nova-tag-text);
+  font: 600 20px/1.5 "Noto Serif SC", "Songti SC", serif;
+  letter-spacing: .04em;
+}
+
+/* 方形按钮:本站玫瑰色, 无圆角, 无描边背景框 */
+.nova-project-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.nova-project-detail-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 22px;
+  border: 0;
+  border-radius: 0;
+  background: var(--pd-accent);
+  color: #fff;
+  font-size: 15px;
+  letter-spacing: .08em;
+  text-decoration: none;
+  transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+
+.nova-project-detail-btn:hover,
+.nova-project-detail-btn:focus-visible {
+  background: #b8557b;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(205, 105, 143, .28);
+  color: #fff;
+  outline: none;
+}
+
+.nova-project-detail-btn--placeholder {
+  cursor: default;
+  background: rgba(205, 105, 143, .38);
+}
+
+/* ---- 右栏:其他工程 ---- */
+.nova-project-detail-aside h3 {
+  margin: 0 0 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(224, 194, 210, .12);
+  color: var(--nova-tag-text);
+  font: 600 17px/1.5 "Noto Serif SC", "Songti SC", serif;
+  letter-spacing: .06em;
+}
+
+.nova-project-detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nova-project-detail-list li > a {
+  display: flex;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid rgba(224, 194, 210, .09);
+  border-radius: 12px;
+  background: linear-gradient(145deg, rgba(16, 23, 43, .78), rgba(11, 18, 35, .72));
+  text-decoration: none;
+  transition: border-color .2s ease, transform .2s ease;
+}
+
+.nova-project-detail-list li > a:hover,
+.nova-project-detail-list li > a:focus-visible {
+  border-color: rgba(205, 105, 143, .28);
+  transform: translateX(2px);
+  outline: none;
+}
+
+.nova-project-detail-list img {
+  width: 108px;
+  height: 72px;
+  flex: none;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #0c1323;
+  filter: brightness(.86) saturate(.9) contrast(1.02);
+}
+
+.nova-project-detail-list-body {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+}
+
+.nova-project-detail-list-body strong {
+  overflow: hidden;
+  color: var(--nova-tag-text);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nova-project-detail-list-body small {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--nova-tag-muted);
+  font-size: 12px;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* ---- light 主题 ---- */
+html[data-theme="light"] .nova-project-detail-demo {
+  border-color: rgba(75, 62, 83, .08);
+  background: #ece9ee;
+  box-shadow: 0 14px 34px rgba(53, 43, 62, .1);
+}
+
+html[data-theme="light"] .nova-project-detail-btn {
+  background: #a9527a;
+}
+
+html[data-theme="light"] .nova-project-detail-btn:hover,
+html[data-theme="light"] .nova-project-detail-btn:focus-visible {
+  background: #934465;
+  box-shadow: 0 6px 18px rgba(169, 82, 122, .24);
+}
+
+html[data-theme="light"] .nova-project-detail-btn--placeholder {
+  background: rgba(169, 82, 122, .34);
+}
+
+html[data-theme="light"] .nova-project-detail-aside h3 {
+  border-bottom-color: rgba(75, 62, 83, .12);
+}
+
+html[data-theme="light"] .nova-project-detail-list li > a {
+  border-color: rgba(75, 62, 83, .08);
+  background: rgba(255, 255, 255, .88);
+}
+
+html[data-theme="light"] .nova-project-detail-list li > a:hover,
+html[data-theme="light"] .nova-project-detail-list li > a:focus-visible {
+  border-color: rgba(179, 83, 119, .26);
+}
+
+html[data-theme="light"] .nova-project-detail-list img {
+  background: #ece9ee;
+  filter: brightness(.98) saturate(.96);
+}
+
+/* ---- 响应式 ---- */
+@media (max-width: 1180px) {
+  #content-inner.nova-project-detail {
+    width: calc(100% - 40px);
+  }
+}
+
+@media (max-width: 1024px) {
+  #content-inner.nova-project-detail {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 30px;
+  }
+
+  .nova-project-detail-aside {
+    order: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  #content-inner.nova-project-detail {
+    width: calc(100% - 28px);
+    margin: 28px auto 44px;
+    gap: 22px;
+  }
+
+  .nova-project-detail-actions {
+    flex-direction: column;
+  }
+
+  .nova-project-detail-btn {
+    justify-content: center;
+  }
+}
