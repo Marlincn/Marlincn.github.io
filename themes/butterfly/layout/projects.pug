@@ -2,7 +2,7 @@ extends ./base.pug
 
 block headOpts
   - page.bodyClass = 'nova-tag-route nova-projects-route'
-  - page.headOpts = { title: '工程 | Marlin', siteTitle: '工程', description: '单片机与建模的动手实录：从开源复刻到课程设计。', ogUrl: siteUrl + '/projects/', pageType: 'page', extraCss: '<link href="/rose-galaxy/css/projects-page.css?v=20260901-fix-v5" rel="stylesheet" data-nova-projects-style="">', extraHead: page.ldjson }
+  - page.headOpts = { title: '工程 | Marlin', siteTitle: '工程', description: '单片机与建模的动手实录：从开源复刻到课程设计。', ogUrl: siteUrl + '/projects/', pageType: 'page', extraCss: '<link href="/rose-galaxy/css/projects-page.css?v=20260901-fix-v6" rel="stylesheet" data-nova-projects-style="">', extraHead: page.ldjson }
 
 block content
   != page.idxTop
@@ -20,14 +20,18 @@ block content
     //- 内联 grid: 3 列卡片布局不依赖外部 CSS 时序(首帧不单列堆叠)
     div.nova-projects-grid(style='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 26px;')
       each p, i in page.projects
-        a.nova-project-card(href=p.detailHref aria-label='查看 ' + p.title + ' 的工程详情')
-          div.nova-project-cover(style='position:relative;overflow:hidden;background:#0c1323')
+        article.nova-project-card
+          a.nova-project-cover(href=p.detailHref aria-label='查看 ' + p.title + ' 的工程详情')
             //- 内联兜底: 3:2 占位, 不依赖外部 CSS 时序, 首帧不铺满
             span(style='display:block;padding-top:66.6667%;' aria-hidden='true')
             img(src=p.cover alt=p.title loading='lazy' decoding='async' style='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' onerror="this.onerror=null;this.src='/img/404.jpg'")
           div.nova-project-body
-            h3= p.title
-            p.nova-project-desc= p.description
+            h3
+              a(href=p.detailHref)= p.title
+            div.nova-project-desc
+              //- 三行截断; 不足三行时占位行沉底填充(卡片等高)
+              p= p.description
+              span.nova-project-desc-placeholder(aria-hidden='true') 项目介绍陆续整理中…
             div.nova-project-meta
               if p.date
                 time= p.date
@@ -35,5 +39,8 @@ block content
                 span.nova-project-meta-live 持续更新中
               span.nova-project-meta-sep(aria-hidden='true') ·
               span= p.subtitle || p.category
+            a.nova-project-action(href=p.detailHref aria-label='进入 ' + p.title + ' 的工程详情')
+              span 进入项目
+              span.nova-project-action-arrow(aria-hidden='true') →
   | </main>
   != page.idxBottom

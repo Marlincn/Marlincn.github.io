@@ -3,7 +3,7 @@ extends ./base.pug
 block headOpts
   - page.bodyClass = 'nova-project-detail-route'
   - var detailUrl = encodeURI(siteUrl + '/projects/' + page.projectId + '/')
-  - page.headOpts = { title: '工程: ' + page.title + ' | Marlin', siteTitle: '工程: ' + page.title, description: page.description, ogUrl: detailUrl, canonical: detailUrl, ogTitle: page.title, pageType: 'page', extraCss: '<link href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v6" rel="stylesheet" data-nova-project-detail-style="">' }
+  - page.headOpts = { title: '工程: ' + page.title + ' | Marlin', siteTitle: '工程: ' + page.title, description: page.description, ogUrl: detailUrl, canonical: detailUrl, ogTitle: page.title, pageType: 'page', extraCss: '<link href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v11" rel="stylesheet" data-nova-project-detail-style="">' }
 
 block content
   div#sidebar
@@ -101,12 +101,13 @@ block content
                 span.waline-comment-count(data-path='/' + 'projects/' + page.projectId + '/')
                   i.fa-solid.fa-spinner.fa-spin
     main#content-inner
-      //- 内联 grid 布局: 两栏(左主区 + 320px 右栏)不依赖外部 CSS 时序, 首帧不堆叠
-      div.nova-project-detail(style='display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:40px;align-items:start;width:min(1120px,calc(100% - 64px));margin:46px auto 60px;max-width:1120px;')
+      //- 内联 grid 布局: 两栏(左主区 + 340px 右栏)不依赖外部 CSS 时序, 首帧不堆叠
+      div.nova-project-detail(style='display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:48px;align-items:start;width:min(1400px,calc(100% - 64px));margin:46px auto 60px;max-width:1400px;')
         section.nova-project-detail-main
           //- 白色卡片: 演示图 + 介绍文本包裹在一起(参照文章三级页正文卡片)
           div.nova-project-detail-panel
-            div.nova-project-detail-demo(style='position:relative;overflow:hidden;width:100%;')
+            //- 演示图保持原显示宽度(约 740px, 与旧版一致): 面板加宽但不放大图片, 图片居中; 底部 32px 与文字分隔
+            div.nova-project-detail-demo(style='position:relative;overflow:hidden;width:100%;max-width:740px;margin:0 auto 32px;')
               span(style='display:block;padding-top:56.2823%;' aria-hidden='true')
               img(src=page.demoCover alt=page.title decoding='async' style='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' onerror="this.onerror=null;this.src='/img/projects/drone.webp'")
             if page.introBlocks && page.introBlocks.length
@@ -120,7 +121,7 @@ block content
                         li= item
                   - else
                     p= block.text
-            h2.nova-project-detail-actions-title 源工程地址
+            h2.nova-project-detail-actions-title 工程地址
             div.nova-project-detail-actions
               if page.link
                 a.nova-project-detail-btn(href=page.link target='_blank' rel='noopener')
@@ -133,16 +134,46 @@ block content
               if !page.link && !page.link2
                 span.nova-project-detail-btn.nova-project-detail-btn--placeholder 地址整理中
         aside.nova-project-detail-aside
-          h3 其他工程
-          ul.nova-project-detail-list
-            each p, i in page.others
+          section.nova-project-detail-side-card.nova-project-detail-profile
+            header
+              span PROJECT PROFILE
+              h2 工程简介
+            h3= page.title
+            p= page.description
+            div.nova-project-detail-profile-stats
+              span= page.category
+              span= page.projectCount + ' PROJECTS · ' + page.tagCount + ' TAGS'
+          section.nova-project-detail-side-card.nova-project-detail-data
+            header
+              span PROJECT DATA
+              h2 工程档案
+            ul.nova-project-detail-data-rows
               li
-                a(href=p.detailHref)
-                  //- 内联约束: 右栏缩略图尺寸不依赖外部 CSS 时序(首帧不按固有尺寸撑爆)
-                  img(src=p.cover alt=p.title loading='lazy' decoding='async' style='width:108px;height:72px;flex:none;object-fit:cover;border-radius:8px;' onerror="this.onerror=null;this.src='/img/404.jpg'")
-                  span.nova-project-detail-list-body
-                    strong= p.title
-                    small= p.subtitle || p.category
+                span 发表于
+                strong= page.date
+              li
+                span 更新于
+                strong= page.updated
+          section.nova-project-detail-side-card.nova-project-detail-path
+            header
+              span PROJECT PATH
+              h2 工程路径
+            nav
+              each p, i in page.allProjects
+                - var pdClass = p.id === page.projectId ? 'is-current' : ''
+                a.nova-project-detail-path-link(class=pdClass href=p.detailHref)
+                  span= String(i + 1).padStart(2, '0')
+                  strong= p.title
+                  small= p.category
+                  i(aria-hidden='true')
+          section.nova-project-detail-side-card.nova-project-detail-tags
+            header
+              span TECH TAGS
+              h2 技术标签
+            div.nova-project-detail-tags-wrap
+              each t in page.tags
+                a.nova-project-detail-tag(href='/projects/')
+                  span= t
     //- 评论区块(参照文章页): 每个工程页 path 独立, 评论互不串页
     section.nova-project-detail-comments#post-comment
       div.comment-head

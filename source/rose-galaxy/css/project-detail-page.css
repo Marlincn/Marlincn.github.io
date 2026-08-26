@@ -2,16 +2,12 @@
    左主区:顶部大图 → 等大演示图 → 「源工程地址」标题 → 方形按钮(本站色);
    右栏:其他工程列表。文字不加背景框。 */
 
-body.nova-project-detail-route {
-  --pd-accent: #cd6990;            /* 本站玫瑰色(深色主题) */
-}
-
 .nova-project-detail {
-  width: min(1120px, calc(100% - 64px));
+  width: min(1400px, calc(100% - 64px));
   margin: 46px auto 60px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 320px;
-  gap: 40px;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 48px;
   align-items: start;
 }
 
@@ -32,6 +28,8 @@ html[data-theme="light"] .nova-project-detail-panel {
 .nova-project-detail-demo {
   position: relative;
   overflow: hidden;
+  max-width: 740px; /* 保持原图显示宽度: 面板加宽时图片不放大, 居中 */
+  margin: 0 auto 32px;
   border-radius: 12px;
   background: #0c1323;
 }
@@ -104,7 +102,7 @@ html[data-theme="light"] .nova-project-detail-panel {
   letter-spacing: .04em;
 }
 
-/* 方形按钮:本站玫瑰色, 无圆角, 无描边背景框 */
+/* 方形按钮: 浅玫瑰底 + 描边(取档案卡 pill 视觉, 改为方形), 比旧实色浅 */
 .nova-project-detail-actions {
   display: flex;
   flex-wrap: wrap;
@@ -116,103 +114,257 @@ html[data-theme="light"] .nova-project-detail-panel {
   align-items: center;
   gap: 9px;
   padding: 11px 22px;
-  border: 0;
+  border: 1px solid rgba(205, 105, 143, .46);
   border-radius: 0;
-  background: var(--pd-accent);
-  color: #fff;
+  background: rgba(205, 105, 143, .26);
+  color: var(--nova-tag-text);
   font-size: 15px;
   letter-spacing: .08em;
   text-decoration: none;
-  transition: background .2s ease, transform .2s ease, box-shadow .2s ease;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease, box-shadow .2s ease;
 }
 
 .nova-project-detail-btn:hover,
 .nova-project-detail-btn:focus-visible {
-  background: #b8557b;
+  background: rgba(205, 105, 143, .34);
+  border-color: rgba(205, 105, 143, .62);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(205, 105, 143, .28);
-  color: #fff;
+  box-shadow: 0 6px 18px rgba(205, 105, 143, .18);
+  color: var(--nova-tag-text);
   outline: none;
 }
 
 .nova-project-detail-btn--placeholder {
   cursor: default;
-  background: rgba(205, 105, 143, .38);
+  background: rgba(205, 105, 143, .12);
+  color: var(--nova-tag-muted);
 }
 
-/* ---- 右栏:其他工程 ---- */
-.nova-project-detail-aside h3 {
-  margin: 0 0 14px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid rgba(224, 194, 210, .12);
-  color: var(--nova-tag-text);
-  font: 600 17px/1.5 "Noto Serif SC", "Songti SC", serif;
-  letter-spacing: .06em;
-}
-
-.nova-project-detail-list {
+/* ---- 右栏: 文章二级页同构侧边栏(4 卡片) ----
+   参考 themes/butterfly/layout/tag.pug aside.nova-tag-sidebar 排版:
+   卡片 header(eyebrow + 标题) + 分节内容;大屏 sticky 吸顶。 */
+.nova-project-detail-aside {
   display: flex;
+  min-width: 0;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
+}
+
+.nova-project-detail-side-card {
+  padding: 22px;
+  border: 1px solid rgba(224, 194, 210, .14);
+  border-radius: 20px;
+  background: linear-gradient(145deg, rgba(16, 23, 43, .66), rgba(11, 18, 35, .6));
+  box-shadow: 0 12px 32px rgba(0, 0, 0, .16);
+}
+
+.nova-project-detail-side-card header {
+  margin-bottom: 16px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--nova-tag-line);
+}
+
+.nova-project-detail-side-card header span {
+  color: var(--nova-tag-accent);
+  font-size: 11px;
+  letter-spacing: .14em;
+}
+
+.nova-project-detail-side-card header h2 {
+  margin: 4px 0 0;
+  color: var(--nova-tag-text);
+  font: 500 18px/1.4 "Noto Serif SC", "Songti SC", serif;
+}
+
+/* PROFILE 卡: 工程名 + 描述 + 统计行 + 查看全部 */
+.nova-project-detail-profile h3 {
+  margin: 0;
+  color: var(--nova-tag-text);
+  font: 500 24px/1.4 "Noto Serif SC", "Songti SC", serif;
+}
+
+.nova-project-detail-profile > p {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 9px 0 15px;
+  color: var(--nova-tag-secondary);
+  font-size: 13px;
+  line-height: 1.75;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.nova-project-detail-profile-stats {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--nova-tag-muted);
+  font-size: 11px;
+}
+
+.nova-project-detail-profile-stats span:first-child {
+  color: var(--nova-tag-accent);
+}
+
+/* DATA 卡: 时间表(发表于/更新于 竖线时间线) */
+.nova-project-detail-data-rows {
+  display: grid;
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.nova-project-detail-list li > a {
+.nova-project-detail-data-rows li {
+  position: relative;
   display: flex;
+  justify-content: space-between;
   gap: 12px;
-  padding: 10px;
-  border: 1px solid rgba(224, 194, 210, .09);
-  border-radius: 12px;
-  background: linear-gradient(145deg, rgba(16, 23, 43, .78), rgba(11, 18, 35, .72));
-  text-decoration: none;
-  transition: border-color .2s ease, transform .2s ease;
+  padding: 8px 0 8px 18px;
+  color: var(--nova-tag-muted);
+  font-size: 12px;
 }
 
-.nova-project-detail-list li > a:hover,
-.nova-project-detail-list li > a:focus-visible {
-  border-color: rgba(205, 105, 143, .28);
-  transform: translateX(2px);
-  outline: none;
+.nova-project-detail-data-rows li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 13px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--nova-tag-accent);
+  box-shadow: 0 0 0 3px rgba(205, 105, 143, .1);
 }
 
-.nova-project-detail-list img {
-  width: 108px;
-  height: 72px;
-  flex: none;
-  object-fit: cover;
-  border-radius: 8px;
-  background: #0c1323;
-  filter: brightness(.86) saturate(.9) contrast(1.02);
+.nova-project-detail-data-rows li + li::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: -9px;
+  bottom: 9px;
+  width: 1px;
+  background: rgba(205, 105, 143, .16);
 }
 
-.nova-project-detail-list-body {
-  display: flex;
-  min-width: 0;
-  flex-direction: column;
-  justify-content: center;
-  gap: 6px;
-}
-
-.nova-project-detail-list-body strong {
-  overflow: hidden;
+.nova-project-detail-data-rows strong {
   color: var(--nova-tag-text);
-  font-size: 14.5px;
-  font-weight: 600;
-  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* PATH 卡: 工程路径编号列表(当前高亮) */
+.nova-project-detail-path nav {
+  display: grid;
+}
+
+.nova-project-detail-path-link {
+  display: grid;
+  padding: 10px 6px;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  border-radius: 9px;
+  color: var(--nova-tag-secondary);
+  font-size: 11px;
+  text-decoration: none;
+  transition: background .2s ease, color .2s ease;
+}
+
+.nova-project-detail-path-link > span {
+  color: var(--nova-tag-accent);
+  font: 500 10px Georgia, serif;
+}
+
+.nova-project-detail-path-link strong {
+  overflow: hidden;
+  font-weight: 500;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.nova-project-detail-list-body small {
-  display: -webkit-box;
-  overflow: hidden;
+.nova-project-detail-path-link small {
   color: var(--nova-tag-muted);
-  font-size: 12px;
-  line-height: 1.6;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
+  font-size: 10px;
+}
+
+.nova-project-detail-path-link i {
+  width: 6px;
+  height: 6px;
+  margin-left: 2px;
+  border: 1px solid rgba(207, 155, 180, .28);
+  border-radius: 50%;
+  transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+
+.nova-project-detail-path-link:hover {
+  color: var(--nova-tag-text);
+  background: rgba(197, 99, 137, .07);
+}
+
+.nova-project-detail-path-link.is-current {
+  color: var(--nova-tag-text);
+  background: rgba(205, 105, 143, .09);
+}
+
+.nova-project-detail-path-link.is-current i {
+  border-color: var(--nova-tag-accent);
+  background: var(--nova-tag-accent);
+  box-shadow: 0 0 0 4px rgba(205, 105, 143, .08);
+}
+
+/* TAGS 卡: 药丸标签 */
+.nova-project-detail-tags-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.nova-project-detail-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border: 1px solid var(--nova-tag-line);
+  border-radius: 999px;
+  color: var(--nova-tag-secondary);
+  background: rgba(255, 255, 255, .035);
+  font-size: 11px;
+  text-decoration: none;
+  transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+
+.nova-project-detail-tag:hover,
+.nova-project-detail-tag:focus-visible {
+  border-color: rgba(205, 105, 143, .42);
+  color: var(--nova-tag-text);
+  background: rgba(205, 105, 143, .1);
+  outline: none;
+}
+
+/* 大屏 sticky(同文章二级页): ≥1101px 宽且 ≥850px 高时吸顶, 内部滚动 */
+@media (min-width: 1101px) and (min-height: 850px) {
+  .nova-project-detail-aside {
+    position: sticky;
+    top: 88px;
+    max-height: calc(100vh - 112px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-right: 4px;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+
+  .nova-project-detail-aside::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 1100px), (max-height: 849px) {
+  .nova-project-detail-aside {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
 }
 
 /* ---- light 主题 ---- */
@@ -223,41 +375,47 @@ html[data-theme="light"] .nova-project-detail-demo {
 }
 
 html[data-theme="light"] .nova-project-detail-btn {
-  background: #a9527a;
+  border-color: rgba(179, 83, 119, .44);
+  background: rgba(179, 83, 119, .2);
 }
 
 html[data-theme="light"] .nova-project-detail-btn:hover,
 html[data-theme="light"] .nova-project-detail-btn:focus-visible {
-  background: #934465;
-  box-shadow: 0 6px 18px rgba(169, 82, 122, .24);
+  background: rgba(179, 83, 119, .28);
+  border-color: rgba(179, 83, 119, .6);
+  box-shadow: 0 6px 18px rgba(179, 83, 119, .15);
 }
 
 html[data-theme="light"] .nova-project-detail-btn--placeholder {
-  background: rgba(169, 82, 122, .34);
+  background: rgba(179, 83, 119, .08);
 }
 
-html[data-theme="light"] .nova-project-detail-aside h3 {
-  border-bottom-color: rgba(75, 62, 83, .12);
+html[data-theme="light"] .nova-project-detail-side-card {
+  border-color: rgba(75, 62, 83, .14);
+  background: rgba(255, 255, 255, .92);
+  box-shadow: 0 12px 30px rgba(53, 43, 62, .08);
 }
 
-html[data-theme="light"] .nova-project-detail-list li > a {
-  border-color: rgba(75, 62, 83, .08);
-  background: rgba(255, 255, 255, .88);
+html[data-theme="light"] .nova-project-detail-path-link:hover {
+  background: rgba(179, 83, 119, .07);
 }
 
-html[data-theme="light"] .nova-project-detail-list li > a:hover,
-html[data-theme="light"] .nova-project-detail-list li > a:focus-visible {
-  border-color: rgba(179, 83, 119, .26);
+html[data-theme="light"] .nova-project-detail-path-link.is-current {
+  background: rgba(179, 83, 119, .09);
 }
 
-html[data-theme="light"] .nova-project-detail-list img {
-  background: #ece9ee;
-  filter: brightness(.98) saturate(.96);
+html[data-theme="light"] .nova-project-detail-tag {
+  background: rgba(255, 255, 255, .6);
+}
+
+html[data-theme="light"] .nova-project-detail-tag:hover,
+html[data-theme="light"] .nova-project-detail-tag:focus-visible {
+  background: rgba(179, 83, 119, .1);
 }
 
 /* ---- 评论区块(参照文章页结构) ---- */
 .nova-project-detail-comments {
-  width: min(1120px, calc(100% - 64px));
+  width: min(1400px, calc(100% - 64px));
   margin: 50px auto 70px;
 }
 
@@ -288,15 +446,16 @@ html[data-theme="light"] .nova-project-detail-list img {
 
 /* ---- 响应式 ---- */
 @media (max-width: 1180px) {
-  #content-inner.nova-project-detail {
-    width: calc(100% - 40px);
+  .nova-project-detail {
+    width: calc(100% - 40px) !important;
   }
 }
 
 @media (max-width: 1024px) {
-  #content-inner.nova-project-detail {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 30px;
+  .nova-project-detail {
+    /* !important 覆盖模板内联 grid(首帧防铺满): 内联样式优先级高于 media 规则 */
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 30px !important;
   }
 
   .nova-project-detail-aside {
@@ -305,10 +464,10 @@ html[data-theme="light"] .nova-project-detail-list img {
 }
 
 @media (max-width: 768px) {
-  #content-inner.nova-project-detail {
-    width: calc(100% - 28px);
-    margin: 28px auto 44px;
-    gap: 22px;
+  .nova-project-detail {
+    width: calc(100% - 28px) !important;
+    margin: 28px auto 44px !important;
+    gap: 22px !important;
   }
 
   .nova-project-detail-actions {

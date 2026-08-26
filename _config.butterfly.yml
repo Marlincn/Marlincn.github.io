@@ -83,7 +83,7 @@ default_top_img: /img/post-hero-banner.webp
 inject:
   head:
     - <link rel="stylesheet" href="/css/custom.css?v=20260833-nav2">
-    - <link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v6">
+    - <link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v11">
     - <link rel="stylesheet" href="/rose-galaxy/css/night-visitor.css?v=20260813-prince-quotes-v1">
   bottom:
     - <script src="/rose-galaxy/js/nova-ux.js?v=20260817-theme-pref"></script>

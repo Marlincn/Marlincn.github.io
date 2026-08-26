@@ -1,5 +1,5 @@
 'use strict'
-/* 工程介绍文案(自包含): 无引用块, 结构 { id: [{tag,text|items},...] } */
+/* 工程介绍文案(自包含): 无引用块, 无外部链接段(链接由"工程地址"按钮承担), 结构 { id: [{tag,text|items},...] } */
 
 module.exports = {
   'drone': [
@@ -15,8 +15,6 @@ module.exports = {
     ] },
     { tag: 'h2', text: '文档与工具' },
     { tag: 'p', text: '琛光 E1_Mini V1.1Y 物料清单（xlsx）、琛光 E1_MINI 固件 20260507（bin）、乐鑫烧录工具（flash_download_tool 3.9.11）、CF-Drone 完整源码（battery / control / estimate / imu / motors / rc / wifi / web_rc 等 30 个 .ino/.h）。' },
-    { tag: 'h2', text: '外部链接' },
-    { tag: 'p', text: 'GitHub：songge8/CF-Drone · 嘉立创开源：oshwhub.com/songge8/project_qqqyfdkm' },
   ],
   'line-car': [
     { tag: 'p', text: '工程训练结课作业的全流程开源项目：以 Arduino Uno 为大脑，配 Uno R3 v5 拓展板、L298N 驱动板，外挂红外、蓝牙与超声波三种传感器，把遥控、循迹、避障三样玩法一次做完。全套说明文档、固件、连线图、激光切割结构件与 SolidWorks 建模全部公开。' },
@@ -40,8 +38,6 @@ module.exports = {
     ] },
     { tag: 'h2', text: '文档与工具' },
     { tag: 'p', text: 'README 全流程文档（硬件/代码/连线/PWM 详解）、code.ino 完整固件、PWM 拓展代码、Proteus 连线图、激光切割图纸（底板/固定板/L 型板上板/L 型板下板）、SolidWorks 建模（.zip + STEP 兼容）、物料清单。' },
-    { tag: 'h2', text: '外部链接' },
-    { tag: 'p', text: 'GitHub：deymocn/Arduino-line-follower' },
   ],
   'led-matrix': [
     { tag: 'p', text: '复刻自 B 站浪迹天涯的鸟的开源项目：用一块 ESP32 驱动 16×16 的 WS2812 灯板，做成一套"算法驱动"的实时效果引擎。主打重力感应水波（MPU6050 实时驱动，倾斜灯板水就跟着流）与 DOOM 风格跳火花，多帧率可调、效果可扩展。打板文件、购置清单、焊接接线说明与固件源码全部公开，从热台焊接、烧录固件到上电点亮可完整跟做。' },
@@ -68,8 +64,6 @@ module.exports = {
     ] },
     { tag: 'h2', text: '文档与工具' },
     { tag: 'p', text: '购置清单（docs/）、打板文件（hardware/）、固件源码（firmware/，含 water_sim / doom_fire / sim_manager / BSP 驱动）、接线图、test.c 灯板检测程序。' },
-    { tag: 'h2', text: '外部链接' },
-    { tag: 'p', text: 'GitHub：cccAboy/esp32-led-matrix · 嘉立创开源：oshwhub.com/ccbaw123/deng-ban-flip' },
   ],
   'kurtips': [
     { tag: 'p', text: '跟随 Kurtips 老师完成的第一件 Blender 作品：小狐狸。从基础建模开始，依次走通建模、材质、渲染合成与动画整条链路（Blender 5.2），把课堂里学到的流程完整练习了一遍。成品 .blend 源文件公开，方便对照学习。' },
@@ -83,8 +77,6 @@ module.exports = {
     ] },
     { tag: 'h2', text: '学习笔记' },
     { tag: 'p', text: '整套流程按"建模材质 → 渲染合成 → 动画"顺序推进，课堂知识从点连成线：先学会把形状做出来，再学会把材质贴上去，最后让模型动起来。源文件保留每一步操作，适合对照检查自己的操作习惯。作为第一件 Blender 作品，它验证了基础工作流能跑通，也为后续做更复杂的场景打好了底。' },
-    { tag: 'h2', text: '外部链接' },
-    { tag: 'p', text: '本工程为课程跟做作品，暂无 GitHub / 嘉立创外链。' },
   ],
   'shaper': [
     { tag: 'p', text: '机械原理课程结课作业：牛头刨床整机设计。方案采用摆动导杆机构 + 摆杆滑块机构的组合，以曲柄为原动件，实现工作行程低速均匀、空回行程快速返回的急回特性。用 SolidWorks 完成全部零件建模与整机装配，对关键结构做有限元分析，并输出机构演示动画与设计报告。' },
@@ -105,7 +97,5 @@ module.exports = {
     ] },
     { tag: 'h2', text: '文档与工具' },
     { tag: 'p', text: '设计报告.doc、建模源文件（6 个 SLDPRT + 1 个 SLDASM）、位移/应力/应变分析动画、机构演示动画。' },
-    { tag: 'h2', text: '外部链接' },
-    { tag: 'p', text: '本工程为课程结课作业，暂无 GitHub / 嘉立创外链。' },
   ],
 }

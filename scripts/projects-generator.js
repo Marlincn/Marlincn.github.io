@@ -110,10 +110,13 @@ hexo.extend.generator.register('nova-projects', function () {
         projectId: p.id,
         title: p.title,
         category: p.category,
+        categoryKey: p.categoryKey,
+        subtitle: p.subtitle,
         // 发表于: 有 date 用原值, 否则本时刻; 更新于: 一律本时刻(工程持续更新中)
         date: p.date || TODAY,
         updated: TODAY,
         description: p.description,
+        tags: p.tags,
         demoCover: '/img/projects/demo-' + p.id + '.webp',
         link: p.link,
         linkLabel: p.linkLabel,
@@ -121,6 +124,11 @@ hexo.extend.generator.register('nova-projects', function () {
         link2Label: p.link2Label,
         introBlocks: INTRO_BLOCKS[p.id] || null,
         others: prepared.filter(o => o.id !== p.id),
+        allProjects: prepared,
+        // 侧边栏统计(PROFILE 卡): 工程总数 / 分类数 / 全站标签数
+        projectCount: prepared.length,
+        categoryCount: CATEGORIES.length,
+        tagCount: uniqueTags.size,
         detailCss: PROJECT_DETAIL_CSS,
         idxBottom: IDX_BOTTOM
       }
