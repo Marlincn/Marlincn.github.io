@@ -6,20 +6,6 @@ body.nova-tag-route main.nova-projects-overview {
   min-height: 60vh;
 }
 
-/* 工程页 footer:tag-page 的 background 简写把 size/repeat 重置成 auto/repeat,
-   导致 guidang.webp 背景在 footer 内平铺出"上下两层"。
-   用 nova-projects-route 类提高特异性, 压过 tag-page.css 的同名规则(后加载)。 */
-body.nova-tag-route.nova-projects-route footer#footer {
-  background: url(/img/guidang.webp) center bottom / cover no-repeat #080c17;
-  border-top: 1px solid rgba(199, 97, 132, .14);
-  color: #bcb5bf;
-}
-
-html[data-theme="light"] body.nova-tag-route.nova-projects-route footer#footer {
-  background: url(/img/guidang.webp) center bottom / cover no-repeat #d5d4de;
-  color: #514c59;
-}
-
 /* ---- 卡片网格(面板容器复用 .nova-tags-index 样式,这里扩宽/加大内边距) ---- */
 .nova-tags-index.nova-projects-index {
   width: min(1300px, calc(100% - 64px));

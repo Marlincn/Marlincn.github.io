@@ -3,7 +3,7 @@ extends ./base.pug
 block headOpts
   - page.bodyClass = 'nova-project-detail-route'
   - var detailUrl = encodeURI(siteUrl + '/projects/' + page.projectId + '/')
-  - page.headOpts = { title: '工程: ' + page.title + ' | Marlin', siteTitle: '工程: ' + page.title, description: page.description, ogUrl: detailUrl, canonical: detailUrl, ogTitle: page.title, pageType: 'page', extraCss: '<link href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v5" rel="stylesheet" data-nova-project-detail-style="">' }
+  - page.headOpts = { title: '工程: ' + page.title + ' | Marlin', siteTitle: '工程: ' + page.title, description: page.description, ogUrl: detailUrl, canonical: detailUrl, ogTitle: page.title, pageType: 'page', extraCss: '<link href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v6" rel="stylesheet" data-nova-project-detail-style="">' }
 
 block content
   div#sidebar
@@ -74,48 +74,64 @@ block content
         h1.post-title= page.title
         div#post-meta
           div.meta-firstline
+            //- 发表于/更新于: 与文章页一致(工程无更新时间则不显示"更新于")
             if page.date
               span.post-meta-date
                 i.far.fa-calendar-alt.fa-fw.post-meta-icon
-                span.post-meta-label= '创建于'
+                span.post-meta-label= '发表于'
                 time= page.date
-            span.post-meta-categories
-              if page.date
-                span.post-meta-separator |
-              i.fas.fa-inbox.fa-fw.post-meta-icon
-              span= page.category
+                if page.updated
+                  span.post-meta-separator |
+                  i.fas.fa-history.fa-fw.post-meta-icon
+                  span.post-meta-label= '更新于'
+                  time= page.updated
+          div.meta-secondline
+            //- 浏览量 + 评论数: 与文章页一致(busuanzi + waline-comment-count)
+            span.post-meta-separator
+            span.post-meta-pv-cv(data-flag-title=page.title)
+              i.far.fa-eye.fa-fw.post-meta-icon
+              span.post-meta-label 浏览量:
+              span#busuanzi_value_page_pv
+                i.fa-solid.fa-spinner.fa-spin
+            span.post-meta-separator
+            span.post-meta-commentcount
+              i.far.fa-comments.fa-fw.post-meta-icon
+              span.post-meta-label 评论数:
+              a(href='#post-comment')
+                span.waline-comment-count(data-path='/' + 'projects/' + page.projectId + '/')
+                  i.fa-solid.fa-spinner.fa-spin
     main#content-inner
       //- 内联 grid 布局: 两栏(左主区 + 320px 右栏)不依赖外部 CSS 时序, 首帧不堆叠
       div.nova-project-detail(style='display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:40px;align-items:start;width:min(1120px,calc(100% - 64px));margin:46px auto 60px;max-width:1120px;')
         section.nova-project-detail-main
-          div.nova-project-detail-demo(style='position:relative;overflow:hidden;width:100%;max-width:760px;')
-            span(style='display:block;padding-top:56.2823%;' aria-hidden='true')
-            img(src=page.demoCover alt=page.title decoding='async' style='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' onerror="this.onerror=null;this.src='/img/projects/drone.webp'")
-          if page.introBlocks && page.introBlocks.length
-            div.nova-project-detail-intro
-              each block, i in page.introBlocks
-                - if (block.tag === 'h2')
-                  h2= block.text
-                - else if (block.tag === 'quote')
-                  blockquote= block.text
-                - else if (block.tag === 'list')
-                  ul
-                    each item in block.items
-                      li= item
-                - else
-                  p= block.text
-          h2.nova-project-detail-actions-title 源工程地址
-          div.nova-project-detail-actions
-            if page.link
-              a.nova-project-detail-btn(href=page.link target='_blank' rel='noopener')
-                i.fab.fa-github.fa-fw
-                span= page.linkLabel || 'GitHub'
-            if page.link2
-              a.nova-project-detail-btn(href=page.link2 target='_blank' rel='noopener')
-                i.fas.fa-puzzle-piece.fa-fw
-                span= page.link2Label || '更多信息'
-            if !page.link && !page.link2
-              span.nova-project-detail-btn.nova-project-detail-btn--placeholder 地址整理中
+          //- 白色卡片: 演示图 + 介绍文本包裹在一起(参照文章三级页正文卡片)
+          div.nova-project-detail-panel
+            div.nova-project-detail-demo(style='position:relative;overflow:hidden;width:100%;')
+              span(style='display:block;padding-top:56.2823%;' aria-hidden='true')
+              img(src=page.demoCover alt=page.title decoding='async' style='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' onerror="this.onerror=null;this.src='/img/projects/drone.webp'")
+            if page.introBlocks && page.introBlocks.length
+              div.nova-project-detail-intro
+                each block, i in page.introBlocks
+                  - if (block.tag === 'h2')
+                    h2= block.text
+                  - else if (block.tag === 'list')
+                    ul
+                      each item in block.items
+                        li= item
+                  - else
+                    p= block.text
+            h2.nova-project-detail-actions-title 源工程地址
+            div.nova-project-detail-actions
+              if page.link
+                a.nova-project-detail-btn(href=page.link target='_blank' rel='noopener')
+                  i.fab.fa-github.fa-fw
+                  span= page.linkLabel || 'GitHub'
+              if page.link2
+                a.nova-project-detail-btn(href=page.link2 target='_blank' rel='noopener')
+                  i.fas.fa-puzzle-piece.fa-fw
+                  span= page.link2Label || '更多信息'
+              if !page.link && !page.link2
+                span.nova-project-detail-btn.nova-project-detail-btn--placeholder 地址整理中
         aside.nova-project-detail-aside
           h3 其他工程
           ul.nova-project-detail-list
@@ -127,4 +143,40 @@ block content
                   span.nova-project-detail-list-body
                     strong= p.title
                     small= p.subtitle || p.category
+    //- 评论区块(参照文章页): 每个工程页 path 独立, 评论互不串页
+    section.nova-project-detail-comments#post-comment
+      div.comment-head
+        div.comment-headline
+          i.fas.fa-comments.fa-fw
+          span 评论
+      div.comment-wrap
+        div
+          div#waline-wrap
+      script.
+        (() => {
+          const loadWaline = () => {
+            const serverURL = 'https://marlincn-github-io.vercel.app'
+            const path = window.location.pathname
+            const load = () => import('https://cdn.jsdelivr.net/npm/@waline/client@3.15.2/dist/waline.min.js')
+              .then(({ init }) => init({
+                el: document.querySelector('#waline-wrap'),
+                serverURL,
+                path,
+                dark: 'html[data-theme="dark"]',
+                pageview: false,
+                comment: true
+              }))
+            if (window.walineInit) { window.walineInit.destroy && window.walineInit.destroy() }
+            load().then(w => { window.walineInit = w }).catch(e => console.warn('[waline] init failed:', e))
+          }
+          const css = document.createElement('link')
+          css.rel = 'stylesheet'
+          css.href = 'https://cdn.jsdelivr.net/npm/@waline/client@3.15.2/dist/waline.min.css'
+          document.head.appendChild(css)
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadWaline)
+          } else {
+            loadWaline()
+          }
+        })()
   != page.idxBottom

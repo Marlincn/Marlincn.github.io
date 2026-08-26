@@ -6,17 +6,6 @@ body.nova-project-detail-route {
   --pd-accent: #cd6990;            /* 本站玫瑰色(深色主题) */
 }
 
-/* 详情页 footer: 背景图 cover 且不重复, 消除"横幅上下重复两层" */
-body.nova-project-detail-route footer#footer {
-  background: url(/img/guidang.webp) center bottom / cover no-repeat #080c17;
-  color: #bcb5bf;
-}
-
-html[data-theme="light"] body.nova-project-detail-route footer#footer {
-  background: url(/img/guidang.webp) center bottom / cover no-repeat #d5d4de;
-  color: #514c59;
-}
-
 .nova-project-detail {
   width: min(1120px, calc(100% - 64px));
   margin: 46px auto 60px;
@@ -27,13 +16,24 @@ html[data-theme="light"] body.nova-project-detail-route footer#footer {
 }
 
 /* ---- 左主区 ---- */
+.nova-project-detail-panel {
+  padding: 40px 44px;
+  border-radius: 20px;
+  background: #18212d;
+  box-shadow: 0 16px 42px rgba(0, 0, 0, .24);
+}
+
+/* 浅色主题: 卡片白底 */
+html[data-theme="light"] .nova-project-detail-panel {
+  background: #fff;
+  box-shadow: 0 14px 38px rgba(53, 43, 62, .12);
+}
+
 .nova-project-detail-demo {
   position: relative;
   overflow: hidden;
-  border: 1px solid rgba(224, 194, 210, .09);
-  border-radius: 18px;
+  border-radius: 12px;
   background: #0c1323;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, .15);
 }
 
 /* 等大演示图: 16:9 占位已由模板内联 span 提供(不依赖外部 CSS 时序);
@@ -47,9 +47,12 @@ html[data-theme="light"] body.nova-project-detail-route footer#footer {
   object-fit: cover;
 }
 
-/* 工程介绍(三种风格演示):纯文字排版, 无背景框 */
+/* 文本介绍(在卡片内): 纯文字排版 */
 .nova-project-detail-intro {
-  margin: 34px 0 8px;
+  margin: 0;
+  padding: 0;
+  background: none;
+  box-shadow: none;
 }
 
 .nova-project-detail-intro p {
@@ -65,16 +68,6 @@ html[data-theme="light"] body.nova-project-detail-route footer#footer {
   color: var(--nova-tag-text);
   font: 600 18px/1.6 "Noto Serif SC", "Songti SC", serif;
   letter-spacing: .05em;
-}
-
-.nova-project-detail-intro blockquote {
-  margin: 0 0 16px;
-  padding: 10px 16px;
-  border-left: 3px solid var(--nova-tag-accent, #cd6990);
-  color: var(--nova-tag-secondary);
-  font-size: 14px;
-  line-height: 1.9;
-  background: none;
 }
 
 .nova-project-detail-intro ul {
@@ -101,11 +94,6 @@ html[data-theme="light"] body.nova-project-detail-route footer#footer {
   height: 5px;
   border-radius: 50%;
   background: var(--nova-tag-accent, #cd6990);
-}
-
-/* ---- light 主题 ---- */
-html[data-theme="light"] .nova-project-detail-intro blockquote {
-  border-left-color: #a9527a;
 }
 
 /* 「源工程地址」标题:纯文字, 无背景框 */

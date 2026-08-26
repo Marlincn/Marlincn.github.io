@@ -15,9 +15,21 @@ const idxParts = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'id
 const PROJECT_TOP = fs.readFileSync(path.join(projectParts, 'top.html'), 'utf8')
 const IDX_BOTTOM = fs.readFileSync(path.join(idxParts, 'bottom.html'), 'utf8')
 
+// 工程二级页样式: 读入后内联进 <head> <style>, 首帧同步生效(不依赖外部 CSS 时序),
+// 修复"第一次进入背景框/侧边栏框/按钮框未加载"的时序 bug
+const PROJECT_DETAIL_CSS = fs.readFileSync(
+  path.join(__dirname, '..', 'source', 'rose-galaxy', 'css', 'project-detail-page.css'), 'utf8'
+)
+
 const DL_BASE = 'https://deymocn.github.io'
 
 const SITE = (hexo.config.url || '').replace(/\/+$/, '')
+
+// "本时刻" 发表于/更新于: 无 date 的工程(或想保持更新的)用当前时间 YYYY-MM-DD 填充
+const NOW = new Date()
+const TODAY = NOW.getFullYear() + '-' +
+  String(NOW.getMonth() + 1).padStart(2, '0') + '-' +
+  String(NOW.getDate()).padStart(2, '0')
 
 const CATEGORIES = [
   {
@@ -98,7 +110,9 @@ hexo.extend.generator.register('nova-projects', function () {
         projectId: p.id,
         title: p.title,
         category: p.category,
-        date: p.date,
+        // 发表于: 有 date 用原值, 否则本时刻; 更新于: 一律本时刻(工程持续更新中)
+        date: p.date || TODAY,
+        updated: TODAY,
         description: p.description,
         demoCover: '/img/projects/demo-' + p.id + '.webp',
         link: p.link,
@@ -107,6 +121,7 @@ hexo.extend.generator.register('nova-projects', function () {
         link2Label: p.link2Label,
         introBlocks: INTRO_BLOCKS[p.id] || null,
         others: prepared.filter(o => o.id !== p.id),
+        detailCss: PROJECT_DETAIL_CSS,
         idxBottom: IDX_BOTTOM
       }
     })

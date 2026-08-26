@@ -1774,3 +1774,18 @@ body:has(#body-wrap.post,
     scrollbar-color: rgba(190,112,138,.45) transparent;
   }
 }
+
+/* ---- Site footer (A-scheme: global unified banner) ----
+   Background image rendered ONCE (cover + no-repeat). Stops per-page inline
+   `background-image` or tag-page/music-page `background` shorthand from
+   resetting size/repeat, which caused the banner to tile (two layers).
+   Homepage excluded (it uses its own .nova-footer styles). */
+body:not(.nova-home-active) footer#footer {
+  background: url(/img/guidang.webp) center bottom / cover no-repeat #080c17;
+  color: #bcb5bf;
+}
+
+html[data-theme="light"] body:not(.nova-home-active) footer#footer {
+  background: url(/img/guidang.webp) center bottom / cover no-repeat #d5d4de;
+  color: #514c59;
+}

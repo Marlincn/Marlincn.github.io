@@ -78,11 +78,12 @@ display_mode: dark
 
 # 文章页统一背景图:marlin 参考站 go语法总结 同款 leetcode.webp,同位置
 # (header 400px, background center/cover, 暗色遮罩),2026-08-17
-default_top_img: /img/fenlei.webp
+default_top_img: /img/post-hero-banner.webp
 
 inject:
   head:
     - <link rel="stylesheet" href="/css/custom.css?v=20260833-nav2">
+    - <link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v6">
     - <link rel="stylesheet" href="/rose-galaxy/css/night-visitor.css?v=20260813-prince-quotes-v1">
   bottom:
     - <script src="/rose-galaxy/js/nova-ux.js?v=20260817-theme-pref"></script>
