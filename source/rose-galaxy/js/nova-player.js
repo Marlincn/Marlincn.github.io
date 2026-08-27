@@ -42,10 +42,12 @@
     }
   }
 
-  function saveMemory() {
+  function saveMemory(played) {
     try {
+      const prev = loadMemory() || {};
       localStorage.setItem(STORAGE_KEY, JSON.stringify({
         songIndex: state.currentIndex,
+        played: played === true ? true : Boolean(prev.played), // 仅显式 true 才标记真正播放过
         songs: state.songs.map(s => ({
           bvid: s.bvid,
           name: s?.name || s?.title || "",
@@ -90,7 +92,13 @@
     if (state.audio) return state.audio;
     const audio = new Audio();
     audio.preload = "metadata";
-    audio.addEventListener("play", () => emit("play"));
+    audio.addEventListener("play", () => {
+      // 真正开始播放: 标记 played + 清除关闭态(悬浮条可重新出现)
+      miniClosed = false;
+      try { sessionStorage.removeItem("novaMiniClosed"); } catch (_) {}
+      saveMemory(true);
+      emit("play");
+    });
     audio.addEventListener("pause", () => emit("pause"));
     audio.addEventListener("timeupdate", () => emit("timeupdate"));
     audio.addEventListener("durationchange", () => emit("durationchange"));
@@ -133,7 +141,7 @@
       const mem = loadMemory();
       state.currentIndex = mem ? Math.min(mem.songIndex, songs.length - 1) : 0;
     }
-    saveMemory(); // 歌单元信息持久化, 供非音乐页恢复悬浮条
+    saveMemory(false); // 歌单持久化(未播放, 不触发悬浮条)
     emit("playlist");
   }
 
@@ -145,8 +153,6 @@
     state.loadAbort = ac;
     state.currentIndex = ((index % state.songs.length) + state.songs.length) % state.songs.length;
     state.loading = true;
-    miniClosed = false; // 播放时重新允许悬浮条浮现
-    try { sessionStorage.removeItem("novaMiniClosed"); } catch (_) {}
     emit("loadstart");
     const song = state.songs[state.currentIndex];
     try {
@@ -296,7 +302,10 @@
 
   function shouldShowMini() {
     if (document.body.classList.contains("nova-music-route")) return false;
-    return Boolean(loadMemory() && state.songs.length);
+    if (miniClosed) return false;
+    const mem = loadMemory();
+    // 仅在音乐页真正播放过(记忆 played)才弹出悬浮条
+    return Boolean(mem && mem.played && state.songs.length);
   }
 
   function updateMiniBar() {
