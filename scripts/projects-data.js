@@ -1,4 +1,4 @@
-'use strict'
+﻿'use strict'
 /* 工程页数据快照(2026-08-26):
    - 来源:deymo-site/portfolio 各 info.json(title/category/description/tags/link/link2)
      + deymo-site portfolio-manifest.json(downloads 文件清单与尺寸)
@@ -26,7 +26,7 @@ module.exports = [
     downloads: [
       {
         name: '琛光E1_Mini V1.1Y无人机.zip',
-        url: '/assets/projects/files/mcu/琛光无人机/琛光E1_Mini V1.1Y无人机.zip',
+        url: '/assets/projects/琛光无人机/琛光E1_Mini V1.1Y无人机.zip',
         sizeLabel: '26.9MB',
         desc: '整机整包：固件、物料清单与烧录工具。',
         files: [
@@ -58,7 +58,7 @@ module.exports = [
     downloads: [
       {
         name: '循迹小车.zip',
-        url: '/assets/projects/files/mcu/智能循迹小车/循迹小车.zip',
+        url: '/assets/projects/智能循迹小车/循迹小车.zip',
         sizeLabel: '66.9MB',
         desc: '整车整包：固件、连线图、激光切割结构件与 SolidWorks 建模。',
         files: [
@@ -93,7 +93,7 @@ module.exports = [
     downloads: [
       {
         name: 'esp32-led-matrix-main.zip',
-        url: '/assets/projects/files/mcu/LED 点阵屏/esp32-led-matrix-main.zip',
+        url: '/assets/projects/LED 点阵屏/esp32-led-matrix-main.zip',
         sizeLabel: '3.7MB',
         desc: '源工程整包：固件源码与打板文件。',
         files: [
@@ -125,7 +125,7 @@ module.exports = [
     downloads: [
       {
         name: '小狐狸.blend',
-        url: '/assets/projects/files/model/Kurtips建模入门/小狐狸.blend',
+        url: '/assets/projects/Kurtips建模入门/小狐狸.blend',
         sizeLabel: '26.7MB',
         desc: 'Blender 5.2 成品源文件（.blend），含全部建模与材质操作。',
         files: [
@@ -154,7 +154,7 @@ module.exports = [
     downloads: [
       {
         name: '牛头刨床设计-全套资料.zip',
-        url: '/assets/projects/files/model/牛头刨床设计/牛头刨床设计-全套资料.zip',
+        url: '/assets/projects/牛头刨床设计/牛头刨床设计-全套资料.zip',
         sizeLabel: '10.3MB',
         desc: '全套课程设计资料：源文件、有限元分析动画与设计报告。',
         files: [

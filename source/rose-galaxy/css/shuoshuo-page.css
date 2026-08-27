@@ -81,7 +81,7 @@ body.nova-shuoshuo-route footer#footer {
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: url("/img/moments-hero.webp") center 48% / cover no-repeat;
+  background: url("/img/hero/moments-hero.webp") center 48% / cover no-repeat;
   isolation: isolate;
 }
 

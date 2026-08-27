@@ -23,7 +23,7 @@ const PAGES = [
     // 全站背景层(P1 补回): 与 prod 一致——DOM 保留, 页面 css 隐藏
     pre: '<div class="bg-animation" id="web_bg"></div>',
     showExtra: RIGHTSIDE_COMMENT,
-    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/music-page.js?v=20260827-mini-player-v2"></script>'
+    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/music-page.js?v=20260827-p2"></script>'
   },
   {
     name: 'shuoshuo',
@@ -33,7 +33,7 @@ const PAGES = [
     headerCls: 'not-home-page nova-shuoshuo-nav-header',
     mainCls: 'nova-shuoshuo-shell',
     showExtra: RIGHTSIDE_COMMENT,
-    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/shuoshuo-page.js?v=20260813-prince-quotes-v1"></script>'
+    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/shuoshuo-page.js?v=20260827-p2"></script>'
   },
   {
     name: 'about',
@@ -53,7 +53,7 @@ const PAGES = [
     headerCls: 'not-top-img',
     mainCls: 'layout hide-aside',
     // 404 专属背景大图(P1 补回): 与 prod 一致
-    pre: '<div class="bg-animation" id="web_bg" style="background-image: url(/img/error-bg.webp);"></div>'
+    pre: '<div class="bg-animation" id="web_bg" style="background-image: url(/img/hero/error-bg.webp);"></div>'
   }
 ]
 

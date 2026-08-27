@@ -96,7 +96,7 @@ hexo.extend.generator.register('nova-projects', function () {
   const shellTop = composeShellTop({
     pageClass: 'type-projects',
     headerCls: 'not-home-page nova-tag-hero',
-    headerStyle: 'background-image:url(/img/projects-hero.webp)',
+    headerStyle: 'background-image:url(/img/hero/projects-hero.webp)',
     siteData: projectsStat,
     closeHeader: false
   }) + '\n' + readProjectTop
@@ -105,7 +105,7 @@ hexo.extend.generator.register('nova-projects', function () {
   const detailShellTop = composeShellTop({
     pageClass: 'post',
     headerCls: 'post-bg',
-    headerStyle: 'background-image:url(/img/projects-detail-hero.webp)',
+    headerStyle: 'background-image:url(/img/hero/projects-detail-hero.webp)',
     siteData: projectsStat,
     closeHeader: false
   })

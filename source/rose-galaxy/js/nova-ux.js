@@ -12,7 +12,7 @@
   const INITIAL_MIN_SHOW = 400
   // 首页 hero 背景图(深色 night.webp / 浅色 day.webp):loading 需等其渲染完成再退场,
   // 否则首屏会"粒子先动、图片后到"。最长等待 HOME_BG_MAX_WAIT 兜底防弱网卡死。
-  const HOME_BG = { dark: '/img/night.webp', light: '/img/day.webp' }
+  const HOME_BG = { dark: '/img/hero/night.webp', light: '/img/hero/day.webp' }
   const HOME_BG_MAX_WAIT = 3000
   let homeBgReady = false
   const ROUTE_CLASSES = [

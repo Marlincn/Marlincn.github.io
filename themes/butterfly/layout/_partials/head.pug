@@ -33,14 +33,14 @@ mixin head(opts)
     if opts.description
       meta(property='og:description' content=opts.description)
     meta(property='og:locale' content='zh_CN')
-    meta(property='og:image' content=siteUrl + '/img/logo1.jpg')
+    meta(property='og:image' content=siteUrl + '/img/brand/logo1.jpg')
     if opts.articleDate
       meta(property='article:published_time' content=opts.articleDate)
       meta(property='article:modified_time' content=opts.articleDate)
       meta(property='article:author' content='Marlin')
     meta(name='twitter:card' content='summary')
-    meta(name='twitter:image' content=siteUrl + '/img/logo1.jpg')
-    link(rel='icon' type='image/png' href='/img/favicon-small.png')
+    meta(name='twitter:image' content=siteUrl + '/img/brand/logo1.jpg')
+    link(rel='icon' type='image/png' href='/img/brand/favicon-small.png')
     if opts.canonical
       link(rel='canonical' href=opts.canonical)
     link(rel='preconnect' href='//cdn.jsdelivr.net')

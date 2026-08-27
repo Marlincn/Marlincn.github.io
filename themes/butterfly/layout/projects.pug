@@ -2,7 +2,7 @@ extends ./base.pug
 
 block headOpts
   - page.bodyClass = 'nova-tag-route nova-projects-route'
-  - page.headOpts = { title: '工程 | Marlin', siteTitle: '工程', description: '单片机与建模的动手实录：从开源复刻到课程设计。', ogUrl: siteUrl + '/projects/', pageType: 'page', extraCss: '<link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=20260813-prince-quotes-v1"><link href="/rose-galaxy/css/projects-page.css?v=20260901-fix-v6" rel="stylesheet" data-nova-projects-style="">', extraHead: page.ldjson }
+  - page.headOpts = { title: '工程 | Marlin', siteTitle: '工程', description: '单片机与建模的动手实录：从开源复刻到课程设计。', ogUrl: siteUrl + '/projects/', pageType: 'page', extraCss: '<link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=20260827-p2"><link href="/rose-galaxy/css/projects-page.css?v=20260827-p2" rel="stylesheet" data-nova-projects-style="">', extraHead: page.ldjson }
 
 block content
   != page.shellTop
@@ -24,7 +24,7 @@ block content
           a.nova-project-cover(href=p.detailHref aria-label='查看 ' + p.title + ' 的工程详情')
             //- 内联兜底: 3:2 占位, 不依赖外部 CSS 时序, 首帧不铺满
             span(style='display:block;padding-top:66.6667%;' aria-hidden='true')
-            img(src=p.cover alt=p.title loading='lazy' decoding='async' style='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' onerror="this.onerror=null;this.src='/img/404.jpg'")
+            img(src=p.cover alt=p.title loading='lazy' decoding='async' style='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;' onerror="this.onerror=null;this.src='/img/misc/404.jpg'")
           div.nova-project-body
             h3
               a(href=p.detailHref)= p.title

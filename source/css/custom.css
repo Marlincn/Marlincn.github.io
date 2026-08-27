@@ -1777,11 +1777,11 @@ body:has(#body-wrap.post,
    resetting size/repeat, which caused the banner to tile (two layers).
    Homepage excluded (it uses its own .nova-footer styles). */
 html[data-theme="dark"] body:not(.nova-home-active) footer#footer {
-  background: url(/img/archive-bg.webp) center bottom / cover no-repeat #080c17;
+  background: url(/img/hero/archive-bg.webp) center bottom / cover no-repeat #080c17;
   color: #bcb5bf;
 }
 
 html[data-theme="light"] body:not(.nova-home-active) footer#footer {
-  background: url(/img/archive-bg.webp) center bottom / cover no-repeat #d5d4de;
+  background: url(/img/hero/archive-bg.webp) center bottom / cover no-repeat #d5d4de;
   color: #514c59;
 }

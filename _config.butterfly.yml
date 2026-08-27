@@ -18,9 +18,9 @@ menu:
   说说: /shuoshuo/
   关于: /about/
 
-# Sidebar avatar (original: /img/logo1.jpg)
+# Sidebar avatar (original: /img/brand/logo1.jpg)
 avatar:
-  img: /img/logo1.jpg
+  img: /img/brand/logo1.jpg
   effect: false
 
 # Site data shown in sidebar (2026-08-15: archives/categories removed, block dropped)
@@ -78,21 +78,21 @@ display_mode: dark
 
 # 文章页统一背景图:marlin 参考站 go语法总结 同款 leetcode.webp,同位置
 # (header 400px, background center/cover, 暗色遮罩),2026-08-17
-default_top_img: /img/post-hero-banner.webp
+default_top_img: /img/hero/post-hero-banner.webp
 
 inject:
   head:
-    - <link rel="stylesheet" href="/css/custom.css?v=20260833-nav2">
-    - <link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v16">
-    - <link rel="stylesheet" href="/rose-galaxy/css/nova-player.css?v=20260827-mini-player-v1">
-    - <link rel="stylesheet" href="/rose-galaxy/css/night-visitor.css?v=20260813-prince-quotes-v1">
-    - <script defer src="/rose-galaxy/js/lib/site-config.js?v=20260827-p1-r5"></script>
-    - <script defer src="/rose-galaxy/js/lib/utils.js?v=20260827-p1-r7"></script>
-    - <script defer src="/rose-galaxy/js/nova-player.js?v=20260827-mini-player-v2"></script>
+    - <link rel="stylesheet" href="/css/custom.css?v=20260827-p2">
+    - <link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260827-p2">
+    - <link rel="stylesheet" href="/rose-galaxy/css/nova-player.css?v=20260827-p2">
+    - <link rel="stylesheet" href="/rose-galaxy/css/night-visitor.css?v=20260827-p2">
+    - <script defer src="/rose-galaxy/js/lib/site-config.js?v=20260827-p2"></script>
+    - <script defer src="/rose-galaxy/js/lib/utils.js?v=20260827-p2"></script>
+    - <script defer src="/rose-galaxy/js/nova-player.js?v=20260827-p2"></script>
   bottom:
-    - <script src="/rose-galaxy/js/nova-ux.js?v=20260817-theme-pref"></script>
-    - <script src="/rose-galaxy/js/night-visitor.js?v=20260813-prince-quotes-v1"></script>
-    - <script src="/rose-galaxy/js/decorative-loader.js?v=20260730-performance"></script>
+    - <script src="/rose-galaxy/js/nova-ux.js?v=20260827-p2"></script>
+    - <script src="/rose-galaxy/js/night-visitor.js?v=20260827-p2"></script>
+    - <script src="/rose-galaxy/animation/decorative-loader.js?v=20260827-p2"></script>
 
 # Side widgets (2026-08-16: archives/categories widgets disabled; they
 # link to pages removed on 2026-08-15)

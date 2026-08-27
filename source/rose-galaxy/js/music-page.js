@@ -13,11 +13,11 @@
   const BILI_FOLDER = window.NOVA_SITE.bili.folder;
 
   const visualImages = [
-    "/img/music1.webp",
-    "/img/music2.webp",
-    "/img/music3.webp",
-    "/img/music4.webp",
-    "/img/music5.webp",
+    "/img/music/music1.webp",
+    "/img/music/music2.webp",
+    "/img/music/music3.webp",
+    "/img/music/music4.webp",
+    "/img/music/music5.webp",
   ];
   const visibleOffsets = [-2, -1, 0, 1, 2];
   const loadedVisualImages = new Set();

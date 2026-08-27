@@ -133,7 +133,7 @@ hexo.extend.generator.register('nova-tags', function (locals) {
   const idxShellTop = composeShellTop({
     pageClass: 'type-tags',
     headerCls: 'not-home-page nova-tag-hero',
-    headerStyle: 'background-image:url(/img/tag-hero.webp)',
+    headerStyle: 'background-image:url(/img/hero/tag-hero.webp)',
     siteData: articles,
     closeHeader: false
   }) + '\n' + readIdxTop
@@ -141,7 +141,7 @@ hexo.extend.generator.register('nova-tags', function (locals) {
   const tagShellTop = composeShellTop({
     pageClass: '',
     headerCls: 'not-home-page nova-tag-hero',
-    headerStyle: 'background-image:url(/img/leetcode.webp)',
+    headerStyle: 'background-image:url(/img/hero/leetcode.webp)',
     siteData: articles,
     closeHeader: false
   }) + '\n' + readTagTop
