@@ -7,23 +7,16 @@
 
 const fs = require('fs')
 const path = require('path')
+const { composeShellTop, buildFooter, RIGHTSIDE_ASIDE } = require('./parts-common')
+const { fmtDate } = require('./lib/date')
 
 const tagParts = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'tag-parts')
 const idxParts = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'idx-parts')
-const TAG_TOP = fs.readFileSync(path.join(tagParts, 'top.html'), 'utf8')
-const TAG_BOTTOM = fs.readFileSync(path.join(tagParts, 'bottom.html'), 'utf8')
-const IDX_TOP = fs.readFileSync(path.join(idxParts, 'top.html'), 'utf8')
-const IDX_BOTTOM = fs.readFileSync(path.join(idxParts, 'bottom.html'), 'utf8')
+const readTagTop = fs.readFileSync(path.join(tagParts, 'top.html'), 'utf8')
+const readTagBottom = fs.readFileSync(path.join(tagParts, 'bottom.html'), 'utf8')
+const readIdxTop = fs.readFileSync(path.join(idxParts, 'top.html'), 'utf8')
 
 const SITE = (hexo.config.url || '').replace(/\/+$/, '')
-
-function fmtDate(d) {
-  const m = d
-  const y = m.year ? m.year() : m.getFullYear()
-  const mo = String((m.month ? m.month() : m.getMonth()) + 1).padStart(2, '0')
-  const day = String(m.date ? m.date() : m.getDate()).padStart(2, '0')
-  return y + '-' + mo + '-' + day
-}
 
 function stripMd(text) {
   return text
@@ -135,6 +128,26 @@ hexo.extend.generator.register('nova-tags', function (locals) {
   const top = sortedTags[0] || { name: '', count: 0 }
   const latest = posts.slice().sort((a, b) => (b.date - a.date) || ((a.order || 999) - (b.order || 999)))[0] || { title: '', date: new Date() }
 
+  // 公共壳(P1 重建): sidebar 统计卡数字动态计算
+  const articles = { href: '/articles/', label: '文章', count: String(posts.length) }
+  const idxShellTop = composeShellTop({
+    pageClass: 'type-tags',
+    headerCls: 'not-home-page nova-tag-hero',
+    headerStyle: 'background-image:url(/img/tag-hero.webp)',
+    siteData: articles,
+    closeHeader: false
+  }) + '\n' + readIdxTop
+  const idxShellBottom = buildFooter()
+  const tagShellTop = composeShellTop({
+    pageClass: '',
+    headerCls: 'not-home-page nova-tag-hero',
+    headerStyle: 'background-image:url(/img/leetcode.webp)',
+    siteData: articles,
+    closeHeader: false
+  }) + '\n' + readTagTop
+  // tag 页级: 单双栏切换按钮 + 页级脚本(tag-page.js)
+  const tagShellBottom = buildFooter({ hideExtra: RIGHTSIDE_ASIDE, pageScripts: readTagBottom })
+
   const files = [
     { path: 'search.xml', data: renderSearchXml(posts) },
     { path: 'sitemap.xml', data: renderSitemap(posts) },
@@ -151,8 +164,8 @@ hexo.extend.generator.register('nova-tags', function (locals) {
         latestTitle: latest.title,
         tags: sortedTags.map(t => ({ name: t.name, count: t.count })),
         ldjson: idxLdjson(),
-        idxTop: IDX_TOP,
-        idxBottom: IDX_BOTTOM
+        shellTop: idxShellTop,
+        shellBottom: idxShellBottom
       }
     }
   ]
@@ -179,8 +192,8 @@ hexo.extend.generator.register('nova-tags', function (locals) {
         seed: seed,
         mainDesc: '围绕“' + t.name + '”整理的文章与实践记录。',
         ldjson: tagLdjson(t.name),
-        tagTop: TAG_TOP,
-        tagBottom: TAG_BOTTOM
+        shellTop: tagShellTop,
+        shellBottom: tagShellBottom
       }
     })
   })

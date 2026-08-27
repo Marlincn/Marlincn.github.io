@@ -2,10 +2,10 @@ extends ./base.pug
 
 block headOpts
   - page.bodyClass = 'nova-tag-route nova-projects-route'
-  - page.headOpts = { title: '工程 | Marlin', siteTitle: '工程', description: '单片机与建模的动手实录：从开源复刻到课程设计。', ogUrl: siteUrl + '/projects/', pageType: 'page', extraCss: '<link href="/rose-galaxy/css/projects-page.css?v=20260901-fix-v6" rel="stylesheet" data-nova-projects-style="">', extraHead: page.ldjson }
+  - page.headOpts = { title: '工程 | Marlin', siteTitle: '工程', description: '单片机与建模的动手实录：从开源复刻到课程设计。', ogUrl: siteUrl + '/projects/', pageType: 'page', extraCss: '<link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=20260813-prince-quotes-v1"><link href="/rose-galaxy/css/projects-page.css?v=20260901-fix-v6" rel="stylesheet" data-nova-projects-style="">', extraHead: page.ldjson }
 
 block content
-  != page.idxTop
+  != page.shellTop
   section.nova-tag-summary.nova-projects-summary(aria-label='工程概览')
     each cell, i in page.stats
       div
@@ -43,4 +43,4 @@ block content
               span 进入项目
               span.nova-project-action-arrow(aria-hidden='true') →
   | </main>
-  != page.idxBottom
+  != page.shellBottom

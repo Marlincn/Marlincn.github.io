@@ -1776,7 +1776,7 @@ body:has(#body-wrap.post,
    `background-image` or tag-page/music-page `background` shorthand from
    resetting size/repeat, which caused the banner to tile (two layers).
    Homepage excluded (it uses its own .nova-footer styles). */
-body:not(.nova-home-active) footer#footer {
+html[data-theme="dark"] body:not(.nova-home-active) footer#footer {
   background: url(/img/archive-bg.webp) center bottom / cover no-repeat #080c17;
   color: #bcb5bf;
 }

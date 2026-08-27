@@ -11,9 +11,10 @@
 
   if (window.__novaPlayer) return;
 
-  const BILI_PROXY = "https://1470690781-6b1hcscil5.ap-guangzhou.tencentscf.com";
-  const BILI_UID = "3546712446601247";
-  const BILI_FOLDER = "music";
+  // 站点配置单一来源(P1·R5): lib/site-config.js
+  const BILI_PROXY = window.NOVA_SITE.bili.proxy;
+  const BILI_UID = window.NOVA_SITE.bili.uid;
+  const BILI_FOLDER = window.NOVA_SITE.bili.folder;
   const STORAGE_KEY = "novaPlayerState";
   const PROGRESS_SAVE_INTERVAL = 15;
 
@@ -325,15 +326,8 @@
     const bar = miniRoot.querySelector(".nova-mini-progress-bar");
     const pct = snap.duration > 0 ? (snap.currentTime / snap.duration) * 100 : 0;
     bar.style.width = pct + "%";
-    miniRoot.querySelector(".nova-mini-time").textContent = formatTime(snap.currentTime);
-    miniRoot.querySelector(".nova-mini-duration").textContent = formatTime(snap.duration);
-  }
-
-  function formatTime(seconds) {
-    if (!Number.isFinite(seconds) || seconds < 0) return "00:00";
-    const m = Math.floor(seconds / 60);
-    const s = Math.floor(seconds % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
+    miniRoot.querySelector(".nova-mini-time").textContent = window.NOVA_UTILS.formatTime(snap.currentTime);
+    miniRoot.querySelector(".nova-mini-duration").textContent = window.NOVA_UTILS.formatTime(snap.duration);
   }
 
   // ---- 事件分发(音乐页 UI + 悬浮条) ----

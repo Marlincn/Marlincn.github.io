@@ -1,0 +1,35 @@
+<!-- hexo injector body_begin start -->
+<div class="nova-page-loading" data-nova-loading="" aria-hidden="true" aria-live="polite">
+  <div class="nova-page-loading__inner">
+    <span class="nova-page-loading__mark" aria-hidden="true"></span>
+    <strong>MARLIN</strong>
+    <small>LOADING THE NIGHT...</small>
+  </div>
+</div>
+<script>
+  ;(() => {
+    const loaders = Array.from(document.querySelectorAll('[data-nova-loading]'))
+    const loader = loaders.shift()
+    loaders.forEach(item => item.remove())
+    if (!loader || window.__novaLoaderBootstrapped) {
+      loader?.remove()
+      return
+    }
+    window.__novaLoaderBootstrapped = true
+    // 以 __novaLoadingShown 为唯一基准:仅"从网站首次进入"(本次会话第一次)显示;
+    // 之后整页刷新/返回首页都读到此标志 → 跳过显示并移除,避免再次弹 loading。
+    // 标志的写入统一由 nova-ux.js 的 initInitialLoading 负责,这里只读不写,避免双重判定冲突。
+    let alreadyShown = false
+    try { alreadyShown = sessionStorage.getItem('__novaLoadingShown') === '1' } catch (_) {}
+    if (alreadyShown) {
+      loader?.remove()
+      return
+    }
+    if (!loader.isConnected || loader.dataset.novaLoadingState === 'leaving') return
+    window.__novaLoaderVisibleAt = Date.now()
+    loader.dataset.novaLoadingState = 'visible'
+    loader.setAttribute('aria-hidden', 'false')
+    loader.classList.add('is-visible')
+    document.body.classList.add('nova-loading-active')
+  })()
+</script><!-- hexo injector body_begin end -->

@@ -64,8 +64,6 @@ body.nova-shuoshuo-route footer#footer {
   margin: 0;
   align-self: stretch;
   border-top: 1px solid rgba(199, 96, 130, .13);
-  background: linear-gradient(180deg, #090d18, #070a13);
-  color: var(--shuo-secondary);
 }
 
 .nova-shuoshuo-page {
@@ -600,8 +598,6 @@ html[data-theme="light"] body.nova-shuoshuo-route #body-wrap {
 
 html[data-theme="light"] body.nova-shuoshuo-route footer#footer {
   border-top-color: rgba(165, 83, 112, .14);
-  background: linear-gradient(180deg, #ddd9e0, #d3d1da);
-  color: #5d5662;
 }
 
 [data-theme="light"] .nova-shuoshuo-page {

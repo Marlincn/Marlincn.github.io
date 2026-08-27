@@ -6,101 +6,40 @@ block headOpts
   - page.headOpts = { title: '工程: ' + page.title + ' | Marlin', siteTitle: '工程: ' + page.title, description: page.description, ogUrl: detailUrl, canonical: detailUrl, ogTitle: page.title, pageType: 'page', extraCss: '<link href="/rose-galaxy/css/project-detail-page.css?v=20260901-fix-v16" rel="stylesheet" data-nova-project-detail-style="">' }
 
 block content
-  div#sidebar
-    div#menu-mask
-    div#sidebar-menus
-      div.avatar-img.text-center
-        img(src='/img/logo1.jpg' onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt='avatar' width='1080' height='1080' decoding='async')
-      div.site-data.text-center
-        a(href='/projects/')
-          div.headline 工程
-          div.length-num 5
-      div.menus_items
-        div.menus_item
-          a.site-page(href='/')
-            span= ' 首页'
-        div.menus_item
-          a.site-page(href='/articles/')
-            span= ' 文章'
-        div.menus_item
-          a.site-page(href='/projects/')
-            span= ' 工程'
-        div.menus_item
-          a.site-page(href='/music/')
-            span= ' 音乐'
-        div.menus_item
-          a.site-page(href='/shuoshuo/')
-            span= ' 说说'
-        div.menus_item
-          a.site-page(href='/about/')
-            span= ' 关于'
-  div.page.post#body-wrap
-    header.post-bg#page-header(style='background-image:url(/img/projects-detail-hero.webp)')
-      nav#nav
-        span#blog-info
-          a.nav-site-title(href='/')
-            img.site-icon(src='/img/brand/nova-rose-line-128.png' alt='Logo' width='36' height='36' loading='eager' decoding='async')
-            span.site-name Marlin
-        div#menus
-          div#search-button
-            button.site-page.social-icon.search.search-nav-link(type='button' aria-label='打开搜索')
-              svg.search-nav-icon(viewBox='0 0 24 24' aria-hidden='true' focusable='false')
-                circle(cx='11' cy='11' r='7')
-                path(d='m20 20-3.5-3.5')
-              span= ' 搜索'
-          div.menus_items
-            div.menus_item
-              a.site-page(href='/')
-                span= ' 首页'
-            div.menus_item
-              a.site-page(href='/articles/')
-                span= ' 文章'
-            div.menus_item
-              a.site-page(href='/projects/')
-                span= ' 工程'
-            div.menus_item
-              a.site-page(href='/music/')
-                span= ' 音乐'
-            div.menus_item
-              a.site-page(href='/shuoshuo/')
-                span= ' 说说'
-            div.menus_item
-              a.site-page(href='/about/')
-                span= ' 关于'
-          div#toggle-menu
-            span.site-page
-              i.fas.fa-bars.fa-fw
-      div#post-info
-        h1.post-title= page.title
-        div#post-meta
-          div.meta-firstline
-            //- 发表于/更新于: 与文章页一致(工程无更新时间则不显示"更新于")
-            if page.date
-              span.post-meta-date
-                i.far.fa-calendar-alt.fa-fw.post-meta-icon
-                span.post-meta-label= '发表于'
-                time= page.date
-                if page.updated
-                  span.post-meta-separator |
-                  i.fas.fa-history.fa-fw.post-meta-icon
-                  span.post-meta-label= '更新于'
-                  time= page.updated
-          div.meta-secondline
-            //- 浏览量 + 评论数: 与文章页一致(busuanzi + waline-comment-count)
-            span.post-meta-separator
-            span.post-meta-pv-cv(data-flag-title=page.title)
-              i.far.fa-eye.fa-fw.post-meta-icon
-              span.post-meta-label 浏览量:
-              span#busuanzi_value_page_pv
-                i.fa-solid.fa-spinner.fa-spin
-            span.post-meta-separator
-            span.post-meta-commentcount
-              i.far.fa-comments.fa-fw.post-meta-icon
-              span.post-meta-label 评论数:
-              a(href='#post-comment')
-                span.waline-comment-count(data-path='/' + 'projects/' + page.projectId + '/')
-                  i.fa-solid.fa-spinner.fa-spin
-    main#content-inner
+  //- 公共壳(P1): sidebar/body-wrap/header/nav 由生成器按 shellTop 拼装, post-info 页级
+  != page.shellTop
+  div#post-info
+    h1.post-title= page.title
+    div#post-meta
+      div.meta-firstline
+        //- 发表于/更新于: 与文章页一致(工程无更新时间则不显示"更新于")
+        if page.date
+          span.post-meta-date
+            i.far.fa-calendar-alt.fa-fw.post-meta-icon
+            span.post-meta-label= '发表于'
+            time= page.date
+            if page.updated
+              span.post-meta-separator |
+              i.fas.fa-history.fa-fw.post-meta-icon
+              span.post-meta-label= '更新于'
+              time= page.updated
+      div.meta-secondline
+        //- 浏览量 + 评论数: 与文章页一致(busuanzi + waline-comment-count)
+        span.post-meta-separator
+        span.post-meta-pv-cv(data-flag-title=page.title)
+          i.far.fa-eye.fa-fw.post-meta-icon
+          span.post-meta-label 浏览量:
+          span#busuanzi_value_page_pv
+            i.fa-solid.fa-spinner.fa-spin
+        span.post-meta-separator
+        span.post-meta-commentcount
+          i.far.fa-comments.fa-fw.post-meta-icon
+          span.post-meta-label 评论数:
+          a(href='#post-comment')
+            span.waline-comment-count(data-path='/' + 'projects/' + page.projectId + '/')
+              i.fa-solid.fa-spinner.fa-spin
+  | </header>
+  main#content-inner
       //- 内联 grid 布局: 两栏(左主区 + 340px 右栏)不依赖外部 CSS 时序, 首帧不堆叠
       div.nova-project-detail(style='display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:48px;align-items:start;width:min(1400px,calc(100% - 64px));margin:46px auto 60px;max-width:1400px;')
         section.nova-project-detail-main
@@ -208,40 +147,40 @@ block content
               each t in page.tags
                 a.nova-project-detail-tag(href='/projects/')
                   span= t
-    //- 评论区块(参照文章页): 每个工程页 path 独立, 评论互不串页
-    section.nova-project-detail-comments#post-comment
-      div.comment-head
-        div.comment-headline
-          i.fas.fa-comments.fa-fw
-          span 评论
-      div.comment-wrap
-        div
-          div#waline-wrap
-      script.
-        (() => {
-          const loadWaline = () => {
-            const serverURL = 'https://marlincn-github-io.vercel.app'
-            const path = window.location.pathname
-            const load = () => import('https://cdn.jsdelivr.net/npm/@waline/client@3.15.2/dist/waline.min.js')
-              .then(({ init }) => init({
-                el: document.querySelector('#waline-wrap'),
-                serverURL,
-                path,
-                dark: 'html[data-theme="dark"]',
-                pageview: false,
-                comment: true
-              }))
-            if (window.walineInit) { window.walineInit.destroy && window.walineInit.destroy() }
-            load().then(w => { window.walineInit = w }).catch(e => console.warn('[waline] init failed:', e))
-          }
-          const css = document.createElement('link')
-          css.rel = 'stylesheet'
-          css.href = 'https://cdn.jsdelivr.net/npm/@waline/client@3.15.2/dist/waline.min.css'
-          document.head.appendChild(css)
-          if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', loadWaline)
-          } else {
-            loadWaline()
-          }
-        })()
-  != page.idxBottom
+  //- 评论区块(参照文章页): 每个工程页 path 独立, 评论互不串页
+  section.nova-project-detail-comments#post-comment
+    div.comment-head
+      div.comment-headline
+        i.fas.fa-comments.fa-fw
+        span 评论
+    div.comment-wrap
+      div
+        div#waline-wrap
+    script.
+      (() => {
+        const loadWaline = () => {
+          const serverURL = 'https://marlincn-github-io.vercel.app'
+          const path = window.location.pathname
+          const load = () => import('https://cdn.jsdelivr.net/npm/@waline/client@3.15.2/dist/waline.min.js')
+            .then(({ init }) => init({
+              el: document.querySelector('#waline-wrap'),
+              serverURL,
+              path,
+              dark: 'html[data-theme="dark"]',
+              pageview: false,
+              comment: true
+            }))
+          if (window.walineInit) { window.walineInit.destroy && window.walineInit.destroy() }
+          load().then(w => { window.walineInit = w }).catch(e => console.warn('[waline] init failed:', e))
+        }
+        const css = document.createElement('link')
+        css.rel = 'stylesheet'
+        css.href = 'https://cdn.jsdelivr.net/npm/@waline/client@3.15.2/dist/waline.min.css'
+        document.head.appendChild(css)
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', loadWaline)
+        } else {
+          loadWaline()
+        }
+      })()
+  != page.shellBottom

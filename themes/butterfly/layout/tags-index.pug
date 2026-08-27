@@ -2,10 +2,10 @@ extends ./base.pug
 
 block headOpts
   - page.bodyClass = 'nova-tag-route nova-tags-route'
-  - page.headOpts = { title: '文章 | Marlin', siteTitle: '文章', description: '通过文章查找 Marlin 博客中的技术笔记、算法练习与学习记录。', ogUrl: siteUrl + '/articles/', pageType: 'page', extraHead: page.ldjson }
+  - page.headOpts = { title: '文章 | Marlin', siteTitle: '文章', description: '通过文章查找 Marlin 博客中的技术笔记、算法练习与学习记录。', ogUrl: siteUrl + '/articles/', pageType: 'page', extraCss: '<link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=20260813-prince-quotes-v1">', extraHead: page.ldjson }
 
 block content
-  != page.idxTop
+  != page.shellTop
   section.nova-tag-summary.nova-tags-summary(aria-label='文章概览')
     div
       strong= page.topicsCount
@@ -39,4 +39,4 @@ block content
             small  NOTES
           i(aria-hidden='true') →
   | </main>
-  != page.idxBottom
+  != page.shellBottom

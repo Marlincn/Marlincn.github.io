@@ -570,12 +570,9 @@ html[data-theme="light"] body.nova-about-route .nova-about-status.nova-about-con
 
 body.nova-about-route #footer {
   margin: 0;
-  background: #090b13;
 }
 
-html[data-theme="light"] body.nova-about-route #footer {
-  background: #ded7dd;
-}
+
 
 @keyframes nova-about-reveal {
   from { opacity: 0; transform: translateY(10px); }

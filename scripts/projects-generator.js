@@ -6,14 +6,14 @@
 
 const fs = require('fs')
 const path = require('path')
+const { composeShellTop, buildFooter } = require('./parts-common')
+const { fmtDate } = require('./lib/date')
 
 const projects = require('./projects-data')
 const INTRO_BLOCKS = require('./projects-intro')   // 工程介绍文案(自包含, 见 projects-intro.js)
 
 const projectParts = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'project-parts')
-const idxParts = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'idx-parts')
-const PROJECT_TOP = fs.readFileSync(path.join(projectParts, 'top.html'), 'utf8')
-const IDX_BOTTOM = fs.readFileSync(path.join(idxParts, 'bottom.html'), 'utf8')
+const readProjectTop = fs.readFileSync(path.join(projectParts, 'top.html'), 'utf8')
 
 // 工程二级页样式: 读入后内联进 <head> <style>, 首帧同步生效(不依赖外部 CSS 时序),
 // 修复"第一次进入背景框/侧边栏框/按钮框未加载"的时序 bug
@@ -27,10 +27,7 @@ const SITE = (hexo.config.url || '').replace(/\/+$/, '')
 const DL_BASE = SITE
 
 // "本时刻" 发表于/更新于: 无 date 的工程(或想保持更新的)用当前时间 YYYY-MM-DD 填充
-const NOW = new Date()
-const TODAY = NOW.getFullYear() + '-' +
-  String(NOW.getMonth() + 1).padStart(2, '0') + '-' +
-  String(NOW.getDate()).padStart(2, '0')
+const TODAY = fmtDate(new Date())
 
 const CATEGORIES = [
   {
@@ -94,6 +91,25 @@ hexo.extend.generator.register('nova-projects', function () {
     { value: 'WIP', en: 'IN PROGRESS', zh: '持续更新中' }
   ]
 
+  // 公共壳(P1 重建): sidebar 统计卡数字动态计算
+  const projectsStat = { href: '/projects/', label: '工程', count: String(prepared.length) }
+  const shellTop = composeShellTop({
+    pageClass: 'type-projects',
+    headerCls: 'not-home-page nova-tag-hero',
+    headerStyle: 'background-image:url(/img/projects-hero.webp)',
+    siteData: projectsStat,
+    closeHeader: false
+  }) + '\n' + readProjectTop
+  const shellBottom = buildFooter()
+  // 二级详情页壳: 文章式 header(post-bg), hero 内容(post-info)由模板输出
+  const detailShellTop = composeShellTop({
+    pageClass: 'post',
+    headerCls: 'post-bg',
+    headerStyle: 'background-image:url(/img/projects-detail-hero.webp)',
+    siteData: projectsStat,
+    closeHeader: false
+  })
+
   const files = [
     {
       path: 'projects/index.html',
@@ -102,8 +118,8 @@ hexo.extend.generator.register('nova-projects', function () {
         stats: stats,
         projects: prepared,
         ldjson: projectLdjson(),
-        idxTop: PROJECT_TOP,
-        idxBottom: IDX_BOTTOM
+        shellTop: shellTop,
+        shellBottom: shellBottom
       }
     }
   ]
@@ -138,7 +154,8 @@ hexo.extend.generator.register('nova-projects', function () {
         categoryCount: CATEGORIES.length,
         tagCount: uniqueTags.size,
         detailCss: PROJECT_DETAIL_CSS,
-        idxBottom: IDX_BOTTOM
+        shellTop: detailShellTop,
+        shellBottom: shellBottom
       }
     })
   })

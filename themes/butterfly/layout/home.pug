@@ -12,7 +12,7 @@ block content
   - var stripHtml = function(s) { var ent = function(m){ return ({ '&#x2F;':'/', '&#x2f;':'/', '&#47;':'/', '&nbsp;':' ', '&amp;':'&', '&lt;':'<', '&gt;':'>', '&quot;':'"' })[m] || m }; return String(s || '').replace(/<figure class="highlight[^>]*>[\s\S]*?<\/figure>/g, ' ').replace(/<pre[^>]*>[\s\S]*?<\/pre>/g, ' ').replace(/<code[^>]*>[\s\S]*?<\/code>/g, ' ').replace(/<[^>]+>/g, ' ').replace(/&(#x2F|#47|#X2F|nbsp|amp|lt|gt|quot);/gi, ent).replace(/[#>*_~|]/g, ' ').replace(/\s+/g, ' ').trim() }
   - var summaryOf = function(p) { var src = (p.excerpt && p.excerpt.trim()) ? p.excerpt : p.content; return (p.title + ' ' + stripHtml(src)).slice(0, 70) }
   - var tagName = function(p) { var t = p.tags.toArray(); return (t[0] || {}).name || '' }
-  != page.top
+  != page.shellTop
   if latest
     a.nova-latest-signal(href=postUrl(latest) aria-label='最新文章：' + latest.title + '，发布于 ' + date(latest.date, 'YYYY-MM-DD'))
       span LATEST SIGNAL
@@ -37,4 +37,4 @@ block content
             i.fas.fa-inbox
             span.article-meta__categories= tagName(post)
         .content= summaryOf(post)
-  != page.bottom
+  != page.shellBottom

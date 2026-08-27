@@ -7,9 +7,10 @@
 (function () {
   "use strict";
 
-  const BILI_PROXY = "https://1470690781-6b1hcscil5.ap-guangzhou.tencentscf.com";
-  const BILI_UID = "3546712446601247";
-  const BILI_FOLDER = "music";
+  // 站点配置单一来源(P1·R5): lib/site-config.js
+  const BILI_PROXY = window.NOVA_SITE.bili.proxy;
+  const BILI_UID = window.NOVA_SITE.bili.uid;
+  const BILI_FOLDER = window.NOVA_SITE.bili.folder;
 
   const visualImages = [
     "/img/music1.webp",
@@ -82,10 +83,7 @@
   }
 
   function formatTime(seconds) {
-    if (!Number.isFinite(seconds) || seconds < 0) return "00:00";
-    const m = Math.floor(seconds / 60);
-    const s = Math.floor(seconds % 60).toString().padStart(2, "0");
-    return `${m}:${s}`;
+    return window.NOVA_UTILS.formatTime(seconds);
   }
 
   function createMusicPageController(root) {
