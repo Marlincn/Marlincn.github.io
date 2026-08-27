@@ -7,12 +7,12 @@ if site.data.valine
 
 script.
   (() => {
-    const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+    const isMoments = GLOBAL_CONFIG_SITE.pageType === 'moments'
     const option = !{JSON.stringify(option)}
 
     const initValine = (el, path) => {
-      if (isShuoshuo) {
-        window.shuoshuoComment.destroyValine = () => {
+      if (isMoments) {
+        window.momentsComment.destroyValine = () => {
           if (el.children.length) {
             el.innerHTML = ''
             el.classList.add('no-comment')
@@ -29,7 +29,7 @@ script.
         emojiMaps: !{emojiMaps},
         visitor: #{visitor},
         ...option,
-        path: isShuoshuo ? path : (option && option.path) || window.location.pathname
+        path: isMoments ? path : (option && option.path) || window.location.pathname
       }
 
       new Valine(valineConfig)
@@ -44,9 +44,9 @@ script.
       }
     }
 
-    if (isShuoshuo) {
+    if (isMoments) {
       '!{use[0]}' === 'Valine'
-        ? window.shuoshuoComment = { loadComment: loadValine }
+        ? window.momentsComment = { loadComment: loadValine }
         : window.loadOtherComment = loadValine
       return
     }

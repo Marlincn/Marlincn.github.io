@@ -5,7 +5,7 @@ script.
   (() => {
     let artalkItem = null
     const option = !{JSON.stringify(option)}
-    const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+    const isMoments = GLOBAL_CONFIG_SITE.pageType === 'moments'
 
     const destroyArtalk = () => {
       if (artalkItem) {
@@ -23,7 +23,7 @@ script.
         site: '!{site}',
         darkMode: document.documentElement.getAttribute('data-theme') === 'dark',
         ...option,
-        pageKey: isShuoshuo ? pageKey : (option && option.pageKey) || pageKey
+        pageKey: isMoments ? pageKey : (option && option.pageKey) || pageKey
       })
 
       if (GLOBAL_CONFIG.lightbox === 'null') return
@@ -34,8 +34,8 @@ script.
         })
       })
 
-      if (isShuoshuo) {
-        window.shuoshuoComment.destroyArtalk = () => {
+      if (isMoments) {
+        window.momentsComment.destroyArtalk = () => {
           destroyArtalk()
           if (el.children.length) {
             el.innerHTML = ''
@@ -57,9 +57,9 @@ script.
       }
     }
 
-    if (isShuoshuo) {
+    if (isMoments) {
       '!{use[0]}' === 'Artalk'
-        ? window.shuoshuoComment = { loadComment: loadArtalk }
+        ? window.momentsComment = { loadComment: loadArtalk }
         : window.loadOtherComment = loadArtalk
       return
     }

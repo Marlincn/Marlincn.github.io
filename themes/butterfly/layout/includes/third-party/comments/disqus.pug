@@ -4,7 +4,7 @@
 
 script.
   (() => {
-    const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+    const isMoments = GLOBAL_CONFIG_SITE.pageType === 'moments'
 
     const disqusReset = conf => {
       window.DISQUS && window.DISQUS.reset({
@@ -14,8 +14,8 @@ script.
     }
 
     const loadDisqus = (el, path) => {
-      if (isShuoshuo) {
-        window.shuoshuoComment.destroyDisqus = () => {
+      if (isMoments) {
+        window.momentsComment.destroyDisqus = () => {
           if (el.children.length) {
             el.innerHTML = ''
             el.classList.add('no-comment')
@@ -23,8 +23,8 @@ script.
         }
       }
 
-      window.disqus_identifier = isShuoshuo ? path : '!{ url_for(page.path) }'
-      window.disqus_url = isShuoshuo ? location.origin + path : '!{ page.permalink }'
+      window.disqus_identifier = isMoments ? path : '!{ url_for(page.path) }'
+      window.disqus_url = isMoments ? location.origin + path : '!{ page.permalink }'
 
       const disqus_config = function () {
         this.page.url = disqus_url
@@ -61,9 +61,9 @@ script.
       }
     }
 
-    if (isShuoshuo) {
+    if (isMoments) {
       '!{use[0]}' === 'Disqus'
-        ? window.shuoshuoComment = { loadComment: loadDisqus }
+        ? window.momentsComment = { loadComment: loadDisqus }
         : window.loadOtherComment = loadDisqus
       return
     }

@@ -70,7 +70,7 @@
   --about-accent-soft: #d7afbd;
   --about-shadow: 0 24px 64px rgba(2, 3, 10, .28);
 
-  /* Shuoshuo. */
+  /* Moments. */
   --shuo-bg: #080b16;
   --shuo-panel: rgba(18, 22, 39, .76);
   --shuo-panel-soft: rgba(24, 27, 47, .58);
@@ -264,11 +264,11 @@ html[data-theme="light"] {
   --post-shadow-soft: 0 5px 16px rgba(47, 40, 48, .05);
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) #waline-wrap {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) #waline-wrap {
   color: var(--nova-comment-text);
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-panel {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-panel {
   border: 1px solid var(--nova-comment-border) !important;
   border-radius: var(--nova-radius-control) !important;
   background: var(--nova-comment-panel) !important;
@@ -276,39 +276,39 @@ html[data-theme="light"] {
   transition: border-color 190ms ease, box-shadow 190ms ease, background-color 190ms ease;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-header,
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-editor {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-header,
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-editor {
   border-color: var(--nova-comment-border) !important;
   background: transparent !important;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) :is(input, textarea) {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) :is(input, textarea) {
   color: var(--nova-comment-text) !important;
   background: var(--nova-comment-field) !important;
   transition: background-color 190ms ease, color 190ms ease;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-panel:focus-within {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-panel:focus-within {
   border-color: var(--nova-focus) !important;
   box-shadow: 0 0 0 3px var(--nova-focus-ring) !important;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) :is(input, textarea):focus {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) :is(input, textarea):focus {
   outline: 0 !important;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-btn.primary {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-btn.primary {
   border-color: var(--nova-comment-accent) !important;
   color: #fff !important;
   background: var(--nova-comment-accent) !important;
   transition: filter 190ms ease, transform 190ms ease, border-color 190ms ease;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-btn.primary:hover {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-btn.primary:hover {
   filter: brightness(1.07);
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) :is(button, a, input, textarea, select):focus-visible {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) :is(button, a, input, textarea, select):focus-visible {
   outline: 2px solid var(--nova-focus) !important;
   outline-offset: 2px;
 }
@@ -1461,14 +1461,14 @@ html[data-theme="light"] #body-wrap.post #pagination .pagination-related {
 
 @media (min-width: 769px) {
   body.nova-template-route #nav .menus_item_child a[href="/templates/"],
-  body.nova-shuoshuo-route #nav .menus_item_child a[href="/shuoshuo/"],
+  body.nova-moments-route #nav .menus_item_child a[href="/moments/"],
   body.nova-gallery-route #nav .menus_item_child a[href="/Gallery/"] {
     color: rgba(234, 155, 186, .98);
     background: rgba(194, 122, 151, .13);
   }
 
   html[data-theme="light"] body.nova-template-route #nav .menus_item_child a[href="/templates/"],
-  html[data-theme="light"] body.nova-shuoshuo-route #nav .menus_item_child a[href="/shuoshuo/"],
+  html[data-theme="light"] body.nova-moments-route #nav .menus_item_child a[href="/moments/"],
   html[data-theme="light"] body.nova-gallery-route #nav .menus_item_child a[href="/Gallery/"] {
     color: rgba(174, 82, 121, .98);
     background: rgba(205, 142, 168, .15);

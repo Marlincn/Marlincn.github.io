@@ -225,7 +225,7 @@ template {
 .type-404 .error-content,
 .layout > div:first-child:not(.nc),
 #recent-posts .recent-post-item,
-#article-container .shuoshuo-item,
+#article-container .moments-item,
 #aside-content .card-widget,
 .layout .pagination > *:not(.space) {
   background: var(--card-bg);
@@ -242,7 +242,7 @@ template {
 .type-404 .error-content:hover,
 .layout > div:first-child:not(.nc):hover,
 #recent-posts .recent-post-item:hover,
-#article-container .shuoshuo-item:hover,
+#article-container .moments-item:hover,
 #aside-content .card-widget:hover,
 .layout .pagination > *:not(.space):hover {
   -webkit-box-shadow: var(--card-hover-box-shadow);
@@ -450,7 +450,7 @@ canvas:not(#ribbon-canvas),
   animation: donate_effcet 0.3s 0.1s ease both;
 }
 .btn-effects,
-.shuoshuo-navigation button:not(:disabled),
+.moments-navigation button:not(:disabled),
 #aside-content .card-info #card-info-btn,
 .post-reward .reward-button,
 #rightside > div > button,
@@ -473,7 +473,7 @@ canvas:not(#ribbon-canvas),
   transform: translateZ(0);
 }
 .btn-effects:hover,
-.shuoshuo-navigation button:not(:disabled):hover,
+.moments-navigation button:not(:disabled):hover,
 #aside-content .card-info #card-info-btn:hover,
 .post-reward .reward-button:hover,
 #rightside > div > button:hover,
@@ -492,7 +492,7 @@ canvas:not(#ribbon-canvas),
   transform: translateY(-1px) scale(1.02);
 }
 .btn-effects:active,
-.shuoshuo-navigation button:not(:disabled):active,
+.moments-navigation button:not(:disabled):active,
 #aside-content .card-info #card-info-btn:active,
 .post-reward .reward-button:active,
 #rightside > div > button:active,
@@ -513,7 +513,7 @@ canvas:not(#ribbon-canvas),
   transform: translateY(0) scale(0.98);
 }
 .btn-effects i,
-.shuoshuo-navigation button:not(:disabled) i,
+.moments-navigation button:not(:disabled) i,
 #aside-content .card-info #card-info-btn i,
 .post-reward .reward-button i,
 #rightside > div > button i,
@@ -531,7 +531,7 @@ canvas:not(#ribbon-canvas),
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-effects:hover i,
-.shuoshuo-navigation button:not(:disabled):hover i,
+.moments-navigation button:not(:disabled):hover i,
 #aside-content .card-info #card-info-btn:hover i,
 .post-reward .reward-button:hover i,
 #rightside > div > button:hover i,
@@ -547,7 +547,7 @@ canvas:not(#ribbon-canvas),
   animation: buttonIconBounce 0.6s ease-in-out;
 }
 .btn-effects i + span,
-.shuoshuo-navigation button:not(:disabled) i + span,
+.moments-navigation button:not(:disabled) i + span,
 #aside-content .card-info #card-info-btn i + span,
 .post-reward .reward-button i + span,
 #rightside > div > button i + span,
@@ -565,7 +565,7 @@ canvas:not(#ribbon-canvas),
   transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-effects:hover i + span,
-.shuoshuo-navigation button:not(:disabled):hover i + span,
+.moments-navigation button:not(:disabled):hover i + span,
 #aside-content .card-info #card-info-btn:hover i + span,
 .post-reward .reward-button:hover i + span,
 #rightside > div > button:hover i + span,
@@ -577,7 +577,7 @@ canvas:not(#ribbon-canvas),
   margin-left: 8px;
 }
 .btn-effects::before,
-.shuoshuo-navigation button:not(:disabled)::before,
+.moments-navigation button:not(:disabled)::before,
 #aside-content .card-info #card-info-btn::before,
 .post-reward .reward-button::before,
 #rightside > div > button::before,
@@ -605,7 +605,7 @@ canvas:not(#ribbon-canvas),
   transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-effects:hover::before,
-.shuoshuo-navigation button:not(:disabled):hover::before,
+.moments-navigation button:not(:disabled):hover::before,
 #aside-content .card-info #card-info-btn:hover::before,
 .post-reward .reward-button:hover::before,
 #rightside > div > button:hover::before,
@@ -617,7 +617,7 @@ canvas:not(#ribbon-canvas),
   left: 100%;
 }
 .btn-effects > *,
-.shuoshuo-navigation button:not(:disabled) > *,
+.moments-navigation button:not(:disabled) > *,
 #aside-content .card-info #card-info-btn > *,
 .post-reward .reward-button > *,
 #rightside > div > button > *,
@@ -2771,16 +2771,16 @@ figure.highlight pre .javascript .function {
   -webkit-line-clamp: 2;
   word-break: break-word;
 }
-#article-container .shuoshuo-item {
+#article-container .moments-item {
   margin-bottom: 20px;
   padding: 35px 30px 30px;
 }
 @media screen and (max-width: 768px) {
-  #article-container .shuoshuo-item {
+  #article-container .moments-item {
     padding: 25px 20px 20px;
   }
 }
-#article-container .shuoshuo-item-header {
+#article-container .moments-item-header {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -2795,32 +2795,32 @@ figure.highlight pre .javascript .function {
   align-items: center;
   cursor: default;
 }
-#article-container .shuoshuo-avatar {
+#article-container .moments-avatar {
   overflow: hidden;
   width: 40px;
   height: 40px;
   border-radius: 40px;
 }
-#article-container .shuoshuo-avatar img {
+#article-container .moments-avatar img {
   margin: 0;
   width: 100%;
   height: 100%;
 }
-#article-container .shuoshuo-info {
+#article-container .moments-info {
   margin-left: 10px;
   line-height: 1.5;
 }
-#article-container .shuoshuo-date {
+#article-container .moments-date {
   color: #858585;
   font-size: 0.8em;
 }
-#article-container .shuoshuo-content {
+#article-container .moments-content {
   padding: 15px 0 10px;
 }
-#article-container .shuoshuo-content > *:last-child {
+#article-container .moments-content > *:last-child {
   margin-bottom: 0;
 }
-#article-container .shuoshuo-footer {
+#article-container .moments-footer {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -2834,7 +2834,7 @@ figure.highlight pre .javascript .function {
   -webkit-align-items: center;
   align-items: center;
 }
-#article-container .shuoshuo-footer.flex-between {
+#article-container .moments-footer.flex-between {
   -webkit-box-pack: justify;
   -moz-box-pack: justify;
   -o-box-pack: justify;
@@ -2842,7 +2842,7 @@ figure.highlight pre .javascript .function {
   -webkit-justify-content: space-between;
   justify-content: space-between;
 }
-#article-container .shuoshuo-footer.flex-end {
+#article-container .moments-footer.flex-end {
   -webkit-box-pack: end;
   -moz-box-pack: end;
   -o-box-pack: end;
@@ -2850,7 +2850,7 @@ figure.highlight pre .javascript .function {
   -webkit-justify-content: flex-end;
   justify-content: flex-end;
 }
-#article-container .shuoshuo-footer .shuoshuo-tag {
+#article-container .moments-footer .moments-tag {
   display: inline-block;
   margin-right: 8px;
   padding: 0 8px;
@@ -2866,25 +2866,25 @@ figure.highlight pre .javascript .function {
   -ms-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
-#article-container .shuoshuo-footer .shuoshuo-tag:hover {
+#article-container .moments-footer .moments-tag:hover {
   background: #a47789;
   color: var(--white);
 }
-#article-container .shuoshuo-footer .shuoshuo-comment-btn {
+#article-container .moments-footer .moments-comment-btn {
   padding: 2px;
   color: #90a4ae;
   cursor: pointer;
 }
-#article-container .shuoshuo-footer .shuoshuo-comment-btn:hover {
+#article-container .moments-footer .moments-comment-btn:hover {
   color: #a47789;
 }
-#article-container .shuoshuo-comment {
+#article-container .moments-comment {
   padding-top: 10px;
 }
-#article-container .shuoshuo-comment.no-comment {
+#article-container .moments-comment.no-comment {
   display: none;
 }
-.shuoshuo-navigation {
+.moments-navigation {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -2907,7 +2907,7 @@ figure.highlight pre .javascript .function {
   padding: 20px 0;
 /* 震動動畫 */
 }
-.shuoshuo-navigation button {
+.moments-navigation button {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -2939,10 +2939,10 @@ figure.highlight pre .javascript .function {
   transition: all 0.2s ease-in-out;
   border-radius: 6px;
 }
-.shuoshuo-navigation button:hover:not(:disabled) {
+.moments-navigation button:hover:not(:disabled) {
   background-color: var(--btn-hover-color);
 }
-.shuoshuo-navigation button:disabled {
+.moments-navigation button:disabled {
   background: #f5f5f5;
   color: #ccc;
   opacity: 0.5;
@@ -2950,13 +2950,13 @@ figure.highlight pre .javascript .function {
   filter: alpha(opacity=50);
   cursor: not-allowed;
 }
-.shuoshuo-navigation .shuoshuo-page-info {
+.moments-navigation .moments-page-info {
   margin: 0 15px;
   color: #858585;
   white-space: nowrap;
   font-size: 0.9em;
 }
-.shuoshuo-navigation .shuoshuo-page-input {
+.moments-navigation .moments-page-input {
   margin-right: 12px;
   padding: 0 15px;
   height: 2.7em;
@@ -2977,19 +2977,19 @@ figure.highlight pre .javascript .function {
 /* 當作為頁碼按鈕時的樣式 */
 /* 超出範圍時的紅色樣式 */
 }
-.shuoshuo-navigation .shuoshuo-page-input:focus {
+.moments-navigation .moments-page-input:focus {
   outline: none;
   border-width: 2px;
 }
-.shuoshuo-navigation .shuoshuo-page-input:focus::placeholder {
+.moments-navigation .moments-page-input:focus::placeholder {
   color: transparent;
 }
-.shuoshuo-navigation .shuoshuo-page-input::-webkit-outer-spin-button,
-.shuoshuo-navigation .shuoshuo-page-input::-webkit-inner-spin-button {
+.moments-navigation .moments-page-input::-webkit-outer-spin-button,
+.moments-navigation .moments-page-input::-webkit-inner-spin-button {
   margin: 0;
   -webkit-appearance: none;
 }
-.shuoshuo-navigation .shuoshuo-page-input.shuoshuo-page-num {
+.moments-navigation .moments-page-input.moments-page-num {
   min-width: 40px;
   width: 40px;
   border: none;
@@ -2998,12 +2998,12 @@ figure.highlight pre .javascript .function {
   font-weight: 500;
   cursor: text;
 }
-.shuoshuo-navigation .shuoshuo-page-input.shuoshuo-page-num:focus {
+.moments-navigation .moments-page-input.moments-page-num:focus {
   border: 1px solid #a47789;
   background: var(--white);
   color: #333;
 }
-.shuoshuo-navigation .shuoshuo-page-input.invalid {
+.moments-navigation .moments-page-input.invalid {
   border-color: #ff4757;
   background-color: #ffeaea;
   color: #ff4757;

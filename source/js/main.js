@@ -988,7 +988,7 @@ document.addEventListener('DOMContentLoaded', () => {
     scrollFn()
 
     forPostFn()
-    GLOBAL_CONFIG_SITE.pageType !== 'shuoshuo' && btf.switchComments(document)
+    GLOBAL_CONFIG_SITE.pageType !== 'moments' && btf.switchComments(document)
     openMobileMenu()
   }
 

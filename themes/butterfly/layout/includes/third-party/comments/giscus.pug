@@ -5,7 +5,7 @@
 
 script.
   (() => {
-    const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+    const isMoments = GLOBAL_CONFIG_SITE.pageType === 'moments'
     const option = !{JSON.stringify(option)}
 
     const getGiscusTheme = theme => theme === 'dark' ? '!{dark_theme}' : '!{light_theme}'
@@ -19,7 +19,7 @@ script.
     }
 
     const loadGiscus = (el = document, key) => {
-      const mappingConfig = isShuoshuo
+      const mappingConfig = isMoments
         ? { 'data-mapping': 'specific', 'data-term': key }
         : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
 
@@ -40,8 +40,8 @@ script.
 
       el.querySelector('#giscus-wrap').appendChild(scriptElement)
 
-      if (isShuoshuo) {
-        window.shuoshuoComment.destroyGiscus = () => {
+      if (isMoments) {
+        window.momentsComment.destroyGiscus = () => {
           if (el.children.length) {
             el.innerHTML = ''
             el.classList.add('no-comment')
@@ -66,9 +66,9 @@ script.
 
     btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
 
-    if (isShuoshuo) {
+    if (isMoments) {
       '!{use[0]}' === 'Giscus'
-        ? window.shuoshuoComment = { loadComment: loadGiscus }
+        ? window.momentsComment = { loadComment: loadGiscus }
         : window.loadOtherComment = loadGiscus
       return
     }

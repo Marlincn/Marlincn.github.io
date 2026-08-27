@@ -4,7 +4,7 @@
 # Phase 2 will complete/verify every key against the original site.
 
 # Nav menu (2026-08-15: archives/categories/templates/Gallery removed,
-# shuoshuo promoted to top level)
+# moments promoted to top level)
 
 nav:
   logo: /img/brand/nova-rose-line-128.png
@@ -15,7 +15,7 @@ menu:
   文章: /articles/
   工程: /projects/
   音乐: /music/
-  说说: /shuoshuo/
+  说说: /moments/
   关于: /about/
 
 # Sidebar avatar (original: /img/brand/logo1.jpg)

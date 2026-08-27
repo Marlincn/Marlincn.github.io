@@ -1,5 +1,5 @@
 'use strict'
-/* 静态页面生成器(P2.2, P1 重建 2026-08-27): music/shuoshuo/about/404
+/* 静态页面生成器(P2.2, P1 重建 2026-08-27): music/moments/about/404
    由 layout 渲染, head 走 base 统一输出;
    body 由 composeShell 组装(公共壳 + 各页纯内容), 页级差异全部参数化:
      pageClass / headerCls / mainCls(壳), showExtra(rightside 去评论), pageScripts(评论内联脚本+页级 js)。
@@ -26,14 +26,14 @@ const PAGES = [
     pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/music-page.js?v=20260827-p2"></script>'
   },
   {
-    name: 'shuoshuo',
-    path: 'shuoshuo/index.html',
-    layout: 'shuoshuo',
+    name: 'moments',
+    path: 'moments/index.html',
+    layout: 'moments',
     pageClass: '',
-    headerCls: 'not-home-page nova-shuoshuo-nav-header',
-    mainCls: 'nova-shuoshuo-shell',
+    headerCls: 'not-home-page nova-moments-nav-header',
+    mainCls: 'nova-moments-shell',
     showExtra: RIGHTSIDE_COMMENT,
-    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/shuoshuo-page.js?v=20260827-p2"></script>'
+    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/moments-page.js?v=20260827-p2"></script>'
   },
   {
     name: 'about',

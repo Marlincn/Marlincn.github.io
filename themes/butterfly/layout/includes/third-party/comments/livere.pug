@@ -2,15 +2,15 @@
 
 script.
   (() => {
-    const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+    const isMoments = GLOBAL_CONFIG_SITE.pageType === 'moments'
 
     const loadLivere = (el, path) => {
       window.livereOptions = {
         refer: path || location.pathname
       }
 
-      if (isShuoshuo) {
-        window.shuoshuoComment.destroyLivere = () => {
+      if (isMoments) {
+        window.momentsComment.destroyLivere = () => {
           if (el.children.length) {
             el.innerHTML = ''
             el.classList.add('no-comment')
@@ -31,9 +31,9 @@ script.
       }
     }
 
-    if (isShuoshuo) {
+    if (isMoments) {
       '!{use[0]}' === 'Livere'
-        ? window.shuoshuoComment = { loadComment: loadLivere }
+        ? window.momentsComment = { loadComment: loadLivere }
         : window.loadOtherComment = loadLivere
       return
     }

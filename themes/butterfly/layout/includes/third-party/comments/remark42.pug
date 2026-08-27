@@ -2,7 +2,7 @@
 
 script.
   (() => {
-    const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+    const isMoments = GLOBAL_CONFIG_SITE.pageType === 'moments'
     const options = !{JSON.stringify(option)}
 
     const loadScript = src => {
@@ -28,8 +28,8 @@ script.
     }
 
     const loadRemark42 = (el, path) => {
-      if (isShuoshuo) {
-        window.shuoshuoComment.destroyRemark42 = () => {
+      if (isMoments) {
+        window.momentsComment.destroyRemark42 = () => {
           destroyRemark42()
           if (el.children.length) {
             el.innerHTML = ''
@@ -43,7 +43,7 @@ script.
         site_id: '!{siteId}',
         theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light',
         ...options,
-        url: isShuoshuo ? window.location.origin + path : (options && options.url) || window.location.origin + window.location.pathname
+        url: isMoments ? window.location.origin + path : (options && options.url) || window.location.origin + window.location.pathname
       }
 
       if (window.REMARK42) {
@@ -62,9 +62,9 @@ script.
 
     btf.addGlobalFn('themeChange', remarkChangeMode, 'remark42')
 
-    if (isShuoshuo) {
+    if (isMoments) {
       '!{theme.comments.use[0]}' === 'Remark42'
-        ? window.shuoshuoComment = { loadComment: loadRemark42 }
+        ? window.momentsComment = { loadComment: loadRemark42 }
         : window.loadOtherComment = loadRemark42
       return
     }

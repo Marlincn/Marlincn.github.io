@@ -9,7 +9,7 @@
 - page.toc = false
 
 #article-container
-  if page.shuoshuo_url || (site.data.shuoshuo && site.data.shuoshuo.length)
+  if page.moments_url || (site.data.moments && site.data.moments.length)
     if page.comments !== false && theme.comments.use
       - commentsJsLoad = true
 
@@ -17,37 +17,37 @@
         (() => {
           const commentDiv = `!{partial('includes/third-party/comments/index', {}, {cache: true})}`
 
-          const runDestroy = (shuoshuoComment) => {
-            if (!shuoshuoComment) return
+          const runDestroy = (momentsComment) => {
+            if (!momentsComment) return
 
-            for (const [key, fn] of Object.entries(shuoshuoComment)) {
+            for (const [key, fn] of Object.entries(momentsComment)) {
               if (key.startsWith('destroy')) fn()
             }
           }
 
-          window.addCommentToShuoshuo = e => {
-            const btn = e.target.closest('.shuoshuo-comment-btn')
+          window.addCommentToMoments = e => {
+            const btn = e.target.closest('.moments-comment-btn')
             if (!btn) return
 
             const ele = btn.closest('.container').nextElementSibling
-            const { shuoshuoComment } = window
+            const { momentsComment } = window
             const isInclude = ele.classList.contains('no-comment')
-            runDestroy(shuoshuoComment)
+            runDestroy(momentsComment)
             if (isInclude) {
               ele.classList.remove('no-comment')
               ele.innerHTML = commentDiv
               const key = `${location.pathname.replace(/\/$/, '')}?key=${ele.getAttribute('data-key')}`
               btf.switchComments(ele, key)
-              shuoshuoComment.loadComment && shuoshuoComment.loadComment(ele, key)
+              momentsComment.loadComment && momentsComment.loadComment(ele, key)
             }
           }
         })()
 
 
-    - const localDate = page.shuoshuo_url ? [] : shuoshuoFN(site.data.shuoshuo, page)
+    - const localDate = page.moments_url ? [] : momentsFN(site.data.moments, page)
 
-    if !page.shuoshuo_url
-      script(type='application/json' id='shuoshuo-data')!= safeJSON(localDate)
+    if !page.moments_url
+      script(type='application/json' id='moments-data')!= safeJSON(localDate)
 
     - const { enable, native, placeholder, field } = theme.lazyload
     script.
@@ -123,33 +123,33 @@
         const renderData = (dataSlice) => {
           const content = dataSlice.map(item => {
             const formattedDate = formatToTimeZone(item.date)
-            const tags = item.tags && item.tags.map(tag => `<span class="shuoshuo-tag">${escapeHtml(tag)}</span>`).join('') || ''
+            const tags = item.tags && item.tags.map(tag => `<span class="moments-tag">${escapeHtml(tag)}</span>`).join('') || ''
             const commentButton = item.key && !{commentsJsLoad || false}
-              ? `<div class="shuoshuo-comment-btn" onclick="addCommentToShuoshuo(event)">
+              ? `<div class="moments-comment-btn" onclick="addCommentToMoments(event)">
                   <i class="fa-solid fa-comments"></i>
                 </div>`
               : ''
             const commentContainer = item.key
-              ? `<div class="shuoshuo-comment no-comment" data-key="${escapeHtml(item.key)}"></div>`
+              ? `<div class="moments-comment no-comment" data-key="${escapeHtml(item.key)}"></div>`
               : ''
 
             return `
-              <div class="shuoshuo-item">
+              <div class="moments-item">
                 <div class="container">
-                  <div class="shuoshuo-item-header">
-                    <div class="shuoshuo-avatar">
+                  <div class="moments-item-header">
+                    <div class="moments-avatar">
                       <img class="no-lightbox" src="${item.avatar ? escapeHtml(item.avatar) : !{JSON.stringify(url_for(theme.avatar.img))}}">
                     </div>
-                    <div class="shuoshuo-info">
-                      <div class="shuoshuo-author">${item.author ? escapeHtml(item.author) : !{JSON.stringify(config.author || '')}}</div>
-                      <time class="shuoshuo-date" title="${formattedDate}">
+                    <div class="moments-info">
+                      <div class="moments-author">${item.author ? escapeHtml(item.author) : !{JSON.stringify(config.author || '')}}</div>
+                      <time class="moments-date" title="${formattedDate}">
                         ${btf.diffDate(formattedDate, true)}
                       </time>
                     </div>
                   </div>
-                  <div class="shuoshuo-content">${addLazyload(item.content)}</div>
-                  <div class="shuoshuo-footer ${tags ? 'flex-between' : 'flex-end'}">
-                    ${tags ? `<div class="shuoshuo-tags">${tags}</div>` : ''}
+                  <div class="moments-content">${addLazyload(item.content)}</div>
+                  <div class="moments-footer ${tags ? 'flex-between' : 'flex-end'}">
+                    ${tags ? `<div class="moments-tags">${tags}</div>` : ''}
                     ${commentButton}
                   </div>
                 </div>
@@ -161,18 +161,18 @@
           container.innerHTML = content
 
           window.lazyLoadInstance && window.lazyLoadInstance.update()
-          document.dispatchEvent(new Event('shuoshuo:rendered'))
+          document.dispatchEvent(new Event('moments:rendered'))
         }
 
         const setupNavEvents = (nav) => {
-          nav.querySelector('.shuoshuo-prev-btn').addEventListener('click', () => {
+          nav.querySelector('.moments-prev-btn').addEventListener('click', () => {
             if (currentPage > 1) { currentPage--; renderPage(currentPage) }
           })
-          nav.querySelector('.shuoshuo-next-btn').addEventListener('click', () => {
+          nav.querySelector('.moments-next-btn').addEventListener('click', () => {
             if (currentPage < totalPages) { currentPage++; renderPage(currentPage) }
           })
 
-          const input = nav.querySelector('.shuoshuo-page-input')
+          const input = nav.querySelector('.moments-page-input')
 
           input.addEventListener('focus', e => { e.target.placeholder = '' })
           input.addEventListener('blur', e => {
@@ -233,23 +233,23 @@
             .replace(/\$\{current}/g, currentPage)
             .replace(/\$\{total}/g, totalPages)
 
-          if (!nav || !nav.classList.contains('shuoshuo-navigation')) {
+          if (!nav || !nav.classList.contains('moments-navigation')) {
             nav = document.createElement('div')
-            nav.className = 'shuoshuo-navigation'
+            nav.className = 'moments-navigation'
             nav.innerHTML = `
-              <button class="shuoshuo-prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
-              <span class="shuoshuo-page-info"></span>
-              <input type="number" class="shuoshuo-page-input" min="1">
-              <button class="shuoshuo-next-btn"><i class="fa-solid fa-chevron-right"></i></button>
+              <button class="moments-prev-btn"><i class="fa-solid fa-chevron-left"></i></button>
+              <span class="moments-page-info"></span>
+              <input type="number" class="moments-page-input" min="1">
+              <button class="moments-next-btn"><i class="fa-solid fa-chevron-right"></i></button>
             `
             container.insertAdjacentElement('afterend', nav)
             setupNavEvents(nav)
           }
 
-          nav.querySelector('.shuoshuo-page-info').textContent = pageInfoText
-          nav.querySelector('.shuoshuo-prev-btn').disabled = currentPage === 1
-          nav.querySelector('.shuoshuo-next-btn').disabled = currentPage === totalPages
-          const input = nav.querySelector('.shuoshuo-page-input')
+          nav.querySelector('.moments-page-info').textContent = pageInfoText
+          nav.querySelector('.moments-prev-btn').disabled = currentPage === 1
+          nav.querySelector('.moments-next-btn').disabled = currentPage === totalPages
+          const input = nav.querySelector('.moments-page-input')
           input.max = totalPages
           input.placeholder = currentPage
         }
@@ -262,17 +262,17 @@
           renderNavigation()
         }
 
-        const loadShuoshuo = async () => {
+        const loadMoments = async () => {
           const container = document.getElementById('article-container')
           try {
             let originData = []
-            if (!{Boolean(page.shuoshuo_url)}) {
-              container.innerHTML = '<div class="shuoshuo-loading"><i class="fa-solid fa-circle-notch fa-spin"></i></div>'
-              const response = await fetch('!{url_for(page.shuoshuo_url)}')
+            if (!{Boolean(page.moments_url)}) {
+              container.innerHTML = '<div class="moments-loading"><i class="fa-solid fa-circle-notch fa-spin"></i></div>'
+              const response = await fetch('!{url_for(page.moments_url)}')
               if (!response.ok) throw new Error(`HTTP ${response.status}`)
               originData = await response.json()
             } else {
-              const dataElement = document.getElementById('shuoshuo-data')
+              const dataElement = document.getElementById('moments-data')
               originData = dataElement ? JSON.parse(dataElement.textContent) : []
             }
 
@@ -280,14 +280,14 @@
             totalPages = Math.ceil(data.length / itemsPerPage)
 
             if (data.length === 0) {
-              container.innerHTML = '<div class="shuoshuo-empty"></div>'
+              container.innerHTML = '<div class="moments-empty"></div>'
               return
             }
 
             renderPage(currentPage)
           } catch (error) {
             console.error(error)
-            container.innerHTML = '<div class="shuoshuo-error"><i class="fa-solid fa-circle-exclamation"></i></div>'
+            container.innerHTML = '<div class="moments-error"><i class="fa-solid fa-circle-exclamation"></i></div>'
           }
         }
 
@@ -295,15 +295,15 @@
           const container = document.getElementById('article-container')
           if (container) {
             const nav = container.nextElementSibling
-            if (nav && nav.classList.contains('shuoshuo-navigation')) nav.remove()
+            if (nav && nav.classList.contains('moments-navigation')) nav.remove()
           }
           document.removeEventListener('pjax:send', pjaxCleanup)
         }
 
         if (window.pjax) {
           document.addEventListener('pjax:send', pjaxCleanup)
-          loadShuoshuo()
+          loadMoments()
         } else {
-          window.addEventListener('load', loadShuoshuo)
+          window.addEventListener('load', loadMoments)
         }
       })()

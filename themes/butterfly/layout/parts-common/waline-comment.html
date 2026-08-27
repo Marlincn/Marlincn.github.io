@@ -1,6 +1,6 @@
 <script>(() => {
   let initFn = window.walineFn || null
-  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const isMoments = GLOBAL_CONFIG_SITE.pageType === 'moments'
   const option = null
 
   const destroyWaline = ele => ele.destroy()
@@ -13,11 +13,11 @@
       dark: 'html[data-theme="dark"]',
       comment: false,
       ...option,
-      path: isShuoshuo ? path : (option && option.path) || path
+      path: isMoments ? path : (option && option.path) || path
     })
 
-    if (isShuoshuo) {
-      window.shuoshuoComment.destroyWaline = () => {
+    if (isMoments) {
+      window.momentsComment.destroyWaline = () => {
         destroyWaline(waline)
         if (el.children.length) {
           el.innerHTML = ''
@@ -40,9 +40,9 @@
     }
   }
 
-  if (isShuoshuo) {
+  if (isMoments) {
     'Waline' === 'Waline'
-      ? window.shuoshuoComment = { loadComment: loadWaline } 
+      ? window.momentsComment = { loadComment: loadWaline } 
       : window.loadOtherComment = loadWaline
     return
   }

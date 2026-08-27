@@ -3,7 +3,7 @@
 
 script.
   (() => {
-    const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+    const isMoments = GLOBAL_CONFIG_SITE.pageType === 'moments'
     const dqOption = !{JSON.stringify(dqOption)}
 
     const destroyDisqusjs = () => {
@@ -17,8 +17,8 @@ script.
     }
 
     const initDisqusjs = (el = document, path) => {
-      if (isShuoshuo) {
-        window.shuoshuoComment.destroyDisqusjs = () => {
+      if (isMoments) {
+        window.momentsComment.destroyDisqusjs = () => {
           destroyDisqusjs()
           if (el.children.length) {
             el.innerHTML = ''
@@ -32,8 +32,8 @@ script.
         title: '!{ disqusjsPageTitle }',
         apikey: '!{dqApikey}',
         ...dqOption,
-        identifier: isShuoshuo ? path : (dqOption && dqOption.identifier) || '!{ url_for(page.path) }',
-        url: isShuoshuo ? location.origin + path : (dqOption && dqOption.url) || '!{ page.permalink }'
+        identifier: isMoments ? path : (dqOption && dqOption.identifier) || '!{ url_for(page.path) }',
+        url: isMoments ? location.origin + path : (dqOption && dqOption.url) || '!{ page.permalink }'
       })
 
       disqusjs.render(el.querySelector('#disqusjs-wrap'))
@@ -68,9 +68,9 @@ script.
       }
     }
 
-    if (isShuoshuo) {
+    if (isMoments) {
       '!{theme.comments.use[0]}' === 'Disqusjs'
-        ? window.shuoshuoComment = { loadComment: loadDisqusjs }
+        ? window.momentsComment = { loadComment: loadDisqusjs }
         : window.loadOtherComment = loadDisqusjs
       return
     }

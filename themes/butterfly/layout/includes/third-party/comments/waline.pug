@@ -4,7 +4,7 @@
 script.
   (() => {
     let initFn = window.walineFn || null
-    const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+    const isMoments = GLOBAL_CONFIG_SITE.pageType === 'moments'
     const option = !{JSON.stringify(option)}
 
     const destroyWaline = ele => ele.destroy()
@@ -17,11 +17,11 @@ script.
         dark: 'html[data-theme="dark"]',
         comment: !{lazyload ? false : count},
         ...option,
-        path: isShuoshuo ? path : (option && option.path) || path
+        path: isMoments ? path : (option && option.path) || path
       })
 
-      if (isShuoshuo) {
-        window.shuoshuoComment.destroyWaline = () => {
+      if (isMoments) {
+        window.momentsComment.destroyWaline = () => {
           destroyWaline(waline)
           if (el.children.length) {
             el.innerHTML = ''
@@ -44,9 +44,9 @@ script.
       }
     }
 
-    if (isShuoshuo) {
+    if (isMoments) {
       '!{use[0]}' === 'Waline'
-        ? window.shuoshuoComment = { loadComment: loadWaline } 
+        ? window.momentsComment = { loadComment: loadWaline } 
         : window.loadOtherComment = loadWaline
       return
     }

@@ -24,7 +24,7 @@
     'nova-projects-route',
     'nova-project-detail-route',
     'nova-template-route',
-    'nova-shuoshuo-route',
+    'nova-moments-route',
     'nova-about-route',
     'nova-gallery-route'
   ]
@@ -74,7 +74,7 @@
       <p>输入关键词，或先浏览常用页面。</p>
       <nav aria-label="搜索快速入口">
         <a href="/articles/">文章</a>
-        <a href="/shuoshuo/">说说</a>
+        <a href="/moments/">说说</a>
         <a href="/music/">音乐</a>
       </nav>`
     results.before(state)
@@ -378,7 +378,7 @@
       ['.nova-project-detail', ['nova-project-detail-route']],
       ['.nova-project-detail', ['nova-project-detail-route']],
       ['.nova-template-page', ['nova-template-route']],
-      ['.nova-shuoshuo-page', ['nova-shuoshuo-route']],
+      ['.nova-moments-page', ['nova-moments-route']],
       ['.nova-about-page', ['nova-about-route']],
       ['[data-gallery-root]', ['nova-gallery-route']]
     ]
@@ -539,7 +539,7 @@
   // 方案3:首页加载时,用浏览器原生 <link rel="prefetch"> 预取导航的其他页 HTML。
   // 只预取一级导航页(文章/音乐/说说/关于),不预取子页;浏览器空闲时进行,不阻塞首屏。
   // 预取资源进入 HTTP 缓存,用户跳转时加载更快、避免未渲染界面。
-  const NAV_PREFETCH = ['/articles/', '/music/', '/shuoshuo/', '/about/']
+  const NAV_PREFETCH = ['/articles/', '/music/', '/moments/', '/about/']
   function prefetchNavPages() {
     if (!isHomePage()) return
     const run = () => {

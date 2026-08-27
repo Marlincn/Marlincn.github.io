@@ -1,17 +1,17 @@
 (() => {
   'use strict'
 
-  if (window.__novaShuoshuoBootstrap) {
-    window.__novaShuoshuoBootstrap.init()
+  if (window.__novaMomentsBootstrap) {
+    window.__novaMomentsBootstrap.init()
     return
   }
 
-  function initialiseShuoshuoPage() {
-    const page = document.querySelector('.nova-shuoshuo-page')
+  function initialiseMomentsPage() {
+    const page = document.querySelector('.nova-moments-page')
     if (!page || page.dataset.ready === 'true') return
     page.dataset.ready = 'true'
 
-    page.querySelectorAll('.nova-shuoshuo-like').forEach(button => {
+    page.querySelectorAll('.nova-moments-like').forEach(button => {
       const count = button.querySelector('b')
       const icon = button.querySelector('span')
       const baseCount = Number(button.dataset.baseCount || 0)
@@ -43,8 +43,8 @@
     })
   }
 
-  window.__novaShuoshuoBootstrap = { init: initialiseShuoshuoPage }
-  document.addEventListener('DOMContentLoaded', initialiseShuoshuoPage, { once: true })
-  document.addEventListener('pjax:complete', initialiseShuoshuoPage)
-  if (document.readyState !== 'loading') initialiseShuoshuoPage()
+  window.__novaMomentsBootstrap = { init: initialiseMomentsPage }
+  document.addEventListener('DOMContentLoaded', initialiseMomentsPage, { once: true })
+  document.addEventListener('pjax:complete', initialiseMomentsPage)
+  if (document.readyState !== 'loading') initialiseMomentsPage()
 })()

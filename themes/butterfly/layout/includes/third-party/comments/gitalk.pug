@@ -2,7 +2,7 @@
 
 script.
   (() => {
-    const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+    const isMoments = GLOBAL_CONFIG_SITE.pageType === 'moments'
     const option = !{JSON.stringify(option)}
 
     const commentCount = n => {
@@ -13,8 +13,8 @@ script.
     }
 
     const initGitalk = (el, path) => {
-      if (isShuoshuo) {
-        window.shuoshuoComment.destroyGitalk = () => {
+      if (isMoments) {
+        window.momentsComment.destroyGitalk = () => {
           if (el.children.length) {
             el.innerHTML = ''
             el.classList.add('no-comment')
@@ -30,7 +30,7 @@ script.
         admin: ['!{admin}'],
         updateCountCallback: commentCount,
         ...option,
-        id: isShuoshuo ? path : (option && option.id) || '!{md5(page.path)}'
+        id: isMoments ? path : (option && option.id) || '!{md5(page.path)}'
       })
 
       gitalk.render('gitalk-container')
@@ -45,9 +45,9 @@ script.
       }
     }
 
-    if (isShuoshuo) {
+    if (isMoments) {
       '!{theme.comments.use[0]}' === 'Gitalk'
-        ? window.shuoshuoComment = { loadComment: loadGitalk }
+        ? window.momentsComment = { loadComment: loadGitalk }
         : window.loadOtherComment = loadGitalk
       return
     }

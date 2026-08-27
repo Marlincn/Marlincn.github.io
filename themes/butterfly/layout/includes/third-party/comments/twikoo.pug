@@ -3,7 +3,7 @@
 
 script.
   (() => {
-    const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+    const isMoments = GLOBAL_CONFIG_SITE.pageType === 'moments'
     const option = !{JSON.stringify(option)}
 
     const getCount = () => {
@@ -30,12 +30,12 @@ script.
           btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
         },
         ...option,
-        path: isShuoshuo ? path : (option && option.path) || path
+        path: isMoments ? path : (option && option.path) || path
       })
 
       !{count ? `GLOBAL_CONFIG_SITE.pageType === 'post' && getCount()` : ''}
 
-      isShuoshuo && (window.shuoshuoComment.destroyTwikoo = () => {
+      isMoments && (window.momentsComment.destroyTwikoo = () => {
         if (el.children.length) {
           el.innerHTML = ''
           el.classList.add('no-comment')
@@ -48,9 +48,9 @@ script.
       else btf.getScript('!{url_for(theme.asset.twikoo)}').then(() => init(el, path))
     }
 
-    if (isShuoshuo) {
+    if (isMoments) {
       '!{use[0]}' === 'Twikoo'
-        ? window.shuoshuoComment = { loadComment: loadTwikoo }
+        ? window.momentsComment = { loadComment: loadTwikoo }
         : window.loadOtherComment = loadTwikoo
       return
     }
