@@ -1,3 +1,24 @@
+﻿/* ============================================================================
+   Marlin-web 全站覆盖样式 custom.css (Butterfly 主题覆盖层, ~56KB)
+
+   规范:
+   - 本文件 = 全站覆盖的唯一去处(上游 index.css 勿改)
+   - 页级定制在 source/rose-galaxy/css/{page}-page.css
+   - 分段头注释(按域, 从上到下):
+
+     1. 全局调色板与工具     Nova visual authority(palette) / .sr-only / :root 变量
+     2. 通用页面覆盖          Homepage / Category+tag indexes / About / Moments /
+                              Template atlas / Gallery / Music / Article+Note
+     3. 首屏 Loading          全站首次加载层(会话记忆)
+     4. 搜索对话框            Native-feeling midnight search dialog
+     5. 文章详情              Article detail — Night Rose(正文/排版/工具/评论)
+     6. 导航                  Navigation(全局模板/深浅主题/下拉/高亮/搜索按钮)
+     7. 交互与动画            入场动画轻量化 / Waline emoji z-index / 滚动条
+     8. 页脚横幅              Site footer(A-scheme: global unified banner, 深浅两态)
+     9. 杂项                  404 page / rightside 控件等
+
+   改动提示: 每段以 /* ---- 段名 ---- */ 开头; 版本变更请保留注释中的日期与意图说明。
+   ============================================================================ */
 /* Nova visual authority: the only source for shared dark/light palette values. */
 .sr-only {
   position: absolute !important;

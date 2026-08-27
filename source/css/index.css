@@ -1,3 +1,9 @@
+/*!
+ * Butterfly 主题上游样式副本(196KB, 含 normalize v8.0.1)
+ * ⚠️ 本文件为上游文件, 请勿修改! 全站覆盖规则一律写 source/css/custom.css
+ *     页级定制写 source/rose-galaxy/css/{page}-page.css
+ === 上游 Butterfly 5.7.0 index.css ===
+ */
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 html {
   line-height: 1.15;

@@ -21,7 +21,7 @@ const PROJECT_DETAIL_CSS = fs.readFileSync(
   path.join(__dirname, '..', 'source', 'rose-galaxy', 'css', 'project-detail-page.css'), 'utf8'
 )
 
-const SITE = (hexo.config.url || '').replace(/\/+$/, '')
+const { SITE } = require('./site-config')
 
 // 下载文件本站托管(source/assets/projects/_files/): deymocn 已删除, 链接指向本站
 const DL_BASE = SITE

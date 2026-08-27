@@ -16,7 +16,7 @@ const readTagTop = fs.readFileSync(path.join(tagParts, 'top.html'), 'utf8')
 const readTagBottom = fs.readFileSync(path.join(tagParts, 'bottom.html'), 'utf8')
 const readIdxTop = fs.readFileSync(path.join(idxParts, 'top.html'), 'utf8')
 
-const SITE = (hexo.config.url || '').replace(/\/+$/, '')
+const { SITE } = require('./site-config')
 
 function stripMd(text) {
   return text
