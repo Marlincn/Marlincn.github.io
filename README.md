@@ -1,4 +1,4 @@
-﻿# Marlin-web — 个人网站
+# Marlin-web — 个人网站
 
 一个以「深夜幕蓝 + 玫瑰星系粒子」为视觉核心的个人网站,基于 Marlin(mikejosion.github.io)的静态构建产物重建,采用 Hexo 8.1.2 + Butterfly 5.7.0 + 自研 rose-galaxy 定制层。
 
@@ -19,8 +19,7 @@
 - [技术栈](#技术栈)
 - [定制记录](#定制记录文件级)
 - [构建过程记录](#构建过程记录)
-- [后续计划(待做)](#后续计划待做)
-- [维护文档(技术细节)](#维护文档技术细节)
+- [维护文档](#维护文档)
 
 ---
 
@@ -198,41 +197,39 @@ tags:
 
 ### 首页
 
-- 由 hexo 布局渲染(`themes/butterfly/layout/home.pug` + `scripts/home-generator.js`,P2.1 起),**LATEST SIGNAL 与精选记录卡片全部自动生成**,不再手工维护:
-  - LATEST SIGNAL = `order` 最小(排最前)的文章
-  - 精选记录 = 全部文章按 front matter `order` 升序输出(每篇一张卡片)
-  - 卡片摘要 = 标题 + 正文纯文本前 70 字(剔除代码块,实体解码),封面按标签映射(`nova-tags.js` 同规则)
-  - 静态骨架存于 `themes/butterfly/layout/home-parts/{top,mid,bottom}.html`,改动请保持 DOM 结构
+- 由 hexo 布局渲染(`themes/butterfly/layout/home.pug` + `scripts/home-generator.js`),**P5 起三大区块全部动态生成,卡片由生成器注入占位(`<!--NOVA-FEATURED-->` / `<!--NOVA-RECENT-->` / `<!--NOVA-LATEST-->`),模板只负责骨架**:
+  - **LATEST SIGNAL**(hero 内)= 工程 + 文章中"最近提交"的第 1 名:按 `updated 降序 → 浏览量降序 → 标题` 排序,带 `[工程]`/`[文章]` 标记
+  - **精选工程** = 工程按 `浏览量降序 → updated 降序 → 标题` 取前 3(左大卡 lead + 右上/右下 side 卡,封面=各工程图 `/img/projects/*.webp`)
+  - **最新文章** = 文章按 `updated 降序 → 浏览量降序 → 标题` 取前 6(2 列 3 行,左封面 + 标题 / 发表于日期 / 标签)
+- **浏览量**(排序数据):部署前运行 `node scripts/lib/fetch-views.js`,从 busuanzi API 抓取各页真实 page_pv(带 Referer 查询)→ 写入 `scripts/views-cache.json`;**手动调整**:编辑该文件 `pv` 段的数字即可(下次抓取自动在其上累加真实增量,不会覆盖;详细说明见同目录 `views-cache.md`)
+- **修改日期**:文章自动用 Hexo `updated`(md 无该字段时=文件最后修改时间);工程自动取 `source/assets/projects/<工程名>/` 目录修改时间(更新工程=换文件=日期自动变),也可在 `projects-data.js` 写 `updated:'YYYY-MM-DD'` 覆盖
+- 静态骨架存于 `themes/butterfly/layout/home-parts/{top,mid,bottom}.html`,改动请保持占位标记与 DOM 结构
 
-**a. LATEST SIGNAL**(hero 内最新文章卡,由生成器动态注入 `<a class="nova-latest-signal">`,数据取 `order` 最前的最新文章):
+卡片结构示例:
 
 ```html
-<a class="nova-latest-signal" href="/posts/Markdown%20%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/" aria-label="最新文章：Markdown 入门指南，发布于 2026-08-17">
-  <span>LATEST SIGNAL</span><strong>Markdown 入门指南</strong><time>2026-08-17</time>
+<!-- 精选工程(lead): data-href + post_cover + recent-post-info -->
+<div class="nova-note-card nova-note-card--lead" data-href="/projects/drone/" role="link" tabindex="0" aria-label="查看工程：琛光无人机">
+  <div class="post_cover"><a href="/projects/drone/" title="琛光无人机">
+    <img class="post-bg" src="/img/projects/drone.webp" alt="琛光无人机" loading="lazy" decoding="async" width="535" height="372"></a></div>
+  <div class="recent-post-info">
+    <a class="article-title" href="/projects/drone/" title="琛光无人机">琛光无人机</a>
+    <div class="article-meta-wrap">…发布于/分类…</div>
+    <div class="content">简介</div>
+  </div>
+</div>
+
+<!-- 最新文章(2 列 3 行): 封面贴左 + 标题/发表于/标签 -->
+<a class="nova-recent-card" href="/posts/.../" role="link" aria-label="阅读文章：标题">
+  <span class="nova-recent-cover"><img class="post-bg" src="/img/covers/tech-notes.webp" alt="标题" loading="lazy" decoding="async" width="1200" height="900"></span>
+  <span class="nova-recent-info">
+    <span class="nova-recent-title">标题</span>
+    <span class="nova-recent-meta"><time datetime="YYYY-MM-DD" title="发表于 YYYY-MM-DD"><i class="far fa-calendar-alt" aria-hidden="true"></i>发表于 YYYY-MM-DD</time><span class="nova-recent-tag"><i class="fas fa-inbox" aria-hidden="true"></i>标签</span></span>
+  </span>
 </a>
 ```
 
-**b. 精选记录**(`nova-featured-grid` 内的 `nova-note-card`,8 张卡片):
-
-```html
-<div class="nova-note-card nova-note-card--lead" data-href="/posts/..." role="link" tabindex="0" aria-label="阅读文章：标题">
-  <div class="post_cover">
-    <a href="/posts/..." title="标题">
-      <img class="post-bg" src="/img/covers/tech-notes.webp" onerror="this.onerror=null;this.src='/img/misc/404.jpg'" alt="标题" loading="lazy" decoding="async" width="1200" height="900">
-    </a>
-  </div>
-  <div class="recent-post-info">
-    <a class="article-title" href="/posts/..." title="标题">标题</a>
-    <div class="article-meta-wrap">
-      <span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-08-17T00:00:00.000Z">2026-08-17</time></span>
-      <span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">标签名</span></span>
-    </div>
-    <div class="content">文章摘要</div>
-  </div>
-</div>
-```
-
-- 第一张卡片用 `nova-note-card--lead`,其余用 `--side`;URL 中空格需编码为 `%20`
+- 第一张工程卡用 `nova-note-card--lead`,其余用 `--side`;URL 中空格需编码为 `%20`
 - 生活碎片区指向 /music/、/moments/(按钮文案:进入音乐 / 进入瞬间),与文章无关
 
 ### 工程板块(生成器渲染,见[加工程](#加工程))
@@ -347,6 +344,8 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-08-28 | **P5 收尾修复与文档**：①hero 按钮"查看时间轴"→**查看工程**(指向 `/projects/`);②**导航栏修复**:marlin 字样(顶部透明/滚动固定)两态位置一致——删首页 `nav-site-title` flex 专属规则(与主题 nav-fixed a:first-child/last-child 规则冲突)+ 全站滚动态 nav 贴顶修复(本站从不加 `.fixed` class,致 nav 停在 y=6~8;`#page-header.nav-fixed.nav-visible #nav{top:0!important;transform:none!important}`,隐藏态不受影响);③**音乐悬浮窗记忆改会话级**:`novaPlayerState`/`novaMiniPos` 由 localStorage 改 sessionStorage(刷新/站内跳转保留,关闭标签页后不再恢复);④README 首页小节 P5 化 + 历史补本条目 + 删「后续计划」板块;MAINTENANCE 标题改「维护文档」+ 补 P5 数据流小节 | `layout/home-parts/top.html`、`source/rose-galaxy/css/nova-home.css`、`source/css/custom.css`、`source/rose-galaxy/js/nova-player.js`、`README.md`、`MAINTENANCE.md` |
+| 2026-08-27 | **P5 首页改版**：①首页"精选记录"→**精选工程**(工程按浏览量取 3:左大卡+右上/右下,封面=工程图);新增**最新文章**区块(按修改日期取 6,2 列 3 行);LATEST SIGNAL 扩为"工程+文章最近提交"第 1 名(带[工程]/[文章]标记);②**浏览量系统**:新增 `scripts/lib/fetch-views.js`(busuanzi API 带 Referer 抓各页真实 page_pv)+ `scripts/views-cache.json`(显示值=真实值+人工偏移,手动改 `pv` 段后脚本在其上累加不覆盖,说明文档 `views-cache.md`);排序 tie-break 链(updated→浏览量→标题)保证批量更新/同值稳定;工程"最后提交日"=资产目录 mtime(可 `updated:` 覆盖);③样式:最新文章卡(封面贴左、卡高 88、gap 18)、圆角统一 13px、浅色蒙版(封面 96%/文字垫底 82→72)、标签浅玫瑰(#c97993/#a66f82)、"漫游的思想"文案、decorative-loader 路径修复(全站 404) | `scripts/{home-generator,projects-data}.js`、`scripts/lib/fetch-views.js`(新)、`scripts/{views-cache.json,views-cache.md}`(新)、`layout/home.pug`、`layout/home-parts/{top,mid,bottom}.html`、`layout/parts-common/footer.html`、`source/rose-galaxy/css/nova-home.css` |
 | 2026-08-27 | **P4 收尾与文档**：README 系统更新(本文档,重建"加一个工程"教程)+ 新增 MAINTENANCE.md(技术维护文档);M1 index.css 头部"上游勿改"标注;M2 custom.css 文件头总目录;C5 Node 配置单源(`scripts/site-config.js` 从 `_config.yml` 读 SITE,不依赖 hexo 作用域);C7 py-tools 拆 `tools/`(构建验证)+`archive/`(历史补丁);R6 #page-header 层叠以标注维护;N3 night-visitor→nova-visitor;N5 nova-404→404 | `README.md`、`MAINTENANCE.md`、`source/css/{index,custom}.css`、`scripts/site-config.js`、`scripts/{nova-tags,projects-generator}.js`、`source/rose-galaxy/{js,css}/nova-visitor.*`、`layout/404.pug`、`py-tools/` |
 | 2026-08-27 | **P3 命名**:shuoshuo→moments 全量(URL `/moments/`、文件/类名/变量 `nova-moments-*`、`nova-moments-route`);中文"说说"保留 | 全站(5 文件重命名 + 33 文本替换) |
 | 2026-08-27 | **P2 分类与路由治理**：img 分层(hero/music/brand/misc + 保留 covers/projects);动画脚本迁 `rose-galaxy/animation/`;空目录清理;版本号统一 `?v=20260827-p2`;assets 扁平化(`assets/projects/<工程名>/`,去 files/mcu|model 双层);permalink → `posts/:title/`(文章详情与 articles/ 并列);预览图入 img/misc | `source/img/`、`rose-galaxy/{animation,css}/`、`_config.yml`、`scripts/projects-data.js`、各 pug/parts |
@@ -416,15 +415,7 @@ Marlin-web/
 
 ---
 
-## 后续计划
+## 维护文档
 
-1. **音乐页升级成专业播放器** ✅ 2026-08-27 完成:全局播放器(跨页常驻)+ 迷你悬浮条 + 歌单缓存,见上方定制记录。
-2. **Waline 旧评论迁移**(可选):`/shuoshuo/` 历史留言迁至 `/moments/`(数据层操作,未定)。
-3. **布局/视觉微调**(常规迭代,无排期)。
-
----
-
-## 维护文档(技术细节)
-
-> 本文档面向"人"(怎么用/怎么写内容);架构内部细节、部署流程与 Hexo 踩坑见 **`MAINTENANCE.md`**(技术维护文档,与本文档同目录)。
+> 本文档面向"人"(怎么用/怎么写内容);架构内部细节、部署流程与 Hexo 踩坑见 **`MAINTENANCE.md`**(维护文档,与本文档同目录)。
 

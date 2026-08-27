@@ -1,4 +1,4 @@
-﻿/* ============================================================================
+/* ============================================================================
    Marlin-web 全站覆盖样式 custom.css (Butterfly 主题覆盖层, ~56KB)
 
    规范:
@@ -1603,6 +1603,13 @@ html[data-theme="dark"] body:not(.nova-home-active) #rightside .marlin-rightside
   background:#b86a83;
 }
 
+
+/* ---- 导航 hover 下划线: 主站玫瑰浅色 + 更细(2026-08-27) ----
+   主题默认色为淡灰紫 rgb(191,160,172), 此处收敛为主站玫瑰系(与首页高亮同源);
+   高度 3px->2px 更精致, 动画滑动保持主题默认行为。 */
+#nav .menus_item .site-page:not(.child)::after{background-color:#c97993;height:2px}
+html[data-theme="light"] #nav .menus_item .site-page:not(.child)::after{background-color:#a66f82}
+
 /* ===== 导航栏全局模板:以音乐页为基准,双主题全透明 (2026-08-17) =====
    除首页外所有页面统一;首页(nova-home-active)悬浮透明导航保持独立。
    未滚动:深/浅主题均全透明(透出各页 hero);浅色滚动后保持全透明
@@ -1806,3 +1813,10 @@ html[data-theme="light"] body:not(.nova-home-active) footer#footer {
   background: url(/img/hero/archive-bg.webp) center bottom / cover no-repeat #d5d4de;
   color: #514c59;
 }
+
+/* ===== 导航栏滚动态贴不齐修复(全站, 2026-08-28) =====
+   主题规则 .nav-fixed #nav{top:-60px} + .nav-visible:not(.fixed) #nav{translate3d(0,100%,0)}
+   在缺少 .fixed class 时(本站从不加)使 nav 出现后停在 y=6~8, 与顶部/滚动位置不齐。
+   仅在出现态(.nav-fixed.nav-visible)归位 top:0 并清除 translate3d 残留;
+   隐藏态(仅 .nav-fixed)的 top:-60 保持不变, 不破坏向下滚动隐藏行为。 */
+#page-header.nav-fixed.nav-visible #nav { top: 0 !important; transform: none !important; }

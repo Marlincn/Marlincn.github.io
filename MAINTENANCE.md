@@ -1,4 +1,4 @@
-# Marlin-web 维护文档（技术细节）
+# Marlin-web 维护文档
 
 > 面向维护者的内部文档：架构实现、目录职责、Hexo 工程坑、构建部署流程。
 > 「怎么用/怎么写内容」请看同目录 `README.md`；重构问题清单与分期台账在本地 `C:\Users\mabin\Desktop\data\STRUCTURE-REFACTOR.md`（不入 git）。
@@ -53,13 +53,26 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 | `site-config.js` | Node 构建期配置单源：`SITE`(从 `_config.yml` 的 url 解析，**顶层不碰 hexo**——见 Hexo 坑①) |
 | `parts-common.js` | 公共壳组装函数 + 组件读取(loading/sidebar/nav/footer/评论/按钮) |
 | `nova-tags.js` | 标签/索引页 + `search.xml`/`sitemap.xml`/`atom.xml` 生成器；`fmtDate` 来自 `lib/date.js` |
-| `home-generator.js` | 首页：shellTop + hero 段(含 LATEST 动态注入)+ mid + 页级 bottom + 公共尾 |
+| `home-generator.js` | 首页：shellTop + hero 段(LATEST 动态注入)+ mid(精选工程/最新文章卡注入)+ 页级 bottom + 公共尾；P5 数据规则见「首页 P5 数据流」 |
 | `page-generator.js` | 静态页：PAGES 配置表(pageClass/headerCls/mainCls/pre/showExtra/pageScripts) |
 | `projects-generator.js` | 工程页：列表 + 详情(下载链接由 `SITE + encodeURI(url)` 生成) |
 | `projects-data.js` / `projects-intro.js` | 工程数据(5 个工程)/ 详情介绍文案(自包含) |
+| `lib/fetch-views.js` | **浏览量抓取器(部署前手动运行)**：busuanzi API 带 Referer 查询各页真实 page_pv → 写 `views-cache.json`；24h 缓存、单条失败跳过、手动修改自动保留偏移 |
+| `views-cache.json` | 浏览量缓存：`pv`(显示值=排序用) / `shift`(人工偏移) / `lastRaw`·`lastDisplay`(脚本维护)。**手动改只动 `pv` 段**，详见 `views-cache.md` |
 | `inject-theme.js` | 文章页首帧主题注入(hexo injector head_begin) |
 | `lib/date.js` | `fmtDate`(支持 moment 对象与 Date) |
 | `minify.js` | 构建后 JS 压缩(esbuild，`npm run build` 自动跑) |
+
+#### 首页 P5 数据流(生成时全重算, 均无需维护)
+
+- **排序链(确定性 tie-break)**：`updated 降序 → 浏览量降序 → 标题升序`(localeCompare 'zh');批量更新/浏览量同值时结果稳定。
+- **LATEST SIGNAL** = 工程+文章合并按上链取第 1 名(带 `[工程]`/`[文章]` 标记)。
+- **精选工程** = 工程按 `浏览量降序 → updated → 标题` 取前 3(lead + 2 side,封面=`/img/projects/*.webp`)。
+- **最新文章** = 文章按 `updated → 浏览量 → 标题` 取前 6(2 列 3 行)。
+- **浏览量**：`views-cache.json` 的 `pv` 段(= busuanzi 真实值 + 人工偏移);缺失时兜底 `projects-data.js` 的 `views` 字段(可选)。
+- **文章 updated**：Hexo 原生(无 `updated:` 时=文件 mtime;Marlin-web 本地工作目录 generate,时间真实)。
+- **工程 updated**：`projects-data.js` 的 `updated:` 字段(可选) > `source/assets/projects/<工程名>/` 目录 mtime > `date` 兜底。
+- **卡片注入**：mid.html 的 `<!--NOVA-FEATURED-->`/`<!--NOVA-RECENT-->` 与 top.html 的 `<!--NOVA-LATEST-->` 占位由生成器 `split().join()` 替换;卡片 HTML 拼装在 `home-generator.js` 的 `featuredCardsHtml`/`recentCardsHtml`/`latestSignal`。
 
 ### `themes/butterfly/layout/`
 

@@ -194,7 +194,6 @@
 }
 
 /* Hero poster hierarchy: nav 10% / visual 62% / information 18% / transition 10% */
-.nova-home-active #nav .nav-site-title{display:flex;align-items:center;gap:11px}
 .nova-home-active #nav .site-icon{
   width:30px;
   height:30px;

@@ -1,7 +1,8 @@
 /* =============================================================
    Nova Global Player (2026-08-27)
    - 全局单例 Audio: 跨 PJAX 页面常驻, 离开音乐页不停止
-   - 歌单缓存(内存 + localStorage): 恢复最后歌曲, 不恢复进度, 不自动出声
+   - 歌单缓存(内存 + sessionStorage): 恢复最后歌曲, 不恢复进度, 不自动出声
+     (会话级: 刷新/站内跳转记忆有效, 关闭标签页后不再恢复)
    - 迷你悬浮条(非音乐页): 歌名/进度/三键(上一首/暂停/下一首), 可拖动, 可关闭
    - 音乐页 UI 通过 window.__novaPlayerBridge 订阅事件
    - 需要页面: 全站 inject.bottom
@@ -30,10 +31,10 @@
     lastPlayedIndex: -1,
   }));
 
-  // ---- localStorage 记忆: { songIndex, songs } (songs 仅元信息, 含 bvid/name/artist/cover) ----
+  // ---- sessionStorage 记忆(会话级): { songIndex, songs } (songs 仅元信息, 含 bvid/name/artist/cover) ----
   function loadMemory() {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = sessionStorage.getItem(STORAGE_KEY);
       if (!raw) return null;
       const j = JSON.parse(raw);
       if (!Number.isInteger(j.songIndex) || j.songIndex < 0) return null;
@@ -46,7 +47,7 @@
   function saveMemory(played) {
     try {
       const prev = loadMemory() || {};
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
         songIndex: state.currentIndex,
         played: played === true ? true : Boolean(prev.played), // 仅显式 true 才标记真正播放过
         songs: state.songs.map(s => ({
@@ -269,7 +270,7 @@
         root.removeEventListener("pointermove", move);
         root.removeEventListener("pointerup", up);
         root.classList.remove("is-dragging");
-        try { localStorage.setItem("novaMiniPos", JSON.stringify({ x: root.style.left, y: root.style.top })); } catch (_) {}
+        try { sessionStorage.setItem("novaMiniPos", JSON.stringify({ x: root.style.left, y: root.style.top })); } catch (_) {}
       };
       root.addEventListener("pointermove", move);
       root.addEventListener("pointerup", up);
@@ -287,7 +288,7 @@
     if (!root.dataset.posLoaded) {
       root.dataset.posLoaded = "1";
       let pos = null;
-      try { pos = JSON.parse(localStorage.getItem("novaMiniPos") || "null"); } catch (_) {}
+      try { pos = JSON.parse(sessionStorage.getItem("novaMiniPos") || "null"); } catch (_) {}
       const p = pos || defaultMiniPos();
       root.style.left = p.x; root.style.top = p.y;
     }
