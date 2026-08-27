@@ -1,4 +1,4 @@
-'use strict'
+﻿'use strict'
 /* 静态页面生成器(P2.2, P1 重建 2026-08-27): music/moments/about/404
    由 layout 渲染, head 走 base 统一输出;
    body 由 composeShell 组装(公共壳 + 各页纯内容), 页级差异全部参数化:
@@ -48,7 +48,7 @@ const PAGES = [
   {
     name: '404',
     path: '404.html',
-    layout: 'nova-404',
+    layout: '404',
     pageClass: 'type-404',
     headerCls: 'not-top-img',
     mainCls: 'layout hide-aside',

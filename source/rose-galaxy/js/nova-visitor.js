@@ -1,7 +1,7 @@
-(() => {
+﻿(() => {
   'use strict'
 
-  // Night-visitor (Little Prince easter egg) removed on purpose
+  // Nova-visitor (Little Prince easter egg) removed on purpose
   // (site customization: 2026-08-15).
   // Previously this file dynamically created the .prince-egg character and
   // the quote popover on the homepage, loaded /img/caidan*.webp assets and

@@ -1,4 +1,4 @@
-# Marlin-web — 个人网站
+﻿# Marlin-web — 个人网站
 
 一个以「深夜幕蓝 + 玫瑰星系粒子」为视觉核心的个人网站,基于 Marlin(mikejosion.github.io)的静态构建产物重建,采用 Hexo 8.1.2 + Butterfly 5.7.0 + 自研 rose-galaxy 定制层。
 
@@ -12,13 +12,15 @@
 
 - [功能特性](#功能特性)
 - [快速开始](#快速开始)
-- [写一篇文章(完整实例)](#写一篇文章完整实例)
+- [加文章](#加文章)
+- [加工程](#加工程)
 - [各版块逻辑](#各版块逻辑)
 - [项目结构](#项目结构)
 - [技术栈](#技术栈)
 - [定制记录](#定制记录文件级)
 - [构建过程记录](#构建过程记录)
 - [后续计划(待做)](#后续计划待做)
+- [维护文档(技术细节)](#维护文档技术细节)
 
 ---
 
@@ -28,9 +30,10 @@
 - 玫瑰星系粒子画布:尘埃 / 雾气 / 花瓣三类粒子 + 星座连线 + 鼠标吸引,30fps 节流,`prefers-reduced-motion` 降级
 - Hero 打字机副标题、滚动显现动画、LATEST SIGNAL 最新文章卡
 - 全站本地搜索(search.xml,无后端)、PJAX 无刷新导航、访问统计(busuanzi)
-- 8 篇文章(Markdown 写作工作流)+ 文章 / 音乐 / 说说 / 关于 页面;导航:首页 / 文章 / 音乐 / 说说 / 关于
+- 8 篇文章(Markdown 写作工作流)+ 文章 / 音乐 / 瞬间 / 关于 页面 + 工程板块;导航:首页 / 文章 / 工程 / 音乐 / 瞬间 / 关于
+- 文章详情路由 `/posts/<标题>/`(与索引/标签的 `articles/` 并列,见[加工程](#加工程)同理);工程页 `/projects/`(列表+5 个详情)
 - Hero 背景图:深色主题 `night.webp`、浅色主题 `day.webp`(webp 压缩,质量 95)
-- 已移除:鼠标点击粒子迸发、点击浮字、玫瑰绽放花瓣彩蛋、小王子彩蛋、归档/分类/模板/照片板块(见定制记录)
+- 已移除:鼠标点击粒子迸发、点击浮字、玫瑰绽放花瓣彩蛋、小王子彩蛋、归档/分类/模板/照片/课程板块(见定制记录)
 
 ---
 
@@ -46,7 +49,7 @@ npm run deploy       # 部署(需先在 _config.yml 配置 deploy.repo)
 
 ---
 
-## 写一篇文章
+## 加文章
 
 **1. 在 `source/_posts/` 新建 md 文件**,例如 `source/_posts/Markdown 入门指南.md`:
 
@@ -76,7 +79,7 @@ fmt.Println("代码块示例")
 | 字段 | 必填 | 说明 |
 | --- | --- | --- |
 | `title` | 是 | 文章标题,显示在页面、卡片、feed |
-| date | 是 | 发布日期,决定文章 URL(/2026/08/17/标题/)与排序 |
+| date | 是 | 发布日期,决定文章排序(URL 由站点 `permalink: posts/:title/` 决定,不含日期) |
 | order | 否 | 首页精选记录排序(小在前);新文章加 order 即可自动上首页,缺省排在最后 |
 | `tags` | 否 | 标签列表,决定归属的标签页(见下) |
 
@@ -88,7 +91,7 @@ hexo clean && hexo generate
 
 **3. 自动完成:**
 
-- 文章页生成:`/2026/08/17/Markdown 入门指南/`
+- 文章页生成:`/posts/Markdown 入门指南/`
 - 文章页出现标签链接 → `/articles/Markdown语法/`
 - 标签页自动更新(已存在则计数 +1;新标签自动建页)
 - `/articles/` 索引、`search.xml`、`sitemap.xml`、`atom.xml` 同步更新
@@ -97,12 +100,52 @@ hexo clean && hexo generate
 
 ---
 
+## 加工程
+
+> 工程板块 = `/projects/` 列表 + 每工程一个详情页(`/projects/<id>/`),由生成器渲染;**维护只需改一处数据文件 + 放图片与下载文件**,零手工页面。
+
+**1. 在 `scripts/projects-data.js` 的 `projects` 数组末尾追加一个对象:**
+
+```js
+{
+  id: 'my-project',                 // 详情页路由名(唯一,小写+连字符)
+  title: '我的项目',
+  category: '单片机',                // 显示分类(列表页 meta)
+  categoryKey: 'mcu',               // 分组键(mcu/model)
+  subtitle: '一句话副标题',
+  date: '2026-08-27',               // 发表于(可省略,省略则取构建当天)
+  description: '列表卡片简介(两行左右)',
+  tags: ['STM32', 'PCB'],
+  intro: '详情页介绍正文(支持换行段落,300-500 字为宜)',
+  cover: '/img/projects/my-project.webp',
+  link: 'https://github.com/...',   // 源工程链接(可无)
+  linkLabel: 'GitHub',
+  downloads: [                      // 下载文件(可无)
+    { name: '固件包.zip', url: '/assets/projects/我的项目/固件包.zip', sizeLabel: '12.4 MB', desc: '说明' }
+  ]
+}
+```
+
+**2. 放两张图(webp,质量 80):**
+- 列表封面:`source/img/projects/my-project.webp`(3:2,如 1200×800)
+- 详情演示图:`source/img/projects/demo-my-project.webp`(16:9,如 1280×720)
+
+**3. 放下载文件(可选):** `source/assets/projects/我的项目/` 目录,文件名与 `downloads[].url` 一致。
+
+**4. 构建:** `hexo clean && hexo generate` — 自动完成:
+- 列表页卡片自动出现(封面/标题/简介/分类日期,三列网格)
+- 详情页自动生成(`/projects/my-project/`):hero + 标题 + 演示图 + 介绍 + 工程链接按钮 + 资料下载列表 + 评论区(每页评论独立)
+- 右栏"其他工程"列表、概览统计(项目数/分类数/标签数)自动更新
+- `search.xml`/`sitemap.xml`/`atom.xml` 不包含工程(工程不进 feed)
+
+---
+
 ## 各版块逻辑
 
 ### 文章系统(Hexo 渲染)
 
-- 文章源:`source/_posts/*.md`,由 Hexo 渲染为 `/YYYY/MM/DD/标题/`
-- 写作流程见上方[完整实例](#写一篇文章完整实例)
+- 文章源:`source/_posts/*.md`,由 Hexo 渲染为 `/posts/<标题>/`(站点配置 `permalink: posts/:title/`)
+- 写作流程见上方[加文章](#加文章)
 - 文章页的标签链接由 Hexo 按 `tag_dir`(已配置为 `articles`)自动生成
 
 ### 标签系统(自动生成,非静态维护)
@@ -118,7 +161,7 @@ scripts/nova-tags.js 生成器
 /articles/<标签>/index.html 每个标签页(hero/统计/文章卡片/相关标签/阅读顺序/侧边栏)
 ```
 
-- 模板:`nova-templates/tag-template.html`(标签页)、`index-template.html`(索引页),占位符版,源自原站 nova-tag 定制样式
+- 模板:各页由 pug 布局渲染(`themes/butterfly/layout/{tags-index,tag}.pug`),数据由生成器传入
 - 数据自动派生:
 
 | 数据 | 来源 |
@@ -161,10 +204,10 @@ tags:
   - 卡片摘要 = 标题 + 正文纯文本前 70 字(剔除代码块,实体解码),封面按标签映射(`nova-tags.js` 同规则)
   - 静态骨架存于 `themes/butterfly/layout/home-parts/{top,mid,bottom}.html`,改动请保持 DOM 结构
 
-**a. LATEST SIGNAL**(hero 内最新文章卡):
+**a. LATEST SIGNAL**(hero 内最新文章卡,由生成器动态注入 `<a class="nova-latest-signal">`,数据取 `order` 最前的最新文章):
 
 ```html
-<a class="nova-latest-signal" href="/2026/08/17/Markdown%20%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/" aria-label="最新文章：Markdown 入门指南，发布于 2026-08-17">
+<a class="nova-latest-signal" href="/posts/Markdown%20%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/" aria-label="最新文章：Markdown 入门指南，发布于 2026-08-17">
   <span>LATEST SIGNAL</span><strong>Markdown 入门指南</strong><time>2026-08-17</time>
 </a>
 ```
@@ -172,14 +215,14 @@ tags:
 **b. 精选记录**(`nova-featured-grid` 内的 `nova-note-card`,8 张卡片):
 
 ```html
-<div class="nova-note-card nova-note-card--lead" data-href="/2026/08/17/..." role="link" tabindex="0" aria-label="阅读文章：标题">
+<div class="nova-note-card nova-note-card--lead" data-href="/posts/..." role="link" tabindex="0" aria-label="阅读文章：标题">
   <div class="post_cover">
-    <a href="/2026/08/17/..." title="标题">
-      <img class="post-bg" src="/img/covers/tech-notes.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="标题" loading="lazy" decoding="async" width="1200" height="900">
+    <a href="/posts/..." title="标题">
+      <img class="post-bg" src="/img/covers/tech-notes.webp" onerror="this.onerror=null;this.src='/img/misc/404.jpg'" alt="标题" loading="lazy" decoding="async" width="1200" height="900">
     </a>
   </div>
   <div class="recent-post-info">
-    <a class="article-title" href="/2026/08/17/..." title="标题">标题</a>
+    <a class="article-title" href="/posts/..." title="标题">标题</a>
     <div class="article-meta-wrap">
       <span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-08-17T00:00:00.000Z">2026-08-17</time></span>
       <span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">标签名</span></span>
@@ -190,7 +233,15 @@ tags:
 ```
 
 - 第一张卡片用 `nova-note-card--lead`,其余用 `--side`;URL 中空格需编码为 `%20`
-- 生活碎片区指向 /music/、/shuoshuo/(按钮文案:进入音乐 / 进入说说),与文章无关
+- 生活碎片区指向 /music/、/moments/(按钮文案:进入音乐 / 进入瞬间),与文章无关
+
+### 工程板块(生成器渲染,见[加工程](#加工程))
+
+- `/projects/` 列表 + `/projects/<id>/` 详情,全部由 `projects-generator.js` 生成
+- 数据:`scripts/projects-data.js`(工程清单+下载)+ `scripts/projects-intro.js`(详情介绍文案)
+- 封面/演示图:`source/img/projects/*.webp`;下载文件:`source/assets/projects/<工程名>/`
+- 详情页:hero + post 信息(发表于/更新于/浏览量/评论数)+ 演示图 + 介绍 + 工程链接 + 资料下载 + Waline 评论(每工程 path 独立)
+- 列表页:概览统计(项目/分类/标签)+ 三列卡片
 
 ### 主题切换
 
@@ -221,18 +272,21 @@ tags:
 | `/` | 首页 | `rose-galaxy/css/nova-home.css` |
 | `/articles/` | 文章标签索引(生成器) | `tag-page.css` |
 | `/articles/<标签>/` | 标签页(生成器) | `tag-page.css` |
+| `/posts/<标题>/` | 文章详情(Hexo 渲染) | Butterfly 原版 + `custom.css` |
+| `/projects/` | 工程列表(生成器) | `projects-page.css` |
+| `/projects/<id>/` | 工程详情(生成器) | `project-detail-page.css` |
 | `/music/` | 音乐播放 | `music-page.css` |
-| `/shuoshuo/` | 说说 | `shuoshuo-page.css` |
+| `/moments/` | 瞬间说说(中文名"说说") | `moments-page.css` |
 | `/about/` | 关于 | `about-page.css` |
-| `/courses/` | 课程(Phase 2 骨架) | — |
 | `/404.html` | 404 | Butterfly 默认 |
 
 ### 评论系统 (Waline)
 
-- 后端:Waline v2 部署于 Vercel(`marlincn-github-io.vercel.app`,仓库 `waline` 分支,3 文件 serverless 模板),数据存 Neon PostgreSQL(免费额度);管理后台 `{serverURL}/ui/`(需注册管理员)
+- 评论系统:后端 Waline v2 部署于 Vercel(`marlincn-github-io.vercel.app`,仓库 `waline` 分支,3 文件 serverless 模板),数据存 Neon PostgreSQL(免费额度);管理后台 `{serverURL}/ui/`(需注册管理员)
 - 配置:`_config.butterfly.yml` → `comments.use: [Waline]` + `waline.serverURL`;文章/普通页评论由主题渲染(`#post-comment` + `#waline-wrap`),开启评论数(count)
-- 说说/音乐/关于页:body 片段内嵌 Waline 挂载(serverURL 与主题配置一致)
-- 说说页"评论即说说":`shuoshuo.html` 内脚本拉取 `/shuoshuo/` 路径评论动态渲染为说说卡片(按年月分组、最新条带 LATEST、点赞本地 localStorage),留言区发评论自动上墙;旧硬编码说说已清除
+- 瞬间/音乐/关于页:body 片段内嵌 Waline 挂载(serverURL 与主题配置一致)
+- 瞬间页"评论即瞬间":`moments-page.js` 脚本拉取 `/moments/` 路径评论动态渲染为瞬间卡片(按年月分组、最新条带 LATEST、点赞本地 localStorage),留言区发评论自动上墙;旧硬编码瞬间已清除
+- 评论按页面 URL(`path`)存储——页面路径变更后旧评论不迁移(如需迁移在数据层操作)
 
 ---
 
@@ -240,27 +294,37 @@ tags:
 
 ```
 Marlin-web/
-├── _config.yml              Hexo 站点配置
+├── _config.yml              Hexo 站点配置(permalink: posts/:title/ 等)
 ├── _config.butterfly.yml    Butterfly 主题配置(导航/搜索/注入)
 ├── package.json             Hexo 8.1.2 + 插件 + hexo-cli
 ├── scripts/
+│   ├── site-config.js       ★ 站点配置单源(Node 侧,SITE 从 _config.yml 读取)
+│   ├── parts-common.js      ★ 公共壳组装函数(composeShellTop/buildFooter/composeShell)
 │   ├── nova-tags.js         ★ 生成器:标签/索引(layout 渲染)/search/sitemap/atom
 │   ├── home-generator.js    首页生成器(body 骨架 + posts → layout)
-│   ├── page-generator.js    静态页生成器(music/shuoshuo/about/courses/404)
+│   ├── page-generator.js    静态页生成器(music/moments/about/404)
+│   ├── projects-generator.js 工程页生成器(列表+详情)
+│   ├── projects-data.js     工程数据(清单/封面/下载)
+│   ├── projects-intro.js    工程介绍文案
 │   ├── inject-theme.js      文章页首帧主题脚本注入(head_begin)
+│   ├── lib/date.js          日期工具(fmtDate)
 │   └── minify.js            ★ 构建后 JS 压缩(esbuild)
-├── py-tools/                 Python 工具脚本(insert/update_first_frame,hexo 不加载)
+├── py-tools/                 外部工具(hexo 不加载):tools/(转换/验证) + archive/(历史补丁)
 ├── source/                  网站源文件
 │   ├── _posts/              8 篇文章 Markdown(front matter: title/date/tags/order)
-│   ├── css/ js/ img/        Butterfly 基座资源 + 站点图片(day.webp / night.webp)
-│   ├── rose-galaxy/         ★ nova 定制层(css / js / fonts / img)
-│   └── robots.txt           (search/sitemap/atom 由生成器输出,不在 source)
+│   ├── img/                 图片(按用途分层:hero/music/brand/misc/covers/projects)
+│   ├── rose-galaxy/         ★ nova 定制层(css / js / fonts / animation)
+│   ├── assets/projects/     工程下载文件(按工程名分包)
+│   ├── css/ js/             Butterfly 基座资源(见维护文档:index.css 勿改)
+│   └── robots.txt
 ├── themes/butterfly/layout/
 │   ├── base.pug             ★ 基础布局(html + head partial + body)
 │   ├── _partials/           head.pug(统一 head)/helpers.pug(共享函数)
-│   ├── home.pug / tag.pug / tags-index.pug / music.pug / shuoshuo.pug / about.pug / courses.pug / nova-404.pug
-│   └── {home,tag,idx,page}-parts/   各页 body 静态骨架片段
-└── docs/                    预览截图
+│   ├── parts-common/        ★ 公共组件单源(loading/sidebar/nav/footer/评论/按钮)
+│   ├── {home,tag,idx,page,project}-parts/   各页静态骨架片段(纯页级内容)
+│   ├── home.pug / tag.pug / tags-index.pug / music.pug / moments.pug / about.pug / projects.pug / project-detail.pug / 404.pug
+│   └── includes/            Butterfly 原版布局链(文章详情页使用)
+└── README.md                本站文档(本文档)+ MAINTENANCE.md(技术维护)
 ```
 
 ---
@@ -283,6 +347,10 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-08-27 | **P4 收尾与文档**：README 系统更新(本文档,重建"加一个工程"教程)+ 新增 MAINTENANCE.md(技术维护文档);M1 index.css 头部"上游勿改"标注;M2 custom.css 文件头总目录;C5 Node 配置单源(`scripts/site-config.js` 从 `_config.yml` 读 SITE,不依赖 hexo 作用域);C7 py-tools 拆 `tools/`(构建验证)+`archive/`(历史补丁);R6 #page-header 层叠以标注维护;N3 night-visitor→nova-visitor;N5 nova-404→404 | `README.md`、`MAINTENANCE.md`、`source/css/{index,custom}.css`、`scripts/site-config.js`、`scripts/{nova-tags,projects-generator}.js`、`source/rose-galaxy/{js,css}/nova-visitor.*`、`layout/404.pug`、`py-tools/` |
+| 2026-08-27 | **P3 命名**:shuoshuo→moments 全量(URL `/moments/`、文件/类名/变量 `nova-moments-*`、`nova-moments-route`);中文"说说"保留 | 全站(5 文件重命名 + 33 文本替换) |
+| 2026-08-27 | **P2 分类与路由治理**：img 分层(hero/music/brand/misc + 保留 covers/projects);动画脚本迁 `rose-galaxy/animation/`;空目录清理;版本号统一 `?v=20260827-p2`;assets 扁平化(`assets/projects/<工程名>/`,去 files/mcu|model 双层);permalink → `posts/:title/`(文章详情与 articles/ 并列);预览图入 img/misc | `source/img/`、`rose-galaxy/{animation,css}/`、`_config.yml`、`scripts/projects-data.js`、各 pug/parts |
+| 2026-08-27 | **P1 去重 + 首页修复**：公共壳(`parts-common/`)单源 + idx/tag/home/project 壳集成 + R5/R7 常量工具去重(js/lib/site-config.js + utils.js + scripts/lib/date.js)+ 脚本目录规范(legacy 迁 py-tools)+ footer 横幅全局两态收敛 + 工程页 tag-page.css 修复 + 404/music web_bg 补回 + **LATEST SIGNAL/闭合链双份修复**(hero 段提取静态 LATEST + mid 重复闭合链 → 生成器动态注入单份) | 见 `data/P1-REFACTOR.md`(本地) |
 | 2026-08-27 | 工程二级页全量打磨 + 首帧/PJAX 修复 + 配图更新:①**首帧/时序修复(fix-v5→v6)**:详情页 CSS 不再只依赖额外注入,`_config.butterfly.yml` 全局 inject.head 挂载 `project-detail-page.css?v=20260901-fix-v6`(所有页面常驻),模板 headOpts.extraCss 保留同名 `<link data-nova-project-detail-style>` 双通道;`nova-ux.js` 路由类(RouteClass)与 routeMarkers 增加 `.nova-project-detail` → `nova-project-detail-route`,修复 PJAX 从 /projects/ 进详情页时 body class 未更新导致的「首帧盒子/侧栏/按钮边框不显示」;②**发型/视觉细调**:详情面板 padding 40px 44px、圆角 20px、背景 #18212d 深色卡、阴影加深;按下标题行补 `发表于/更新于`(与文章页一致)+ 浏览量 + 评论数(每页 waline path 独立);删去文本内引用块;③**meta 日期兜底**:无 date 的工程(drone/kurtips)由生成器填当前日期(`date: p.date \|\| TODAY`),`updated` 统一 TODAY;④**hero 换图**:详情页 hero 换 file_00000000947081fdba8662a2e937ac06.png(转 webp 208KB,1672×941);文章页 `default_top_img` 换 `post-hero-banner.webp`(新增,233KB);音乐页背景换 fliex-source MikeJosion `music_back.webp`(96KB,1672×941);⑤**footer 重复横幅 bug 修复(A 方案)**:根因各页 footer 内联 `background-image` 与 tag-page/music-page 的 `background` 简写把 size/repeat 重置,致 guidang.webp 平铺出上下两层;改为全局方案——`custom.css` 统一 `#footer` 规则(`cover no-repeat` + 深色渐变),删除 idx/tag/music/404 各 parts 内联 background-image,去掉 project-detail-page/projects-page 里重复的页级 footer 覆盖,首页维持自有 nova-footer | `_config.butterfly.yml`、`scripts/projects-generator.js`、`scripts/projects-intro.js`、`themes/butterfly/layout/project-detail.pug`、`themes/butterfly/layout/{idx-parts,tag-parts}/bottom.html`、`themes/butterfly/layout/page-parts/{404,music}.html`、`source/rose-galaxy/css/{project-detail-page,projects-page,tag-page}.css`、`source/css/custom.css`、`source/rose-galaxy/js/nova-ux.js`、`source/img/{projects-detail-hero,music_back,post-hero-banner}.webp` |
 | 2026-08-26 | 工程二级页(详情页)/projects/\<id\>/ 5 页上线:布局参照 KurTips 课程页——顶部 hero(复用 projects-detail-hero.webp,与一级页同图、文章三级页式 post-bg 顶图) + `#post-info` 标题文字(格式位置与文章三级页一致) + 左主区等大演示图(16:9,源图转 webp q80) + 工程介绍(A 风格 300-450 字:硬件清单/功能亮点/引原文,数据固化 scripts/projects-intro.js 自包含无外部依赖) + 「源工程地址」方形按钮(GitHub/嘉立创,无外链占位"地址整理中") + 右栏"其他工程"列表;一级页卡片整卡改为站内跳转详情页;左右栏比例对齐 KurTips 实测(左主区 ≈ 视口 44.5%,容器 min(1120px));**首帧防"图片铺满"**(修复:布局/图片尺寸全部 HTML 内联占位——grid 两栏/三列、16:9/3:2 padding 占位、img absolute+object-fit,不依赖外部 CSS 时序,首次进入与刷新一致;CSS 只留视觉规则,版本 ?v=20260901-fix-v5);内容源:解压目录/文档 + 原 GitHub README + 嘉立创页面(实抓) | `scripts/projects-generator.js`、`scripts/projects-intro.js`(新增)、`layout/projects.pug`、`layout/project-detail.pug`(新增)、`source/rose-galaxy/css/projects-page.css`、`source/rose-galaxy/css/project-detail-page.css`(新增)、`source/img/projects-detail-hero.webp`、`source/img/projects/demo-*.webp`(5 张) |
 | 2026-08-26 | 新增"工程"板块(/projects/):5 个工程(单片机 3 + 建模 2);hero 背景用自定义图(转 webp q80,`/img/projects-hero.webp`);概览条(项目/分类/标签/WIP 自动统计);卡片排版参考 KurTips 课程列表(封面大图 3:2 + 标题 + 简介 + 日期/分类页脚,整卡外链 GitHub/嘉立创/下载,平铺 3 列网格),内容包一级页面板框(1300px);数据快照自 deymo-site portfolio info.json(描述原文)+ manifest(下载清单),维护只需改 `scripts/projects-data.js` 与放封面 webp;全站导航加"工程"(config menu + 8 个 *-parts 硬编码菜单 ×2 处 + pjax 排除 8 处 + nova-ux 路由类/routeMarkers);二级页(详情页)曾试做两版后按需求删除,卡片行为定为外链 | `scripts/projects-data.js`、`scripts/projects-generator.js`、`layout/projects.pug`、`layout/project-parts/top.html`、`source/rose-galaxy/css/projects-page.css`、`source/img/projects/`、`source/img/projects-hero.webp`、`_config.butterfly.yml`、`layout/{idx,tag,home}-parts/{top,bottom}.html`、`layout/page-parts/{music,shuoshuo,about,courses,404}.html`、`source/rose-galaxy/js/nova-ux.js` |
@@ -350,11 +418,13 @@ Marlin-web/
 
 ## 后续计划
 
-1. **音乐页升级成专业播放器**
-   现在只是收藏夹列表 + 简单播放。要加上完整播放器体验:上一首/下一首、进度条可拖、音量、循环/随机、播放队列;保留现有 B 站收藏夹 + 云函数代理的播放链路,补上封面和歌名;再来点氛围感(歌词、动画、迷你播放条)。
-2. **新增"工程"板块** ✅ 2026-08-26 完成:见上方历史记录,`/projects/` 由 `scripts/projects-generator.js` + `layout/projects.pug` 渲染,维护只需改 `scripts/projects-data.js`(封面转 webp 放 `source/img/projects/`)。
-3. **【结构债】footer 全局模板化(B 方案)** — 2026-08-26 评估后暂缓,当前用 A 方案(全局 CSS + 删内联)解决。
-   - 问题:footer 标记散落在 8 个文件重复(`home-parts/bottom.html`、`idx-parts/bottom.html`、`tag-parts/bottom.html`、`page-parts/{404,about,courses,music,shuoshuo}.html`),改一处要改 8 处;文章详情页 footer 另在主题 `includes/footer.pug` 渲染,存在第二个源头。
-   - 现状:A 方案已把**背景视觉收敛到全局 CSS**(`custom.css` 的 `#footer` + `tag-page.css` 的 `footer#footer` 背景图版),修掉"内联 background-image + background 简写重置 size/repeat 导致平铺两层"的 bug。
-   - 未来(B 方案):抽一个唯一 `footer-parts/bottom.html`,由 4 个生成器(page/nova-tags/home/projects)统一注入;各 parts 删除 footer 段;同时收编主题 `includes/footer.pug`(文章页)。动工时需全站回归(首页/文章/标签/工程一级/5 详情页/音乐/说说/关于/课程/404)。
+1. **音乐页升级成专业播放器** ✅ 2026-08-27 完成:全局播放器(跨页常驻)+ 迷你悬浮条 + 歌单缓存,见上方定制记录。
+2. **Waline 旧评论迁移**(可选):`/shuoshuo/` 历史留言迁至 `/moments/`(数据层操作,未定)。
+3. **布局/视觉微调**(常规迭代,无排期)。
+
+---
+
+## 维护文档(技术细节)
+
+> 本文档面向"人"(怎么用/怎么写内容);架构内部细节、部署流程与 Hexo 踩坑见 **`MAINTENANCE.md`**(技术维护文档,与本文档同目录)。
 
