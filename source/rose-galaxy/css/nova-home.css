@@ -292,7 +292,7 @@
 .nova-fragment::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(7,9,16,.94),rgba(7,9,16,.42) 52%,rgba(7,9,16,.12));pointer-events:none}
 .nova-fragment h3{margin:5px 0 24px;color:#fff;font-size:18px}
 .nova-fragment{position:relative;display:flex;align-items:center;border:1px solid var(--line);background-position:center;transition:transform .35s;padding:26px;border-radius:13px;box-shadow:0 18px 42px rgba(0,0,0,.18);background-size:105%;min-height:216px;overflow:hidden}
-.nova-fragment--moments{background-image:url("/img/guidang.webp");background-position:center 58%}
+.nova-fragment--moments{background-image:url("/img/archive-bg.webp");background-position:center 58%}
 .nova-fragment:hover{border-color:rgba(216,91,125,.38);transform:translateY(-3px);background-size:109%}
 
 .nova-footer{position:relative;display:flex;align-items:center;justify-content:space-between;color:var(--text-secondary);background:#080b14;border-top:1px solid rgba(255,255,255,.08);padding-block:30px;
