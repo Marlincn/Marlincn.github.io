@@ -1,9 +1,17 @@
-﻿'use strict'
+'use strict'
 /* 工程页数据快照(2026-08-26):
-   - 来源:deymo-site/portfolio 各 info.json(title/category/description/tags/link/link2)
-     + deymo-site portfolio-manifest.json(downloads 文件清单与尺寸)
+   - 历史来源: deymo-site/portfolio 各 info.json 与 manifest(仅最初快照; 维护已完全迁移到本文件)
    - 描述文案保持 info.json 原文;下载文件托管在 deymocn.github.io(外链)。
-   维护:新增工程时在此追加条目,封面图放 source/img/projects/ 并转 webp(质量 80)。 */
+   维护:新增工程时在此追加条目,封面图放 source/img/projects/ 并转 webp(质量 80)。
+
+   P5 改版可选字段(不写则自动取值):
+   - views: 浏览量兜底值(整数)。默认由 scripts/lib/fetch-views.js 从 busuanzi 拉取真实 page_pv
+     写入 scripts/views-cache.json; 本字段仅在缓存缺失时兜底。
+     想手动调整浏览量: 直接编辑 scripts/views-cache.json 的 pv 段目标数值,
+     脚本下次抓取时自动保留差值偏移, 之后在此基数上累加真实增量(不会被覆盖)。
+     详细说明与修改位置见同目录 views-cache.md。
+   - updated: 最后提交日 'YYYY-MM-DD'。默认取 source/assets/projects/<工程目录>/ 的最后修改时间
+     (更新工程=换文件=日期自动变); 本字段仅在需要指定某一天时覆盖。 */
 
 module.exports = [
   {
