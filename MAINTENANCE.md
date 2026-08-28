@@ -121,7 +121,7 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 
 - **页脚横幅**：`custom.css` 中 `html[data-theme=dark|light] body:not(.nova-home-active) footer#footer`(玫瑰横幅 archive-bg.webp，深 `#080c17`/浅 `#d5d4de` 底)；首页为自定义 `.nova-footer` 排除在外；页级 css 中**不要再定义 footer 背景**(曾因覆盖导致横幅消失/矛盾,已收敛)
 - **#page-header 层叠（R6 标注）**：涉及 7 个文件(custom 19 处 / index 58 处 / 页级 19 处)——改 header 前需全局检索 `#page-header`；大部分为分层覆盖设计(主题底→全站覆盖→页级 hero)，勿简单增加规则，考虑现有层叠
-- **版本号约定**：所有 css/js 引用带 `?v=<日期>-<标签>`(当前 `20260827-p2`)。**引用文件内容变更时必须 bump**，否则浏览器用旧缓存(曾出现旧路径图片 404/样式回退)
+- **版本号约定**：所有 css/js 引用带 `?v=<日期>-<标签>`(当前 `20260829-p1`)。**引用文件内容变更时必须 bump**，否则浏览器用旧缓存(曾出现旧路径图片 404/样式回退)
 
 ---
 
@@ -132,14 +132,15 @@ npm run build     # hexo generate && node scripts/minify.js(esbuild 压缩全部
 npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 ```
 
-**发布流程（demo2 → 线上）**：
+**发布流程（演示站 → 线上）**：
 
-1. demo2 完成改动 → `hexo clean && hexo generate` → 页面回归(元素/JS/图片 404)
+1. **演示站**（从 `Marlin-web` 克隆：`robocopy /E` + node_modules 符号链接(junction) + 预建 `public/` 空目录，否则 minify.js 启动即 ENOENT）完成改动 → `hexo clean && hexo generate` → 页面回归(元素/JS/图片 404)（注意：hexo server 用内存旧脚本，改 scripts/ 须重启 server）
 2. **用户验收 + 明确批准**后：
-   - 镜像 demo2 → `Marlin-web`（源）：layout / source(rose-galaxy,css,js,img,assets) / scripts / yml / README·MAINTENANCE，`robocopy /MIR` 注意目标多出的旧文件会被删(这正是想要的)
+   - 镜像演示站 → `Marlin-web`（工作区源）：layout / source(rose-galaxy,css,js,img,assets) / scripts / _config*.yml / README·MAINTENANCE·DEPLOY 等；**只复制改动文件**（或 robocopy 按目录，注意目标多出的旧文件会被删(这正是想要的)）
+   - （可选）`node scripts/lib/fetch-views.js` 刷新浏览量缓存（部署前运行，busuanzi 抓取；24h 内有缓存且未加 `--force` 不重复抓取）
    - `Marlin-web` 下 `hexo clean && hexo generate`（先停任何 server；`hexo clean` 后若 `2026/` 等空目录残留手动删一次）
-   - `hexo deploy`（推送 public 分支）
-   - 镜像 `Marlin-web` → `SourceCode`（git main）→ `git add -A && commit && push`
+   - `hexo deploy`（推送 **public 分支**，GitHub Pages 使用）
+   - 镜像 `Marlin-web` 的源码/文档/配置 → **`C:\Users\mabin\Desktop\web\SourceCode`（git main 仓库）** → `git add <改动文件> && commit && push`（SourceCode 是源码仓库，**只提交源码/文档，构建产物(public 根目录等)不入库**；历史提交均为显式列出的文件）
 3. 线上验证：curl 关键路由(首页/moments/articles/posts 示例/projects/sitemap.xml) + 抽查资源版本号
 
 ---
@@ -148,7 +149,7 @@ npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 
 > 强制规则（2026-08-27 立此存照，详见 `data/STRUCTURE-REFACTOR.md`）：
 
-1. 所有改动先在 `Marlin-web-demo2` 完成并验证。
+1. 所有改动先在演示站完成并验证。
 2. **未经用户明确批准，禁止任何提交/推送/部署**（git push / hexo deploy / GitHub Pages / SourceCode）。发布动作必须逐次明确授权。
 3. 结构性/行为性决策先询问用户。
 4. 修复完成后只汇报验证结果并请求批准；禁止以"已验证/惯例/之前授权过"为由自行发布。
@@ -170,8 +171,8 @@ npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 
 ## 常见任务
 
-- **写文章**：见 README「写一篇文章」。
-- **加工程**：见 README「加一个工程」。
+- **写文章**：见 README「加文章」。
+- **加工程**：见 README「加工程」。
 - **换 B 站收藏夹源**：改 `source/rose-galaxy/js/lib/site-config.js` 的 `NOVA_SITE.bili` → bump `utils.js?` 无需，但 **bump site-config.js 引用处版本号**(yml inject) 防缓存。
 - **换页脚横幅图**：替换 `source/img/hero/archive-bg.webp`(保持文件名)；改色 → `custom.css` 两套规则；**勿在页级 css 加 footer 背景**。
 - **换页面 hero 背景**：页面级 css(`{page}-page.css`)中对应 `#page-header`/`.nova-hero-bg` 规则 → 图片放 `img/hero/` → bump 该 css 版本号。

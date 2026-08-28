@@ -34,29 +34,11 @@
     { r: 210, g: 92, b: 120 },
     { r: 188, g: 166, b: 204 },
   ];
-  const LIGHT_STAR_COLORS = [
-    { r: 150, g: 190, b: 240, a: 1 },
-    { r: 140, g: 180, b: 235, a: 0.96 },
-    { r: 160, g: 200, b: 245, a: 0.92 },
-  ];
-  const LIGHT_LINK_COLORS = [
-    { r: 135, g: 175, b: 230 },
-    { r: 155, g: 190, b: 238 },
-  ];
   const DARK_GLOW_COLORS = [
     { r: 242, g: 232, b: 233 },
     { r: 224, g: 193, b: 206 },
     { r: 211, g: 214, b: 229 },
     { r: 196, g: 176, b: 205 },
-  ];
-  const LIGHT_GLOW_COLORS = [
-    { r: 145, g: 180, b: 235 },
-    { r: 165, g: 200, b: 245 },
-  ];
-  const LIGHT_PETAL_COLORS = [
-    { r: 145, g: 38, b: 70 },
-    { r: 168, g: 52, b: 88 },
-    { r: 192, g: 70, b: 108 },
   ];
 
   const scenes = [];
@@ -81,17 +63,13 @@
     return window.innerWidth < 768 || coarsePointerQuery.matches;
   }
 
-  function isLightTheme() {
-    return document.documentElement.dataset.theme === "light";
-  }
-
   function displayColor(particle) {
-    if (!isLightTheme()) return particle.color;
-    return LIGHT_STAR_COLORS[particle.paletteIndex % LIGHT_STAR_COLORS.length];
+    /* 浅色粒子层已移除: 恒用深色粒子自身颜色 */
+    return particle.color;
   }
 
-  function shouldDrawParticle(scene, particle) {
-    return !(isLightTheme() && scene.mode === "hero" && particle.themeSeed < 0.24);
+  function shouldDrawParticle() {
+    return true;
   }
 
   function isMusicSection(el) {
@@ -198,7 +176,7 @@
     textFactor(x, y) {
       for (const r of this.textRects) {
         if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
-          if (this.mode === "hero") return isLightTheme() ? 0.3 : 0.14;
+          if (this.mode === "hero") return 0.14;
           return 0.62;
         }
       }
@@ -249,7 +227,7 @@
         if (this.mode === "footer") return Math.round(random(20, 28));
         return Math.round(random(20, 32));
       }
-      if (this.mode === "hero") return isLightTheme() ? Math.round(random(40, 60)) : Math.round(random(95, 115));
+      if (this.mode === "hero") return Math.round(random(95, 115));
       if (this.mode === "footer") return Math.round(random(55, 65));
       return Math.round(random(55, 75));
     }
@@ -261,17 +239,6 @@
     }
 
     pickHeroPosition(initial) {
-      /* 浅色模式: 初始即满屏下落分布; 重置时顶部下落为主(60%) */
-      if (isLightTheme()) {
-        if (initial) {
-          return { x: random(this.width * 0.02, this.width * 0.98), y: random(this.height * 0.03, this.height * 0.97) };
-        }
-        const roll = Math.random();
-        if (roll < 0.6) {
-          return { x: random(this.width * 0.05, this.width * 0.95), y: random(-this.height * 0.05, this.height * 0.1) };
-        }
-        return { x: random(this.width * 0.02, this.width * 0.98), y: random(this.height * 0.03, this.height * 0.97) };
-      }
       const roll = Math.random();
       if (roll < 0.43) {
         return { x: random(this.width * 0.42, this.width * 0.98), y: random(this.height * 0.07, this.height * 0.42) };
@@ -288,9 +255,9 @@
     createHeroParticle(index, total) {
       const depth = random(0.42, 1);
       const kindRoll = Math.random();
-      /* 浅色模式: 花瓣飘落(用已有 petal 绘制); 深色: 尘埃/雾气/花瓣混合 */
-      const kind = isLightTheme() ? "petal" : (kindRoll < 0.07 ? "petal" : (kindRoll < 0.24 ? "haze" : "dust"));
-      const isStar = !isLightTheme() && Math.random() < 0.3;
+      /* 深色动画(浅色粒子层已移除): 尘埃/雾气/花瓣混合 */
+      const kind = kindRoll < 0.07 ? "petal" : (kindRoll < 0.24 ? "haze" : "dust");
+      const isStar = Math.random() < 0.3;
       const position = this.pickHeroPosition(true);
       const x = position.x;
       const y = position.y;
@@ -305,17 +272,16 @@
         prevX: x,
         prevY: y,
         depth,
-        petalShape: isLightTheme() ? Math.floor(Math.random() * 3) : 0,
-        petalHue: isLightTheme() ? Math.floor(Math.random() * LIGHT_PETAL_COLORS.length) : 0,
-        vr: isLightTheme() ? random(-0.0009, 0.0009) : 0,
-        size: isLightTheme() ? random(6, 10) * depth : (kind === "petal" ? random(3.8, 5.7) * depth : (kind === "haze" ? random(2.2, 3.9) : random(1.1, 2.3)) * depth),
-        alpha: isLightTheme() ? random(0.75, 0.95) : (kind === "petal" ? random(0.28, 0.46) : (kind === "haze" ? random(0.24, 0.42) : random(0.42, 0.76))),
+        petalShape: 0,
+        petalHue: 0,
+        vr: 0,
+        size: (kind === "petal" ? random(3.8, 5.7) : (kind === "haze" ? random(2.2, 3.9) : random(1.1, 2.3))) * depth,
+        alpha: (kind === "petal" ? random(0.28, 0.46) : (kind === "haze" ? random(0.24, 0.42) : random(0.42, 0.76))),
         phase: (index / total) * Math.PI * 2 + random(-Math.PI, Math.PI),
         verticalSpeed: random(-0.012, 0.018) * depth,
-        lightFallSpeed: random(0.008, 0.018) * depth,
-        sway: isLightTheme() ? random(6, 16) : random(10, 38) * depth,
+        sway: random(10, 38) * depth,
         swaySpeed: random(0.00019, 0.00046),
-        breeze: isLightTheme() ? random(-0.02, -0.008) : random(-0.006, 0.009),
+        breeze: random(-0.006, 0.009),
         twinkle: random(0.00125, 0.0034),
         lifeSpeed: 0,
         halo: kind === "haze" ? random(10, 17) : random(6, 10),
@@ -368,7 +334,6 @@
         vy: random(-0.18, 0.18),
         size: keyStar ? random(2.46, 3.49) : random(1.31, 2.34),
         color,
-        paletteIndex: index,
         themeSeed: Math.random(),
         alpha: random(0.60, 0.93) * color.a * (color.r > 245 && color.g > 240 ? 0.85 : 1),
         phase,
@@ -401,7 +366,6 @@
         size: random(0.62, 1.27),
         alpha: random(0.20, 0.48) * (color.r > 245 && color.g > 240 ? 0.85 : 1),
         color,
-        paletteIndex: Math.floor(Math.random() * LIGHT_STAR_COLORS.length),
         themeSeed: Math.random(),
         phase: random(0, Math.PI * 2),
         twinkle: random(0.0022, 0.0052),
@@ -482,15 +446,13 @@
     }
 
     updateHeroParticle(p, time, dt) {
-      const light = isLightTheme();
-      /* 浅色: 花瓣飘落(下落为主, 微风轻吹); 深色: 缓慢漂移 */
-      const themeMotion = light ? 3.4 : 0.72;
+      /* 深色动画(浅色粒子层已移除): 缓慢漂移 */
+      const themeMotion = 0.72;
       p.prevX = p.x;
       p.prevY = p.y;
-      const verticalSpeed = light ? p.lightFallSpeed : p.verticalSpeed;
-      /* 浅色: 间歇风 + 下落缓急 */
-      const windWave = light ? 0.65 + 0.35 * Math.sin(time * 0.0009 + p.phase) : 1;
-      const fallWave = light ? 0.8 + 0.4 * Math.sin(time * 0.0011 + p.phase * 2) : 1;
+      const verticalSpeed = p.verticalSpeed;
+      const windWave = 1;
+      const fallWave = 1;
       p.baseY += verticalSpeed * dt * this.motionScale() * themeMotion * fallWave;
       p.baseX += p.breeze * dt * this.motionScale() * themeMotion * windWave;
 
@@ -507,10 +469,10 @@
         const radius = 250;
         if (dist < radius) {
           const influence = Math.pow(1 - dist / radius, 1.35);
-          const interaction = light ? 0.04 : 0.12;
+          const interaction = 0.12;
           targetAttractX = dx * influence * interaction;
           targetAttractY = dy * influence * interaction;
-          targetFocus = influence * (light ? 0.3 : 1);
+          targetFocus = influence;
         }
       }
 
@@ -628,16 +590,10 @@
         const cy = c.y + wobbleY;
         const radius = Math.max(c.rx, c.ry) * (this.mode === "hero" ? 1.42 : 1.32);
         const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-        if (isLightTheme()) {
-          g.addColorStop(0, "rgba(145, 105, 130, 0.018)");
-          g.addColorStop(0.42, "rgba(135, 119, 160, 0.009)");
-          g.addColorStop(1, "rgba(135, 119, 160, 0)");
-        } else {
-          g.addColorStop(0, "rgba(196, 62, 92, 0.044)");
-          g.addColorStop(0.38, "rgba(150, 44, 68, 0.020)");
-          g.addColorStop(0.78, "rgba(115, 36, 58, 0.007)");
-          g.addColorStop(1, "rgba(115, 36, 58, 0)");
-        }
+        g.addColorStop(0, "rgba(196, 62, 92, 0.044)");
+        g.addColorStop(0.38, "rgba(150, 44, 68, 0.020)");
+        g.addColorStop(0.78, "rgba(115, 36, 58, 0.007)");
+        g.addColorStop(1, "rgba(115, 36, 58, 0)");
         ctx.fillStyle = g;
         ctx.fillRect(0, 0, this.width, this.height);
       }
@@ -652,8 +608,7 @@
         if (!shouldDrawParticle(this, p)) continue;
         const pulse = 0.72 + Math.sin(time * p.twinkle + p.phase) * 0.28;
         const factor = this.textFactor(p.x, p.y);
-        const alphaScale = isLightTheme() ? 0.52 : 1;
-        const alpha = clamp(p.alpha * pulse * factor * alphaScale, 0.05, isLightTheme() ? 0.2 : 0.46);
+        const alpha = clamp(p.alpha * pulse * factor, 0.05, 0.46);
         ctx.fillStyle = rgba(displayColor(p), alpha);
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
@@ -684,7 +639,7 @@
 
         const g = ctx.createLinearGradient(sx, sy, p.x, p.y);
         g.addColorStop(0, rgba(p.color, 0));
-        g.addColorStop(1, rgba(displayColor(p), isLightTheme() ? alpha * 0.48 : alpha));
+        g.addColorStop(1, rgba(displayColor(p), alpha));
         ctx.strokeStyle = g;
         ctx.lineWidth = clamp(p.size * 0.40, 0.55, 1.18);
         ctx.beginPath();
@@ -758,9 +713,8 @@
           alpha *= Math.min(this.textFactor(a.x, a.y), this.textFactor(b.x, b.y));
           if (alpha < 0.020) continue;
 
-          const colors = isLightTheme() ? LIGHT_LINK_COLORS : LINK_COLORS;
-          const color = colors[(a.clusterId + b.clusterId + 8) % colors.length];
-          ctx.strokeStyle = rgba(color, isLightTheme() ? alpha * 0.42 : alpha);
+          const color = LINK_COLORS[(a.clusterId + b.clusterId + 8) % LINK_COLORS.length];
+          ctx.strokeStyle = rgba(color, alpha);
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
@@ -782,8 +736,7 @@
         if (!shouldDrawParticle(this, p)) continue;
         const pulse = 0.72 + Math.sin(time * 0.0042 + p.phase) * 0.34 + Math.sin(time * 0.0018 + p.phase * 2.6) * 0.12;
         const factor = this.textFactor(p.x, p.y);
-        const lightScale = isLightTheme() ? 0.5 : 1;
-        const alpha = clamp((p.alpha * pulse + p.focus * 0.34) * factor * lightScale, isLightTheme() ? 0.08 : 0.22, isLightTheme() ? 0.38 : 0.94);
+        const alpha = clamp((p.alpha * pulse + p.focus * 0.34) * factor, 0.22, 0.94);
         const radius = p.size * (1 + p.focus * 0.40 + Math.max(0, pulse - 1) * 0.13);
         const color = displayColor(p);
 
@@ -805,29 +758,25 @@
       ctx.restore();
     }
 
-    heroParticleVisible(p) {
-      /* 浅色花瓣与深色粒子全部显示 */
+    heroParticleVisible() {
       return true;
     }
 
     drawHeroConstellation(time) {
-      const light = isLightTheme();
-      /* 浅色为花瓣飘落, 不画连线 */
-      if (light) return;
       const ctx = this.ctx;
       const candidates = this.particles.filter((p) => p.linkable && this.heroParticleVisible(p));
       const linkCount = new Map();
       const mouseActive = this.mouse.active && this.mouse.inside && finePointerQuery.matches;
 
       ctx.save();
-      ctx.globalCompositeOperation = light ? "source-over" : "screen";
+      ctx.globalCompositeOperation = "screen";
       ctx.lineCap = "round";
 
       for (let i = 0; i < candidates.length; i += 1) {
         const a = candidates[i];
         for (let j = i + 1; j < candidates.length; j += 1) {
           const b = candidates[j];
-          const distMax = light ? 178 : 155;
+          const distMax = 155;
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const dist = Math.hypot(dx, dy);
@@ -841,25 +790,23 @@
           if (!nearMouse && Math.abs(a.linkSeed - b.linkSeed) > 0.21) continue;
           if (!nearMouse && a.x < this.width * 0.43 && b.x < this.width * 0.43) continue;
 
-          const maxLinks = nearMouse && !light ? 2 : 1;
+          const maxLinks = nearMouse ? 2 : 1;
           if ((linkCount.get(a) || 0) >= maxLinks || (linkCount.get(b) || 0) >= maxLinks) continue;
 
           const breathe = 0.64 + Math.sin(time * 0.0012 + a.phase + b.phase) * 0.24;
           const proximity = 1 - dist / distMax;
           const mouseBoost = nearMouse ? (1 - mouseDist / 245) * 0.14 : 0;
           const factor = Math.min(this.textFactor(a.x, a.y), this.textFactor(b.x, b.y));
-          let alpha = clamp((0.06 + proximity * 0.15 + mouseBoost) * breathe * factor, 0.04, light ? 0.38 : 0.28);
-          if (light) alpha *= 0.85;
-          if (alpha < (light ? 0.035 : 0.028)) continue;
+          let alpha = clamp((0.06 + proximity * 0.15 + mouseBoost) * breathe * factor, 0.04, 0.28);
+          if (alpha < 0.028) continue;
 
-          const colors = light ? LIGHT_LINK_COLORS : LINK_COLORS;
-          const color = colors[(i + j) % colors.length];
+          const color = LINK_COLORS[(i + j) % LINK_COLORS.length];
           const gradient = ctx.createLinearGradient(a.x, a.y, b.x, b.y);
           gradient.addColorStop(0, rgba(color, alpha * 0.45));
           gradient.addColorStop(0.5, rgba(color, alpha));
           gradient.addColorStop(1, rgba(color, alpha * 0.45));
           ctx.strokeStyle = gradient;
-          ctx.lineWidth = light ? 1.3 : (nearMouse ? 1.05 : 0.85);
+          ctx.lineWidth = nearMouse ? 1.05 : 0.85;
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
@@ -873,75 +820,36 @@
 
     drawHeroParticles(time) {
       const ctx = this.ctx;
-      const light = isLightTheme();
-      const glowColors = light ? LIGHT_GLOW_COLORS : DARK_GLOW_COLORS;
       ctx.save();
-      ctx.globalCompositeOperation = light ? "source-over" : "screen";
+      ctx.globalCompositeOperation = "screen";
 
       for (const p of this.particles) {
         if (!this.heroParticleVisible(p)) continue;
         const factor = this.textFactor(p.x, p.y);
-        const lightPetal = light && (p.kind === "petal" || p.themeSeed < 0.14);
-        const color = lightPetal
-          ? { r: 196, g: 122, b: 152 }
-          : glowColors[p.colorIndex % glowColors.length];
+        const color = DARK_GLOW_COLORS[p.colorIndex % DARK_GLOW_COLORS.length];
         const wave = 0.5 + Math.sin(time * p.twinkle + p.phase) * 0.5;
-        const pulse = light ? 0.72 + wave * 0.3 : 0.5 + wave * 0.52;
-        const focusBoost = p.focus * (light ? 0.28 : 0.43);
-        const alpha = clamp((p.alpha * pulse + focusBoost) * factor, 0.03, light ? 0.92 : 0.86);
+        const pulse = 0.5 + wave * 0.52;
+        const focusBoost = p.focus * 0.43;
+        const alpha = clamp((p.alpha * pulse + focusBoost) * factor, 0.03, 0.86);
 
         if (p.kind === "petal") {
-          /* 花瓣: 深色保持原样; 浅色大幅增强(渐变/3形状/高光/持续自转) */
-          const petalColor = light
-            ? LIGHT_PETAL_COLORS[p.petalHue % LIGHT_PETAL_COLORS.length]
-            : color;
+          /* 深色花瓣(尖瓣): 保持原样 */
           const s = p.size;
           ctx.save();
           ctx.translate(p.x, p.y);
-          const breezeTilt = Math.sin(time * p.swaySpeed + p.phase) * (light ? 0.6 : 0.7);
-          ctx.rotate(breezeTilt + (light ? time * p.vr : 0));
+          const breezeTilt = Math.sin(time * p.swaySpeed + p.phase) * 0.7;
+          ctx.rotate(breezeTilt);
           ctx.lineWidth = Math.max(0.45, s * 0.14);
-          if (light) {
-            const grad = ctx.createLinearGradient(0, s, 0, -s);
-            grad.addColorStop(0, rgba(petalColor, alpha * 0.88));
-            grad.addColorStop(1, rgba({ r: petalColor.r + 42, g: petalColor.g + 30, b: petalColor.b + 40 }, alpha * 0.6));
-            ctx.fillStyle = grad;
-            ctx.strokeStyle = rgba(petalColor, alpha * 0.8);
-          } else {
-            ctx.fillStyle = rgba(color, alpha * 0.12);
-            ctx.strokeStyle = rgba(color, alpha * 0.62);
-          }
+          ctx.fillStyle = rgba(color, alpha * 0.12);
+          ctx.strokeStyle = rgba(color, alpha * 0.62);
           ctx.beginPath();
-          if (light && p.petalShape === 1) {
-            /* 圆润瓣 */
-            ctx.moveTo(0, s);
-            ctx.bezierCurveTo(-s * 0.82, s * 0.3, -s * 0.78, -s * 0.3, -s * 0.16, -s * 0.6);
-            ctx.quadraticCurveTo(0, -s * 0.36, s * 0.16, -s * 0.6);
-            ctx.bezierCurveTo(s * 0.78, -s * 0.3, s * 0.82, s * 0.3, 0, s);
-          } else if (light && p.petalShape === 2) {
-            /* 细长瓣 */
-            ctx.moveTo(0, s);
-            ctx.bezierCurveTo(-s * 0.46, s * 0.36, -s * 0.5, -s * 0.5, -s * 0.12, -s * 0.86);
-            ctx.quadraticCurveTo(0, -s * 0.55, s * 0.12, -s * 0.86);
-            ctx.bezierCurveTo(s * 0.5, -s * 0.5, s * 0.46, s * 0.36, 0, s);
-          } else {
-            /* 尖瓣(默认, 深色共用) */
-            ctx.moveTo(0, s);
-            ctx.bezierCurveTo(-s * 0.72, s * 0.28, -s * 0.7, -s * 0.58, -s * 0.2, -s * 0.78);
-            ctx.quadraticCurveTo(0, -s * 0.45, s * 0.2, -s * 0.78);
-            ctx.bezierCurveTo(s * 0.7, -s * 0.58, s * 0.72, s * 0.28, 0, s);
-          }
+          /* 尖瓣(默认) */
+          ctx.moveTo(0, s);
+          ctx.bezierCurveTo(-s * 0.72, s * 0.28, -s * 0.7, -s * 0.58, -s * 0.2, -s * 0.78);
+          ctx.quadraticCurveTo(0, -s * 0.45, s * 0.2, -s * 0.78);
+          ctx.bezierCurveTo(s * 0.7, -s * 0.58, s * 0.72, s * 0.28, 0, s);
           ctx.fill();
           ctx.stroke();
-          if (light) {
-            /* 中线高光 */
-            ctx.strokeStyle = "rgba(255,240,246,0.4)";
-            ctx.lineWidth = Math.max(0.5, s * 0.1);
-            ctx.beginPath();
-            ctx.moveTo(0, s * 0.28);
-            ctx.quadraticCurveTo(0, 0, 0, -s * 0.55);
-            ctx.stroke();
-          }
           ctx.restore();
           continue;
         }
@@ -957,12 +865,12 @@
         ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = rgba(color, alpha * (p.kind === "haze" ? 0.26 : light ? 0.95 : 0.86));
+        ctx.fillStyle = rgba(color, alpha * (p.kind === "haze" ? 0.26 : 0.86));
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size * (p.kind === "haze" ? 0.34 : 0.52), 0, Math.PI * 2);
         ctx.fill();
 
-        if (!light && p.linkable && wave > 0.87) {
+        if (p.linkable && wave > 0.87) {
           const ray = p.size * (1.8 + wave * 1.5);
           ctx.strokeStyle = rgba(color, alpha * 0.38);
           ctx.lineWidth = Math.max(0.35, p.size * 0.24);
@@ -1145,8 +1053,7 @@
   const syncTheme = () => {
     if (!window.document?.documentElement) return;
     const theme = document.documentElement.dataset.theme;
-    /* 粒子创建时按 isLightTheme() 定参数; 主题切换后必须重建,
-       否则粒子保持旧主题的小尺寸/低透明度。 */
+    /* 主题切换后重建粒子(与页面背景/蒙版等 CSS 状态保持同步) */
     if (window.__novaParticleTheme && window.__novaParticleTheme !== theme) {
       for (const scene of scenes) scene.resize();
     }

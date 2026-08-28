@@ -1,4 +1,4 @@
-﻿# Butterfly theme config - reconstructed from the Marlin static build.
+# Butterfly theme config - reconstructed from the Marlin static build.
 # Phase 1: static pages (source/) do not consume this file; it documents the
 # original theme settings so generated pages (posts, archives) match later.
 # Phase 2 will complete/verify every key against the original site.
@@ -82,17 +82,17 @@ default_top_img: /img/hero/post-hero-banner.webp
 
 inject:
   head:
-    - <link rel="stylesheet" href="/css/custom.css?v=20260827-p2">
-    - <link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260827-p2">
-    - <link rel="stylesheet" href="/rose-galaxy/css/nova-player.css?v=20260827-p2">
-    - <link rel="stylesheet" href="/rose-galaxy/css/nova-visitor.css?v=20260827-p2">
-    - <script defer src="/rose-galaxy/js/lib/site-config.js?v=20260827-p2"></script>
-    - <script defer src="/rose-galaxy/js/lib/utils.js?v=20260827-p2"></script>
-    - <script defer src="/rose-galaxy/js/nova-player.js?v=20260827-p2"></script>
+    - <link rel="stylesheet" href="/css/custom.css?v=20260829-p1">
+    - <link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260829-p1">
+    - <link rel="stylesheet" href="/rose-galaxy/css/nova-player.css?v=20260829-p1">
+    - <link rel="stylesheet" href="/rose-galaxy/css/nova-visitor.css?v=20260829-p1">
+    - <script defer src="/rose-galaxy/js/lib/site-config.js?v=20260829-p1"></script>
+    - <script defer src="/rose-galaxy/js/lib/utils.js?v=20260829-p1"></script>
+    - <script defer src="/rose-galaxy/js/nova-player.js?v=20260829-p1"></script>
   bottom:
-    - <script src="/rose-galaxy/js/nova-ux.js?v=20260827-p2"></script>
-    - <script src="/rose-galaxy/js/nova-visitor.js?v=20260827-p2"></script>
-    - <script src="/rose-galaxy/animation/decorative-loader.js?v=20260827-p2"></script>
+    - <script src="/rose-galaxy/js/nova-ux.js?v=20260829-p1"></script>
+    - <script src="/rose-galaxy/js/nova-visitor.js?v=20260829-p1"></script>
+    - <script src="/rose-galaxy/animation/decorative-loader.js?v=20260829-p1"></script>
 
 # Side widgets (2026-08-16: archives/categories widgets disabled; they
 # link to pages removed on 2026-08-15)

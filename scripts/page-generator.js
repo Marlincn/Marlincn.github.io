@@ -1,4 +1,4 @@
-﻿'use strict'
+'use strict'
 /* 静态页面生成器(P2.2, P1 重建 2026-08-27): music/moments/about/404
    由 layout 渲染, head 走 base 统一输出;
    body 由 composeShell 组装(公共壳 + 各页纯内容), 页级差异全部参数化:
@@ -23,7 +23,7 @@ const PAGES = [
     // 全站背景层(P1 补回): 与 prod 一致——DOM 保留, 页面 css 隐藏
     pre: '<div class="bg-animation" id="web_bg"></div>',
     showExtra: RIGHTSIDE_COMMENT,
-    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/music-page.js?v=20260827-p2"></script>'
+    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/music-page.js?v=20260829-p1"></script>'
   },
   {
     name: 'moments',
@@ -33,7 +33,7 @@ const PAGES = [
     headerCls: 'not-home-page nova-moments-nav-header',
     mainCls: 'nova-moments-shell',
     showExtra: RIGHTSIDE_COMMENT,
-    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/moments-page.js?v=20260827-p2"></script>'
+    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/moments-page.js?v=20260829-p1"></script>'
   },
   {
     name: 'about',

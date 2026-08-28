@@ -230,7 +230,7 @@ tags:
 ```
 
 - 第一张工程卡用 `nova-note-card--lead`,其余用 `--side`;URL 中空格需编码为 `%20`
-- 生活碎片区指向 /music/、/moments/(按钮文案:进入音乐 / 进入瞬间),与文章无关
+- 生活碎片区指向 /music/、/moments/(按钮文案:进入音乐 / 进入说说),与文章无关
 
 ### 工程板块(生成器渲染,见[加工程](#加工程))
 
@@ -344,7 +344,8 @@ Marlin-web/
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
-| 2026-08-28 | **P5 收尾修复与文档**：①hero 按钮"查看时间轴"→**查看工程**(指向 `/projects/`);②**导航栏修复**:marlin 字样(顶部透明/滚动固定)两态位置一致——删首页 `nav-site-title` flex 专属规则(与主题 nav-fixed a:first-child/last-child 规则冲突)+ 全站滚动态 nav 贴顶修复(本站从不加 `.fixed` class,致 nav 停在 y=6~8;`#page-header.nav-fixed.nav-visible #nav{top:0!important;transform:none!important}`,隐藏态不受影响);③**音乐悬浮窗记忆改会话级**:`novaPlayerState`/`novaMiniPos` 由 localStorage 改 sessionStorage(刷新/站内跳转保留,关闭标签页后不再恢复);④README 首页小节 P5 化 + 历史补本条目 + 删「后续计划」板块;MAINTENANCE 标题改「维护文档」+ 补 P5 数据流小节 | `layout/home-parts/top.html`、`source/rose-galaxy/css/nova-home.css`、`source/css/custom.css`、`source/rose-galaxy/js/nova-player.js`、`README.md`、`MAINTENANCE.md` |
+| 2026-08-29 | **首页改进**:①hero 按钮互换——第一个改**查看工程**(锚点 `#nova-notes` 滚到精选工程)、第二个改**进入文章**(锚点 `#nova-recent` 滚到最新文章);②**浅色粒子层(花瓣)移除**:首页浅/深色统一应用深色粒子动画——`galaxy-canvas.js` 删除浅色花瓣全部死代码(4 个 LIGHT_ 常量、`isLightTheme()` 函数与 30+ 处浅色分支/字段:花瓣生成/渐变绘制/圆润瓣细长瓣/中线高光/浅色连线/灯光比例等),深色动画行为不变 | `layout/home-parts/top.html`、`source/rose-galaxy/animation/galaxy-canvas.js` |
+| 2026-08-28 | **P5 收尾修复与文档**：①**导航栏修复**:marlin 字样(顶部透明/滚动固定)两态位置一致——删首页 `nav-site-title` flex 专属规则(与主题 nav-fixed a:first-child/last-child 规则冲突)+ 全站滚动态 nav 贴顶修复(本站从不加 `.fixed` class,致 nav 停在 y=6~8;`#page-header.nav-fixed.nav-visible #nav{top:0!important;transform:none!important}`,隐藏态不受影响);②**音乐悬浮窗记忆改会话级**:`novaPlayerState`/`novaMiniPos` 由 localStorage 改 sessionStorage(刷新/站内跳转保留,关闭标签页后不再恢复);④**浅色粒子层(花瓣)移除**:首页浅/深色统一应用深色粒子动画——`galaxy-canvas.js` 删除浅色花瓣全部死代码(4 个 LIGHT_ 常量、`isLightTheme()` 函数与 30+ 处浅色分支/字段: 花瓣生成/渐变绘制/圆润瓣细长瓣/中线高光/浅色连线条数/灯光比例等),深色动画行为不变;③README 首页小节 P5 化 + 历史补本条目 + 删「后续计划」板块;MAINTENANCE 标题改「维护文档」+ 补 P5 数据流小节 | `source/rose-galaxy/css/nova-home.css`、`source/css/custom.css`、`source/rose-galaxy/js/nova-player.js`、`README.md`、`MAINTENANCE.md` |
 | 2026-08-27 | **P5 首页改版**：①首页"精选记录"→**精选工程**(工程按浏览量取 3:左大卡+右上/右下,封面=工程图);新增**最新文章**区块(按修改日期取 6,2 列 3 行);LATEST SIGNAL 扩为"工程+文章最近提交"第 1 名(带[工程]/[文章]标记);②**浏览量系统**:新增 `scripts/lib/fetch-views.js`(busuanzi API 带 Referer 抓各页真实 page_pv)+ `scripts/views-cache.json`(显示值=真实值+人工偏移,手动改 `pv` 段后脚本在其上累加不覆盖,说明文档 `views-cache.md`);排序 tie-break 链(updated→浏览量→标题)保证批量更新/同值稳定;工程"最后提交日"=资产目录 mtime(可 `updated:` 覆盖);③样式:最新文章卡(封面贴左、卡高 88、gap 18)、圆角统一 13px、浅色蒙版(封面 96%/文字垫底 82→72)、标签浅玫瑰(#c97993/#a66f82)、"漫游的思想"文案、decorative-loader 路径修复(全站 404) | `scripts/{home-generator,projects-data}.js`、`scripts/lib/fetch-views.js`(新)、`scripts/{views-cache.json,views-cache.md}`(新)、`layout/home.pug`、`layout/home-parts/{top,mid,bottom}.html`、`layout/parts-common/footer.html`、`source/rose-galaxy/css/nova-home.css` |
 | 2026-08-27 | **P4 收尾与文档**：README 系统更新(本文档,重建"加一个工程"教程)+ 新增 MAINTENANCE.md(技术维护文档);M1 index.css 头部"上游勿改"标注;M2 custom.css 文件头总目录;C5 Node 配置单源(`scripts/site-config.js` 从 `_config.yml` 读 SITE,不依赖 hexo 作用域);C7 py-tools 拆 `tools/`(构建验证)+`archive/`(历史补丁);R6 #page-header 层叠以标注维护;N3 night-visitor→nova-visitor;N5 nova-404→404 | `README.md`、`MAINTENANCE.md`、`source/css/{index,custom}.css`、`scripts/site-config.js`、`scripts/{nova-tags,projects-generator}.js`、`source/rose-galaxy/{js,css}/nova-visitor.*`、`layout/404.pug`、`py-tools/` |
 | 2026-08-27 | **P3 命名**:shuoshuo→moments 全量(URL `/moments/`、文件/类名/变量 `nova-moments-*`、`nova-moments-route`);中文"说说"保留 | 全站(5 文件重命名 + 33 文本替换) |
