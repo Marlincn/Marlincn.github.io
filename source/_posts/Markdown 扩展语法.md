@@ -1,10 +1,14 @@
 ---
 title: Markdown 扩展语法
+author: Markdown Guide
+url: https://www.markdown.xyz/extended-syntax/
+
 date: 2026-08-17 00:00:00
 order: 3
 tags:
   - Markdown语法
----构建在 Markdown 基本语法上的扩展功能。
+---
+构建在 Markdown 基本语法上的扩展功能。
 
 ## 概述
 

@@ -1,10 +1,14 @@
 ---
 title: Markdown 基本语法
+author: Markdown Guide
+url: https://www.markdown.xyz/basic-syntax/
+
 date: 2026-08-17 00:00:00
 order: 2
 tags:
   - Markdown语法
----John Gruber 的 Markdown 设计文档中列出的所有 Markdown 元素。
+---
+John Gruber 的 Markdown 设计文档中列出的所有 Markdown 元素。
 
 ## 总览
 

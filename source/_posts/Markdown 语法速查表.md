@@ -1,10 +1,14 @@
 ---
 title: Markdown 语法速查表
+author: Markdown Guide
+url: https://www.markdown.xyz/cheat-sheet/
+
 date: 2026-08-17 00:00:00
 order: 4
 tags:
   - Markdown语法
----Markdown 语法参考手册 / 速查表。
+---
+Markdown 语法参考手册 / 速查表。
 
 ## 总览
 

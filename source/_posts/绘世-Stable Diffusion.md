@@ -1,5 +1,8 @@
 ---
 title: 绘世 Stable Diffusion
+author: Marlin
+url: 无
+
 date: 2026-08-17 00:00:00
 order: 7
 tags:
@@ -168,6 +171,8 @@ NSFW,mutated hands and fingers,worst quality,low quality,extra limb,missing limb
 
 ### 3.1夏末游鳞
 
+<img src="/images/posts/夏末游鳞.png" style="zoom: 25%;" />
+
 **正向Tag**
 
 
@@ -200,10 +205,11 @@ depth of field, cowboy shot, close-up, solo, 1girl, holding sparkler, adjusting 
 
 其他数值均为默认
 
-<img src="C:\Users\mabin\Desktop\杂集\图片\夏末游鳞.png" style="zoom: 50%;" />
 
 
-### 3.暗香盛雪
+### 3.2暗香盛雪
+
+<img src="/images/posts/暗香胜雪.png" style="zoom: 25%;" />
 
 **正向tag**
 

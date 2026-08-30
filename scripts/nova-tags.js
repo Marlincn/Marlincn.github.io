@@ -59,7 +59,9 @@ function renderSearchXml(posts) {
     .sort((a, b) => b.date - a.date)
     .map(p => {
       const url = postUrl(p)
-      let bodyHtml = (p.content || '').replace(/<h1[^>]*>[\s\S]*?<\/h1>/gi, '')
+      let bodyHtml = (p.content || '')
+        .replace(/<style[\s\S]*?<\/style>/gi, '')
+        .replace(/<h1[^>]*>[\s\S]*?<\/h1>/gi, '')
       bodyHtml = bodyHtml
         .replace(/<figure class="highlight[^>]*>[\s\S]*?<\/figure>/gi, '\n')
         .replace(/<pre[^>]*>[\s\S]*?<\/pre>/gi, '\n')
