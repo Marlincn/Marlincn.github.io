@@ -1,6 +1,7 @@
 # Marlin-web — 个人网站
 
-一个以「深夜幕蓝 + 玫瑰星系粒子」为视觉核心的个人网站,基于 Marlin(mikejosion.github.io)的静态构建产物重建,采用 Hexo 8.1.2 + Butterfly 5.7.0 + 自研 rose-galaxy 定制层。
+一个以「深夜幕蓝 + 玫瑰星系粒子」为视觉核心的个人网站,基于 Marlin(mikejosion.github.io)的静态构建产物重建,采用 Hexo 8.1.2 + Butterfly 5.7.0 + rose-galaxy 定制层。
+借鉴https://mikejosion.github.io/，进一步个性化创新、开放共享的产物。
 
 | 深色主题 | 浅色主题 |
 | --- | --- |
