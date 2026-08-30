@@ -1,9 +1,9 @@
 'use strict'
-/* 浏览量获取器(P5, 2026-08-27): 部署前运行一次即可, 生成 scripts/views-cache.json。
+/* 浏览量获取器(P5, 2026-08-27): 部署前运行一次即可, 生成 data/views-cache.json。
    - 数据源: busuanzi(ibruce) 服务端 API——带 Referer=线上页面 URL 查询 page_pv(已实测可行)
      Referer 必须为线上精确 URL; 中文路径请使用编码后的 URL。
    - 枚举范围: 全部文章(source/_posts/*.md → /posts/<文件名>/) + 全部工程(projects-data id → /projects/<id>/) + 首页(/)
-   - 输出: scripts/views-cache.json
+   - 输出: data/views-cache.json
        { fetchedAt: ms,                    // 本次抓取时间
          pv: { "/path/": n },              // ★显示值(排序用) = busuanzi 真实值 + shift
          shift: { "/path/": n },           // 人工偏移(手动修改 pv 后自动记录, 永不重置)
@@ -13,14 +13,16 @@
      差值并入 shift, 之后显示值 = 真实值 + shift, 即"在手动修改后的数字上继续累加真实增量"。
    - 容错: 单条失败跳过(不改动该页); 24h 内已有缓存且未传 --force 时直接复用。
    用法: node scripts/lib/fetch-views.js [--force]
-   注意: 本文件放在 scripts/lib/(hexo 不递归加载), 避免被 hexo 启动时误执行。 */
+   注意: 本文件虽位于 scripts/lib/, hexo 会递归加载 scripts/ 全部文件——
+         因此通过 typeof hexo 守卫避免被 hexo 加载时误执行(仅手动运行才抓取)。
+   数据文件(views-cache.json/说明)已移至项目根 data/(hexo 不做任何脚本处理)。 */
 
 const fs = require('fs')
 const path = require('path')
 const https = require('https')
 const { SITE } = require('../site-config')
 
-const CACHE_FILE = path.join(__dirname, '..', 'views-cache.json')
+const CACHE_FILE = path.join(__dirname, '..', '..', 'data', 'views-cache.json')
 const CACHE_TTL = 24 * 60 * 60 * 1000
 const API_HOST = 'busuanzi.ibruce.info'
 
@@ -64,7 +66,7 @@ function fetchPv(pageKey) {
   })
 }
 
-;(async function main() {
+async function main() {
   const force = process.argv.includes('--force')
   let cache = { fetchedAt: 0, pv: {}, shift: {}, lastRaw: {}, lastDisplay: {} }
   try { cache = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8')) } catch (e) { /* 无缓存 */ }
@@ -104,4 +106,9 @@ function fetchPv(pageKey) {
   }
   fs.writeFileSync(CACHE_FILE, JSON.stringify({ fetchedAt: Date.now(), pv, shift, lastRaw, lastDisplay }, null, 2), 'utf8')
   console.log('[fetch-views] 完成: ok=' + ok + ' fail=' + fail + ' 手动偏移=' + manual + ' -> ' + CACHE_FILE)
-})().catch(e => { console.error('[fetch-views] FAILED: ' + e.message); process.exit(1) })
+}
+
+/* hexo 递归加载 scripts/ 全部文件: 被 hexo 加载时不执行抓取(仅手动 node 运行) */
+if (typeof hexo === 'undefined' || !hexo) {
+  main().catch(e => { console.error('[fetch-views] FAILED: ' + e.message); process.exit(1) })
+}

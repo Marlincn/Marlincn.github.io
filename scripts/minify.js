@@ -26,6 +26,10 @@ async function walk(dir) {
 }
 
 async function main() {
+  if (!fs.existsSync(publicDir)) {
+    console.log('[minify] public 不存在, 跳过(clean 后/新克隆场景)')
+    return
+  }
   const files = await walk(publicDir)
   let saved = 0
   let count = 0

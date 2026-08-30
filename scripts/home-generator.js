@@ -27,7 +27,7 @@ const WEB_BG = '<div class="bg-animation" id="web_bg"></div>'
 // —— 浏览量缓存(scripts/views-cache.json, fetch-views.js 维护) ——
 function loadViewMap() {
   try {
-    const c = JSON.parse(fs.readFileSync(path.join(__dirname, 'views-cache.json'), 'utf8'))
+    const c = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'views-cache.json'), 'utf8'))
     return c.pv || {}
   } catch (e) { return {} }
 }
