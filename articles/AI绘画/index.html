@@ -1,146 +1,136 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>文章: AI绘画 | Marlin</title><meta name="author" content="Marlin"><meta name="copyright" content="Marlin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#080B14"><meta name="description" content="浏览 Marlin 博客中标记为“AI绘画”的文章与学习记录。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Marlin">
-<meta property="og:url" content="https://deymocn.github.io/articles/AI绘画/">
-<meta property="og:site_name" content="Marlin">
-<meta property="og:description" content="浏览 Marlin 博客中标记为“AI绘画”的文章与学习记录。">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://deymocn.github.io/img/logo1.jpg">
-<meta property="article:author" content="Marlin">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://deymocn.github.io/img/logo1.jpg"><link rel="shortcut icon" href="/img/favicon-small.ico"><link rel="canonical" href="https://deymocn.github.io/articles/AI绘画/"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="//busuanzi.ibruce.info"><link rel="stylesheet" href="/css/index.css?v=5.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
-    (() => {
-      
-    const saveToLocal = {
-      set: (key, value, ttl) => {
-        const data = { value }
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><!-- hexo injector head_begin start --><script>
+;(function () {
+  try {
+    var hour = new Date().getHours()
+    var dark = hour >= 18 || hour < 7
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+  } catch (e) {}
+})()
+</script><!-- hexo injector head_begin end --><meta charset="UTF-8"/><meta name="referrer" content="no-referrer"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"/><title>文章: AI绘画 | Marlin</title><meta name="author" content="Marlin"/><meta name="copyright" content="Marlin"/><meta name="format-detection" content="telephone=no"/><meta name="theme-color" content="#080B14"/><meta name="description" content="浏览 Marlin 博客中标记为“AI绘画”的文章与学习记录。"/><meta property="og:type" content="website"/><meta property="og:title" content="文章: AI绘画"/><meta property="og:url" content="https://marlincn.github.io/articles/AI%E7%BB%98%E7%94%BB/"/><meta property="og:site_name" content="Marlin"/><meta property="og:description" content="浏览 Marlin 博客中标记为“AI绘画”的文章与学习记录。"/><meta property="og:locale" content="zh_CN"/><meta property="og:image" content="https://marlincn.github.io/img/brand/logo1.jpg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://marlincn.github.io/img/brand/logo1.jpg"/><link rel="icon" type="image/png" href="/img/brand/favicon-small.png"/><link rel="canonical" href="https://marlincn.github.io/articles/AI%E7%BB%98%E7%94%BB/"/><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"/><script>(() => {
 
-        if (ttl != null) {
-          data.expiry = Date.now() + ttl * 86400000
-        }
+const saveToLocal = {
+  set: (key, value, ttl) => {
+    const data = { value }
 
-        localStorage.setItem(key, JSON.stringify(data))
-      },
-      get: key => {
-        const itemStr = localStorage.getItem(key)
-        if (!itemStr) return
-
-        try {
-          const data = JSON.parse(itemStr)
-
-          if (data.expiry && Date.now() > data.expiry) {
-            localStorage.removeItem(key)
-            return
-          }
-
-          return data.value
-        } catch {
-          localStorage.removeItem(key)
-        }
-      }
+    if (ttl != null) {
+      data.expiry = Date.now() + ttl * 86400000
     }
 
-    const scriptCache = new Map()
-    const cssCache = new Map()
-    window.btf = {
-      saveToLocal,
-      getScript: (url, attr = {}) => {
-        if (scriptCache.has(url)) {
-          return scriptCache.get(url)
-        }
+    localStorage.setItem(key, JSON.stringify(data))
+  },
+  get: key => {
+    const itemStr = localStorage.getItem(key)
+    if (!itemStr) return
 
-        const promise = new Promise((resolve, reject) => {
-          const script = document.createElement('script')
+    try {
+      const data = JSON.parse(itemStr)
 
-          script.src = url
-          script.async = true
-
-          for (const key in attr) {
-            script.setAttribute(key, attr[key])
-          }
-
-          script.onload = resolve
-          script.onerror = reject
-
-          document.head.appendChild(script)
-        })
-
-        scriptCache.set(url, promise)
-
-        return promise
-      },
-      getCSS: (url, id) => {
-        if (cssCache.has(url)) {
-          return cssCache.get(url)
-        }
-
-        const promise = new Promise((resolve, reject) => {
-          const link = document.createElement('link')
-
-          link.rel = 'stylesheet'
-          link.href = url
-
-          if (id) {
-            link.id = id
-          }
-
-          link.onload = resolve
-          link.onerror = reject
-
-          document.head.appendChild(link)
-        })
-
-        cssCache.set(url, promise)
-
-        return promise
-      },
-      addGlobalFn: (key, fn, name = false, parent = window) => {
-        if (!true && key.startsWith('pjax')) return
-        const globalFn = parent.globalFn || {}
-        globalFn[key] = globalFn[key] || {}
-        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
-        parent.globalFn = globalFn
+      if (data.expiry && Date.now() > data.expiry) {
+        localStorage.removeItem(key)
+        return
       }
+
+      return data.value
+    } catch {
+      localStorage.removeItem(key)
     }
-  
-      
-      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
-      const activateDarkMode = () => {
-        document.documentElement.dataset.theme = 'dark'
-        if (metaThemeColor !== null) {
-          metaThemeColor.setAttribute('content', '#080B14')
-        }
-      }
-      const activateLightMode = () => {
-        document.documentElement.dataset.theme = 'light'
-        if (metaThemeColor !== null) {
-          metaThemeColor.setAttribute('content', '#F7F4F1')
-        }
-      }
+  }
+}
 
-      btf.activateDarkMode = activateDarkMode
-      btf.activateLightMode = activateLightMode
-
-      const theme = saveToLocal.get('theme')
-    
-          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
-        
-      
-      const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
-      }
-    
-      
-    const detectApple = () => {
-      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
-        document.documentElement.classList.add('apple')
-      }
+const scriptCache = new Map()
+const cssCache = new Map()
+window.btf = {
+  saveToLocal,
+  getScript: (url, attr = {}) => {
+    if (scriptCache.has(url)) {
+      return scriptCache.get(url)
     }
-    detectApple()
-  
-    })()
-  </script><script>const GLOBAL_CONFIG = {
+
+    const promise = new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+
+      script.src = url
+      script.async = true
+
+      for (const key in attr) {
+        script.setAttribute(key, attr[key])
+      }
+
+      script.onload = resolve
+      script.onerror = reject
+
+      document.head.appendChild(script)
+    })
+
+    scriptCache.set(url, promise)
+
+    return promise
+  },
+  getCSS: (url, id) => {
+    if (cssCache.has(url)) {
+      return cssCache.get(url)
+    }
+
+    const promise = new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+
+      link.rel = 'stylesheet'
+      link.href = url
+
+      if (id) {
+        link.id = id
+      }
+
+      link.onload = resolve
+      link.onerror = reject
+
+      document.head.appendChild(link)
+    })
+
+    cssCache.set(url, promise)
+
+    return promise
+  },
+  addGlobalFn: (key, fn, name = false, parent = window) => {
+    if (!true && key.startsWith('pjax')) return
+    const globalFn = parent.globalFn || {}
+    globalFn[key] = globalFn[key] || {}
+    globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+    parent.globalFn = globalFn
+  }
+}
+
+
+  const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+  const activateDarkMode = () => {
+    document.documentElement.dataset.theme = 'dark'
+    if (metaThemeColor !== null) {
+      metaThemeColor.setAttribute('content', '#080B14')
+    }
+  }
+  const activateLightMode = () => {
+    document.documentElement.dataset.theme = 'light'
+    if (metaThemeColor !== null) {
+      metaThemeColor.setAttribute('content', '#F7F4F1')
+    }
+  }
+
+  btf.activateDarkMode = activateDarkMode
+  btf.activateLightMode = activateLightMode
+const asideStatus = saveToLocal.get('aside-status')
+  if (asideStatus !== undefined) {
+    document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+  }
+
+
+  const detectApple = () => {
+    if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+      document.documentElement.classList.add('apple')
+    }
+  }
+  detectApple()
+
+})()</script><script>const GLOBAL_CONFIG = {
   root: '/',
   algolia: undefined,
   localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":true,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
@@ -179,12 +169,11 @@
   },
   autoDarkmode: false
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: '文章: AI绘画',
+  title: "文章: AI绘画",
   isHighlightShrink: false,
   isToc: false,
-  pageType: 'tag'
-}</script><link rel="stylesheet" href="/css/custom.css?v=20260833-nav"><link rel="stylesheet" href="/rose-galaxy/css/night-visitor.css?v=20260813-prince-quotes-v1"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="https://deymocn.github.io/atom.xml" title="Marlin" type="application/atom+xml">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","@id":"https://deymocn.github.io/articles/AI绘画/#webpage","name":"AI绘画","url":"https://deymocn.github.io/articles/AI绘画/","description":"浏览 Marlin 博客中标记为“AI绘画”的文章与学习记录。","inLanguage":"zh-CN","isPartOf":{"@type":"WebSite","@id":"https://deymocn.github.io/#website","url":"https://deymocn.github.io/","name":"Marlin"}}</script></head><body class="nova-tag-route"><!-- hexo injector body_begin start -->
+  pageType: "tag"
+}</script><link rel="stylesheet" href="/css/custom.css?v=20260829-p1"><link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260829-p1"><link rel="stylesheet" href="/rose-galaxy/css/nova-player.css?v=20260829-p1"><link rel="stylesheet" href="/rose-galaxy/css/nova-visitor.css?v=20260829-p1"><script defer src="/rose-galaxy/js/lib/site-config.js?v=20260829-p1"></script><script defer src="/rose-galaxy/js/lib/utils.js?v=20260829-p1"></script><script defer src="/rose-galaxy/js/nova-player.js?v=20260829-p1"></script><link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=20260829-p1"><script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","@id":"https://marlincn.github.io/articles/AI%E7%BB%98%E7%94%BB/#webpage","name":"AI绘画","url":"https://marlincn.github.io/articles/AI%E7%BB%98%E7%94%BB/","description":"浏览 Marlin 博客中标记为“AI绘画”的文章与学习记录。","inLanguage":"zh-CN","isPartOf":{"@type":"WebSite","@id":"https://marlincn.github.io/#website","url":"https://marlincn.github.io/","name":"Marlin"}}</script><meta name="generator" content="Hexo 8.1.2"></head><body class="nova-tag-route"><!-- hexo injector body_begin start -->
 <div class="nova-page-loading" data-nova-loading="" aria-hidden="true" aria-live="polite">
   <div class="nova-page-loading__inner">
     <span class="nova-page-loading__mark" aria-hidden="true"></span>
@@ -202,84 +191,31 @@
       return
     }
     window.__novaLoaderBootstrapped = true
-    window.clearTimeout(window.__novaLoaderDelayTimer)
-    window.__novaLoaderDelayTimer = window.setTimeout(() => {
-      if (!loader.isConnected || loader.dataset.novaLoadingState === 'leaving') return
-      window.__novaLoaderVisibleAt = Date.now()
-      loader.dataset.novaLoadingState = 'visible'
-      loader.setAttribute('aria-hidden', 'false')
-      loader.classList.add('is-visible')
-      document.body.classList.add('nova-loading-active')
-    }, 1200)
+    // 以 __novaLoadingShown 为唯一基准:仅"从网站首次进入"(本次会话第一次)显示;
+    // 之后整页刷新/返回首页都读到此标志 → 跳过显示并移除,避免再次弹 loading。
+    // 标志的写入统一由 nova-ux.js 的 initInitialLoading 负责,这里只读不写,避免双重判定冲突。
+    let alreadyShown = false
+    try { alreadyShown = sessionStorage.getItem('__novaLoadingShown') === '1' } catch (_) {}
+    if (alreadyShown) {
+      loader?.remove()
+      return
+    }
+    if (!loader.isConnected || loader.dataset.novaLoadingState === 'leaving') return
+    window.__novaLoaderVisibleAt = Date.now()
+    loader.dataset.novaLoadingState = 'visible'
+    loader.setAttribute('aria-hidden', 'false')
+    loader.classList.add('is-visible')
+    document.body.classList.add('nova-loading-active')
   })()
-</script><!-- hexo injector body_begin end --><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/logo1.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" width="1080" height="1080" decoding="async"></div><div class="site-data text-center"><a href="/articles/"><div class="headline">文章</div><div class="length-num">16</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/articles/"><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page nova-tag-hero" id="page-header" style="background-image:url(/img/guidang.webp)"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/brand/nova-rose-line-128.png" alt="Logo" width="36" height="36" loading="eager" decoding="async"><span class="site-name">Marlin</span></a></span><div id="menus"><div id="search-button"><button class="site-page social-icon search search-nav-link" type="button" aria-label="打开搜索"><svg class="search-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span> 搜索</span></button></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/articles/"><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info" class="nova-tag-hero-content">
-    <p class="nova-tag-eyebrow">NOVA · TOPIC STREAM</p>
-    <h1 id="site-title" class="nova-tag-title">AI绘画</h1>
-    <p class="nova-tag-description">围绕该主题整理的代码、笔记与实践记录。</p>
-    <a class="nova-tag-scroll-hint" href="#nova-tag-notes">EXPLORE THE NOTES</a></div></header><main class="nova-tag-content" id="content-inner">
-    <section class="nova-tag-summary" aria-label="AI绘画 文章概览">
-      <div><strong>1</strong><span>NOTES</span><small>相关文章</small></div>
-      <div><strong>2026</strong><span>FIRST RECORD</span><small>最早记录</small></div>
-      <div><strong>08·17</strong><span>LAST UPDATED</span><small>最近更新</small></div>
-      <div><strong>AI绘画</strong><span>MAIN CATEGORY</span><small>主要分类</small></div>
-    </section>
-    <div class="nova-tag-layout" id="nova-tag-notes">
-      <section class="nova-tag-main">
-        <header class="nova-tag-main-header">
-          <div><span>TOPIC NOTES</span><h2>主题笔记</h2><p>围绕“AI绘画”整理的文章与实践记录。</p></div>
-          <b>1 NOTES</b>
-        </header>
-        <div class="nova-tag-post-list">
-      <article class="nova-tag-post-card" id="nova-tag-note-AI绘画-1" data-note-title="绘世 Stable Diffusion" data-note-index="1" data-note-href="/2026/08/17/绘世-Stable Diffusion/">
-        <a class="nova-tag-post-cover" href="/2026/08/17/绘世-Stable Diffusion/" aria-label="阅读 绘世 Stable Diffusion">
-          <img src="/img/covers/tech-notes.webp" alt="绘世 Stable Diffusion" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/img/covers/tech-notes.webp'" width="1200" height="900">
-        </a>
-        <div class="nova-tag-post-content">
-          <div class="nova-tag-post-meta">
-            <time datetime="2026-08-17T00:00:00.000Z">2026-08-17</time>
-            <span>AI绘画</span>
-            <span>AI绘画</span>
-          </div>
-          <h2><a href="/2026/08/17/绘世-Stable Diffusion/">绘世 Stable Diffusion</a></h2>
-          <p><h2 id="一、提示词" <a href=" 一、提示词" class="headerlink" title="一、提示词" </a 一、提示词</h2 <h3 id="1-0</p>
-          <a class="nova-tag-post-action" href="/2026/08/17/绘世-Stable Diffusion/">阅读笔记 <span>→</span></a>
-        </div>
-      </article>
-      </div>
-      </section>
-      <aside class="nova-tag-sidebar">
-        <section class="nova-tag-side-card nova-tag-profile">
-          <header><span>TOPIC PROFILE</span><h2>文章简介</h2></header>
-          <h3>AI绘画</h3>
-          <p>围绕该主题整理的代码、笔记与实践记录。</p>
-          <div><b>1 NOTES</b><small>2026—2026</small></div>
-          <a href="/articles/">查看全部文章 →</a>
-        </section>
-        <section class="nova-tag-side-card nova-tag-current-note" aria-live="polite">
-          <header><span>CURRENT NOTE</span><h2>当前阅读</h2></header>
-          <p class="nova-tag-current-title">AI绘画</p>
-          <div class="nova-tag-current-meta">
-            <span class="nova-tag-current-count">7 NOTES</span>
-            <span class="nova-tag-current-percent">向下浏览专题笔记</span>
-          </div>
-          <div class="nova-tag-progress" aria-hidden="true"><i></i></div>
-          <div class="nova-tag-current-actions">
-            <a class="nova-tag-current-open" href="#nova-tag-notes">查看当前文章</a>
-            <a href="#nova-tag-notes">返回专题顶部 ↑</a>
-          </div>
-        </section>
-        <section class="nova-tag-side-card nova-tag-reading-path">
-    <a class="nova-tag-reading-link" href="#nova-tag-note-AI绘画-1" data-note-target="nova-tag-note-AI绘画-1">
-      <span>01</span>
-      <strong>绘世 Stable Diffusion</strong>
-      <i aria-hidden="true"></i>
-    </a>
-        </section>
-        <section class="nova-tag-side-card nova-tag-related">
-<a class="nova-tag-related-link" href="/articles/AI/">AI<span>1</span></a><a class="nova-tag-related-link" href="/articles/Markdown语法/">Markdown语法<span>5</span></a><a class="nova-tag-related-link" href="/articles/工具/">工具<span>1</span></a><a class="nova-tag-related-link" href="/articles/杂记/">杂记<span>1</span></a>
-        </section>
-      </aside>
-    </div></main><footer id="footer" style="background-image: url(/img/guidang.webp);"><div class="footer-other"><div class="footer-copyright"><span class="copyright">©&nbsp;2025 - 2026 By Marlin</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.6.1</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.6.1"></script><script src="/js/main.js?v=5.6.1"></script><script defer="" src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(() => {
+</script><!-- hexo injector body_begin end -->
+
+<div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/brand/logo1.jpg" onerror="this.onerror=null;this.src='/img/misc/friend_404.gif'" alt="avatar" width="1080" height="1080" decoding="async"></div><div class="site-data text-center"><a href="/articles/"><div class="headline">文章</div><div class="length-num">15</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/articles/"><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/projects/"><span> 工程</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/moments/"><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div></div></div>
+
+<div class="page" id="body-wrap"><header class="not-home-page nova-tag-hero" id="page-header" style="background-image:url(/img/hero/leetcode.webp)"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/brand/nova-rose-line-128.png" alt="Logo" width="36" height="36" loading="eager" decoding="async"><span class="site-name">Marlin</span></a></span><div id="menus"><div id="search-button"><button class="site-page social-icon search search-nav-link" type="button" aria-label="打开搜索"><svg class="search-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span> 搜索</span></button></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/articles/"><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/projects/"><span> 工程</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/moments/"><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav>
+
+<div id="page-site-info" class="nova-tag-hero-content">
+    <p class="nova-tag-eyebrow">NOVA · ARTICLES</p><h1 class="nova-tag-title" id="site-title">AI绘画</h1><p class="nova-tag-description">围绕该主题整理的代码、笔记与实践记录。</p><a class="nova-tag-scroll-hint" href="#nova-tag-notes">EXPLORE THE NOTES</a></div></header><main class="nova-tag-content" id="content-inner"><section class="nova-tag-summary" aria-label="AI绘画 文章概览"><div><strong>1</strong><span>NOTES</span><small>相关文章</small></div><div><strong>2026</strong><span>FIRST RECORD</span><small>最早记录</small></div><div><strong>08·17</strong><span>LAST UPDATED</span><small>最近更新</small></div><div><strong>AI绘画</strong><span>MAIN CATEGORY</span><small>主要分类</small></div></section><div class="nova-tag-layout" id="nova-tag-notes"><section class="nova-tag-main"><header class="nova-tag-main-header"><div><span>TOPIC NOTES</span><h2>主题笔记</h2><p>围绕“AI绘画”整理的文章与实践记录。</p></div><b>1 NOTES</b></header><div class="nova-tag-post-list"><article class="nova-tag-post-card" id="nova-tag-note-AI绘画-1" data-note-title="绘世 Stable Diffusion" data-note-index="1" data-note-href="/posts/%E7%BB%98%E4%B8%96-Stable%20Diffusion/"><a class="nova-tag-post-cover" href="/posts/%E7%BB%98%E4%B8%96-Stable%20Diffusion/" aria-label="阅读 绘世 Stable Diffusion"><img src="/img/covers/tech-notes.webp" alt="绘世 Stable Diffusion" loading="lazy" decoding="async" onerror="this.onerror=null;this.src='/img/covers/tech-notes.webp'" width="1200" height="900"></a><div class="nova-tag-post-content"><div class="nova-tag-post-meta"><span>AI绘画</span><time datetime="2026-08-17T00:00:00.000Z">2026-08-17</time></div><h2><a href="/posts/%E7%BB%98%E4%B8%96-Stable%20Diffusion/">绘世 Stable Diffusion</a></h2><p>一、提示词 1.0概念 提示词(tag)：相对独立的词或短语，告诉AI画什么 权重：单独提示词在总提示词中突出的程度，说明主要画什么 采样：采集文字特征，得到清晰图像的过程，不同采</p><a class="nova-tag-post-action" href="/posts/%E7%BB%98%E4%B8%96-Stable%20Diffusion/">阅读笔记<span>→</span></a></div></article></div></section><aside class="nova-tag-sidebar"><section class="nova-tag-side-card nova-tag-profile"><header><span>TOPIC PROFILE</span><h2>文章简介</h2></header><h3>AI绘画</h3><p>围绕该主题整理的代码、笔记与实践记录。</p><div><b>1 NOTES</b><small>2026—2026</small></div><a href="/articles/">查看全部文章 →</a></section><section class="nova-tag-side-card nova-tag-current-note" aria-live="polite"><header><span>CURRENT NOTE</span><h2>当前阅读</h2></header><p class="nova-tag-current-title">AI绘画</p><div class="nova-tag-current-meta"><span class="nova-tag-current-count">1 NOTES</span><span class="nova-tag-current-percent">向下浏览专题笔记</span></div><div class="nova-tag-progress" aria-hidden="true"><i></i></div><div class="nova-tag-current-actions"><a class="nova-tag-current-open" href="#nova-tag-notes">查看当前文章</a><a href="#nova-tag-notes">返回专题顶部 ↑</a></div></section><section class="nova-tag-side-card nova-tag-reading-path"><header><span>READING PATH</span><h2>阅读路径</h2></header><a class="nova-tag-reading-link" href="#nova-tag-note-AI绘画-1" data-note-target="nova-tag-note-AI绘画-1"><span>01</span><strong>绘世 Stable Diffusion</strong><i aria-hidden="true"></i></a></section><section class="nova-tag-side-card nova-tag-related"><header><span>RELATED TAGS</span><h2>相关标签</h2></header><div><a class="nova-tag-related-link" href="/articles/AI/">AI<span>1</span></a><a class="nova-tag-related-link" href="/articles/Markdown%E8%AF%AD%E6%B3%95/">Markdown语法<span>5</span></a><a class="nova-tag-related-link" href="/articles/%E5%B7%A5%E5%85%B7/">工具<span>1</span></a><a class="nova-tag-related-link" href="/articles/%E8%AF%97%E8%AF%8D/">诗词<span>2</span></a><a class="nova-tag-related-link" href="/articles/%E8%B5%8B%E6%96%87/">赋文<span>5</span></a></div></section></aside></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">©&nbsp;2025 - 2026 By Marlin</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.2</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.7.0</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button>
+</div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script defer="" src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(() => {
   const parseViewBox = viewBox => {
     if (!viewBox) return null
     const parts = viewBox.trim().split(/[\s,]+/).map(n => Number(n))
@@ -641,12 +577,15 @@
 
   btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
   window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
-})()</script><link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=20260813-prince-quotes-v1">
-<script defer="" data-pjax="" src="/rose-galaxy/js/tag-page.js?v=20260813-prince-quotes-v1"></script></div><script defer="" src="/rose-galaxy/js/nova-ux.js?v=20260817-theme-pref"></script><script defer="" src="/rose-galaxy/js/night-visitor.js?v=20260813-prince-quotes-v1"></script><script defer="" src="/rose-galaxy/js/decorative-loader.js?v=20260730-performance"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+})()</script>
+  <script defer="" data-pjax="" src="/rose-galaxy/js/tag-page.js?v=20260829-p1"></script>
+
+
+</div><script defer="" src="/rose-galaxy/js/nova-ux.js?v=20260829-p1"></script><script defer="" src="/rose-galaxy/js/nova-visitor.js?v=20260829-p1"></script><script defer="" src="/rose-galaxy/animation/decorative-loader.js?v=20260829-p1"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
   const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
 
   window.pjax = new Pjax({
-    elements: 'a:not([target="_blank"]):not([data-fancybox]):not([href="/"]):not([href="/articles/"]):not([href="/shuoshuo/"]):not([href="/music/"]):not([href="/about/"])',
+    elements: 'a:not([target="_blank"]):not([data-fancybox]):not([href="/"]):not([href="/articles/"]):not([href="/moments/"]):not([href="/music/"]):not([href="/about/"]):not([href="/projects/"])',
     selectors: pjaxSelectors,
     cacheBust: false,
     analytics: false,
@@ -700,4 +639,5 @@
       window.location.href = responseURL
     }
   })
-})</script><script async="" data-pjax="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button" type="button" aria-label="关闭搜索"><i class="fas fa-times" aria-hidden="true"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><label class="sr-only" for="global-search-input">搜索文章</label><input placeholder="Search..." type="text" id="global-search-input"></div><hr><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script defer="" src="/js/search/local-search.js?v=5.6.1"></script></div></div></body></html>
+})</script><script async="" data-pjax="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button" type="button" aria-label="关闭搜索"><i class="fas fa-times" aria-hidden="true"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><label class="sr-only" for="global-search-input">搜索文章</label><input placeholder="Search..." type="text" id="global-search-input"></div><hr><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script defer="" src="/js/search/local-search.js?v=5.7.0"></script></div></div>
+</body></html>

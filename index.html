@@ -1,140 +1,136 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Marlin</title><meta name="author" content="Marlin"><meta name="copyright" content="Marlin"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#080B14"><meta name="description" content="记录 Go 后端学习、数据结构与算法、LeetCode 练习及个人技术成长过程的博客。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Marlin">
-<meta property="og:url" content="https://deymocn.github.io/">
-<meta property="og:site_name" content="Marlin">
-<meta property="og:description" content="记录 Go 后端学习、数据结构与算法、LeetCode 练习及个人技术成长过程的博客。">
-<meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://deymocn.github.io/img/logo1.jpg">
-<meta property="article:author" content="Marlin">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://deymocn.github.io/img/logo1.jpg"><link rel="shortcut icon" href="/img/favicon-small.ico"><link rel="canonical" href="https://deymocn.github.io/"><link rel="preconnect" href="//cdn.jsdelivr.net"><link rel="preconnect" href="//busuanzi.ibruce.info"><link rel="stylesheet" href="/css/index.css?v=5.6.1"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"><script>
-    (() => {
-      
-    const saveToLocal = {
-      set: (key, value, ttl) => {
-        const data = { value }
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><!-- hexo injector head_begin start --><script>
+;(function () {
+  try {
+    var hour = new Date().getHours()
+    var dark = hour >= 18 || hour < 7
+    document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+  } catch (e) {}
+})()
+</script><!-- hexo injector head_begin end --><meta charset="UTF-8"/><meta name="referrer" content="no-referrer"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"/><title>Marlin</title><meta name="author" content="Marlin"/><meta name="copyright" content="Marlin"/><meta name="format-detection" content="telephone=no"/><meta name="theme-color" content="#080B14"/><meta name="description" content="记录 Markdown 学习笔记、AI 工具实践与日常折腾的个人博客。"/><meta property="og:type" content="website"/><meta property="og:title" content="Marlin"/><meta property="og:url" content="https://marlincn.github.io/"/><meta property="og:site_name" content="Marlin"/><meta property="og:description" content="记录 Markdown 学习笔记、AI 工具实践与日常折腾的个人博客。"/><meta property="og:locale" content="zh_CN"/><meta property="og:image" content="https://marlincn.github.io/img/brand/logo1.jpg"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://marlincn.github.io/img/brand/logo1.jpg"/><link rel="icon" type="image/png" href="/img/brand/favicon-small.png"/><link rel="canonical" href="https://marlincn.github.io/"/><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.7.0"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css"/><script>(() => {
 
-        if (ttl != null) {
-          data.expiry = Date.now() + ttl * 86400000
-        }
+const saveToLocal = {
+  set: (key, value, ttl) => {
+    const data = { value }
 
-        localStorage.setItem(key, JSON.stringify(data))
-      },
-      get: key => {
-        const itemStr = localStorage.getItem(key)
-        if (!itemStr) return
-
-        try {
-          const data = JSON.parse(itemStr)
-
-          if (data.expiry && Date.now() > data.expiry) {
-            localStorage.removeItem(key)
-            return
-          }
-
-          return data.value
-        } catch {
-          localStorage.removeItem(key)
-        }
-      }
+    if (ttl != null) {
+      data.expiry = Date.now() + ttl * 86400000
     }
 
-    const scriptCache = new Map()
-    const cssCache = new Map()
-    window.btf = {
-      saveToLocal,
-      getScript: (url, attr = {}) => {
-        if (scriptCache.has(url)) {
-          return scriptCache.get(url)
-        }
+    localStorage.setItem(key, JSON.stringify(data))
+  },
+  get: key => {
+    const itemStr = localStorage.getItem(key)
+    if (!itemStr) return
 
-        const promise = new Promise((resolve, reject) => {
-          const script = document.createElement('script')
+    try {
+      const data = JSON.parse(itemStr)
 
-          script.src = url
-          script.async = true
-
-          for (const key in attr) {
-            script.setAttribute(key, attr[key])
-          }
-
-          script.onload = resolve
-          script.onerror = reject
-
-          document.head.appendChild(script)
-        })
-
-        scriptCache.set(url, promise)
-
-        return promise
-      },
-      getCSS: (url, id) => {
-        if (cssCache.has(url)) {
-          return cssCache.get(url)
-        }
-
-        const promise = new Promise((resolve, reject) => {
-          const link = document.createElement('link')
-
-          link.rel = 'stylesheet'
-          link.href = url
-
-          if (id) {
-            link.id = id
-          }
-
-          link.onload = resolve
-          link.onerror = reject
-
-          document.head.appendChild(link)
-        })
-
-        cssCache.set(url, promise)
-
-        return promise
-      },
-      addGlobalFn: (key, fn, name = false, parent = window) => {
-        if (!true && key.startsWith('pjax')) return
-        const globalFn = parent.globalFn || {}
-        globalFn[key] = globalFn[key] || {}
-        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
-        parent.globalFn = globalFn
+      if (data.expiry && Date.now() > data.expiry) {
+        localStorage.removeItem(key)
+        return
       }
+
+      return data.value
+    } catch {
+      localStorage.removeItem(key)
     }
-  
-      
-      const metaThemeColor = document.querySelector('meta[name="theme-color"]')
-      const activateDarkMode = () => {
-        document.documentElement.dataset.theme = 'dark'
-        if (metaThemeColor !== null) {
-          metaThemeColor.setAttribute('content', '#080B14')
-        }
-      }
-      const activateLightMode = () => {
-        document.documentElement.dataset.theme = 'light'
-        if (metaThemeColor !== null) {
-          metaThemeColor.setAttribute('content', '#F7F4F1')
-        }
+  }
+}
+
+const scriptCache = new Map()
+const cssCache = new Map()
+window.btf = {
+  saveToLocal,
+  getScript: (url, attr = {}) => {
+    if (scriptCache.has(url)) {
+      return scriptCache.get(url)
+    }
+
+    const promise = new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+
+      script.src = url
+      script.async = true
+
+      for (const key in attr) {
+        script.setAttribute(key, attr[key])
       }
 
-      btf.activateDarkMode = activateDarkMode
-      btf.activateLightMode = activateLightMode
+      script.onload = resolve
+      script.onerror = reject
+
+      document.head.appendChild(script)
+    })
+
+    scriptCache.set(url, promise)
+
+    return promise
+  },
+  getCSS: (url, id) => {
+    if (cssCache.has(url)) {
+      return cssCache.get(url)
+    }
+
+    const promise = new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+
+      link.rel = 'stylesheet'
+      link.href = url
+
+      if (id) {
+        link.id = id
+      }
+
+      link.onload = resolve
+      link.onerror = reject
+
+      document.head.appendChild(link)
+    })
+
+    cssCache.set(url, promise)
+
+    return promise
+  },
+  addGlobalFn: (key, fn, name = false, parent = window) => {
+    if (!true && key.startsWith('pjax')) return
+    const globalFn = parent.globalFn || {}
+    globalFn[key] = globalFn[key] || {}
+    globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+    parent.globalFn = globalFn
+  }
+}
+
+
+  const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+  const activateDarkMode = () => {
+    document.documentElement.dataset.theme = 'dark'
+    if (metaThemeColor !== null) {
+      metaThemeColor.setAttribute('content', '#080B14')
+    }
+  }
+  const activateLightMode = () => {
+    document.documentElement.dataset.theme = 'light'
+    if (metaThemeColor !== null) {
+      metaThemeColor.setAttribute('content', '#F7F4F1')
+    }
+  }
+
+  btf.activateDarkMode = activateDarkMode
+  btf.activateLightMode = activateLightMode
 const asideStatus = saveToLocal.get('aside-status')
-      if (asideStatus !== undefined) {
-        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
-      }
-    
-      
-    const detectApple = () => {
-      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
-        document.documentElement.classList.add('apple')
-      }
+  if (asideStatus !== undefined) {
+    document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+  }
+
+
+  const detectApple = () => {
+    if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+      document.documentElement.classList.add('apple')
     }
-    detectApple()
-  
-    })()
-  </script><script>const GLOBAL_CONFIG = {
+  }
+  detectApple()
+
+})()</script><script>const GLOBAL_CONFIG = {
   root: '/',
   algolia: undefined,
   localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":true,"pagination":{"enable":false,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
@@ -173,12 +169,11 @@ const asideStatus = saveToLocal.get('aside-status')
   },
   autoDarkmode: false
 }</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
-  title: 'Marlin',
+  title: "Marlin",
   isHighlightShrink: false,
   isToc: false,
-  pageType: 'home'
-}</script><link rel="stylesheet" href="/css/custom.css?v=20260833-nav"><link rel="stylesheet" href="/rose-galaxy/css/night-visitor.css?v=20260813-prince-quotes-v1"><meta name="generator" content="Hexo 8.1.2"><link rel="alternate" href="https://deymocn.github.io/atom.xml" title="Marlin" type="application/atom+xml">
-<link rel="preload" as="font" href="/rose-galaxy/fonts/cormorant-garamond-latin.woff2" type="font/woff2" crossorigin=""><link rel="preload" as="font" href="/rose-galaxy/fonts/inter-latin.woff2" type="font/woff2" crossorigin=""><link rel="stylesheet" href="/rose-galaxy/css/nova-fonts.css?v=20260813-prince-quotes-v1"><link rel="preload" as="image" href="/img/background02.webp" fetchpriority="high" type="image/webp"><link rel="stylesheet" href="/rose-galaxy/css/nova-home.css?v=20260817-footer2" data-nova-home-style=""><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","@id":"https://deymocn.github.io/#website","name":"Marlin","url":"https://deymocn.github.io/","description":"记录 Go 后端学习、数据结构与算法、LeetCode 练习及个人技术成长过程的博客。","inLanguage":"zh-CN","creator":{"@type":"Person","name":"Marlin","url":"https://deymocn.github.io/"}}</script></head><body class="nova-home-active"><!-- hexo injector body_begin start -->
+  pageType: "home"
+}</script><link rel="stylesheet" href="/css/custom.css?v=20260829-p1"><link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260829-p1"><link rel="stylesheet" href="/rose-galaxy/css/nova-player.css?v=20260829-p1"><link rel="stylesheet" href="/rose-galaxy/css/nova-visitor.css?v=20260829-p1"><script defer src="/rose-galaxy/js/lib/site-config.js?v=20260829-p1"></script><script defer src="/rose-galaxy/js/lib/utils.js?v=20260829-p1"></script><script defer src="/rose-galaxy/js/nova-player.js?v=20260829-p1"></script><link rel="stylesheet" href="/rose-galaxy/css/nova-home.css?v=20260829-p1" data-nova-home-style=""><link rel="alternate" href="https://marlincn.github.io/atom.xml" title="Marlin" type="application/atom+xml"><link rel="preload" as="font" href="/rose-galaxy/fonts/cormorant-garamond-latin.woff2" type="font/woff2" crossorigin=""><link rel="preload" as="font" href="/rose-galaxy/fonts/inter-latin.woff2" type="font/woff2" crossorigin=""><link rel="stylesheet" href="/rose-galaxy/css/nova-fonts.css?v=20260829-p1"><link rel="preload" as="image" href="/img/hero/background02.webp" fetchpriority="high" type="image/webp"><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","@id":"https://marlincn.github.io/#website","name":"Marlin","url":"https://marlincn.github.io/","description":"记录 Markdown 学习笔记、AI 工具实践与日常折腾的个人博客。","inLanguage":"zh-CN","creator":{"@type":"Person","name":"Marlin","url":"https://marlincn.github.io/"}}</script><meta name="generator" content="Hexo 8.1.2"></head><body class="nova-home-active"><!-- hexo injector body_begin start -->
 <div class="nova-page-loading" data-nova-loading="" aria-hidden="true" aria-live="polite">
   <div class="nova-page-loading__inner">
     <span class="nova-page-loading__mark" aria-hidden="true"></span>
@@ -196,18 +191,30 @@ const asideStatus = saveToLocal.get('aside-status')
       return
     }
     window.__novaLoaderBootstrapped = true
-    window.clearTimeout(window.__novaLoaderDelayTimer)
-    window.__novaLoaderDelayTimer = window.setTimeout(() => {
-      if (!loader.isConnected || loader.dataset.novaLoadingState === 'leaving') return
-      window.__novaLoaderVisibleAt = Date.now()
-      loader.dataset.novaLoadingState = 'visible'
-      loader.setAttribute('aria-hidden', 'false')
-      loader.classList.add('is-visible')
-      document.body.classList.add('nova-loading-active')
-    }, 1200)
+    // 以 __novaLoadingShown 为唯一基准:仅"从网站首次进入"(本次会话第一次)显示;
+    // 之后整页刷新/返回首页都读到此标志 → 跳过显示并移除,避免再次弹 loading。
+    // 标志的写入统一由 nova-ux.js 的 initInitialLoading 负责,这里只读不写,避免双重判定冲突。
+    let alreadyShown = false
+    try { alreadyShown = sessionStorage.getItem('__novaLoadingShown') === '1' } catch (_) {}
+    if (alreadyShown) {
+      loader?.remove()
+      return
+    }
+    if (!loader.isConnected || loader.dataset.novaLoadingState === 'leaving') return
+    window.__novaLoaderVisibleAt = Date.now()
+    loader.dataset.novaLoadingState = 'visible'
+    loader.setAttribute('aria-hidden', 'false')
+    loader.classList.add('is-visible')
+    document.body.classList.add('nova-loading-active')
   })()
-</script><!-- hexo injector body_begin end --><div class="bg-animation" id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/logo1.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar" width="1080" height="1080" decoding="async"></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/articles/"><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/brand/nova-rose-line-128.png" alt="Logo" width="36" height="36" loading="eager" decoding="async"><span class="site-name">Marlin</span></a></span><div id="menus"><div id="search-button"><button class="site-page social-icon search search-nav-link" type="button" aria-label="打开搜索"><svg class="search-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span> 搜索</span></button></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/articles/"><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/shuoshuo/"><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav></header>
-  <div class="nova-homepage" data-nova-home="">
+</script><!-- hexo injector body_begin end -->
+
+<div class="bg-animation" id="web_bg"></div>
+<div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/brand/logo1.jpg" onerror="this.onerror=null;this.src='/img/misc/friend_404.gif'" alt="avatar" width="1080" height="1080" decoding="async"></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/articles/"><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/projects/"><span> 工程</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/moments/"><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div></div></div>
+
+<div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><img class="site-icon" src="/img/brand/nova-rose-line-128.png" alt="Logo" width="36" height="36" loading="eager" decoding="async"><span class="site-name">Marlin</span></a></span><div id="menus"><div id="search-button"><button class="site-page social-icon search search-nav-link" type="button" aria-label="打开搜索"><svg class="search-nav-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg><span> 搜索</span></button></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/articles/"><span> 文章</span></a></div><div class="menus_item"><a class="site-page" href="/projects/"><span> 工程</span></a></div><div class="menus_item"><a class="site-page" href="/music/"><span> 音乐</span></a></div><div class="menus_item"><a class="site-page" href="/moments/"><span> 说说</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><span> 关于</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav>
+</header>
+<div class="nova-homepage" data-nova-home="">
     <section class="nova-hero hero-section" id="hero">
       <div class="nova-hero-bg" id="hero-bg"></div>
       <div class="nova-hero-mist"></div>
@@ -223,45 +230,47 @@ const asideStatus = saveToLocal.get('aside-status')
             <p class="nova-cn-subtitle">还没有睡的人，也许都在构建些什么。</p>
             <p class="nova-en-subtitle" data-typewriter-text="Building quietly, growing steadily.">Building quietly, growing steadily.</p>
             <div class="nova-actions">
-              <a href="#nova-notes">进入文章</a>
-              <a href="/shuoshuo/">查看时间轴</a>
+              <a href="#nova-notes">查看工程</a>
+              <a href="#nova-recent">进入文章</a>
             </div>
-            <a class="nova-latest-signal" href="/2026/08/17/Markdown%20%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/" aria-label="最新文章：Markdown 入门指南，发布于 2026-08-17"><span>LATEST SIGNAL</span><strong>Markdown 入门指南</strong><time>2026-08-17</time></a>
+            <a class="nova-latest-signal" href="/posts/Markdown%20%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/" aria-label="最近提交：Markdown 入门指南，2026-08-31"><span>LATEST SIGNAL</span><strong><em class="nova-signal-kind">[文章]</em>Markdown 入门指南</strong><time>2026-08-31</time></a>
           </div>
         </div>
       </div>
-      <a class="nova-scroll-hint" href="#nova-notes" aria-label="滚动到精选记录"><span></span><em class="sh-text">SCROLL</em></a>
+      <a class="nova-scroll-hint" href="#nova-notes" aria-label="滚动到精选工程"><span></span><em class="sh-text">SCROLL</em></a>
     </section>
-
-    <main class="nova-observatory">
+<main class="nova-observatory">
       <section class="nova-notes nova-reveal" id="nova-notes">
         <header class="nova-section-heading">
-          <div><span class="nova-section-eyebrow">SELECTED NOTES</span><h2 class="nova-section-title">精选记录</h2></div>
+          <div><span class="nova-section-eyebrow">SELECTED PROJECTS</span><h2 class="nova-section-title">精选工程</h2></div>
         </header>
-        <div class="nova-featured-grid">
-<div class="nova-note-card nova-note-card--lead" data-href="/2026/08/17/Markdown%20%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/" role="link" tabindex="0" aria-label="阅读文章：Markdown 入门指南"><div class="post_cover"><a href="/2026/08/17/Markdown%20%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/" title="Markdown 入门指南"><img class="post-bg" src="/img/covers/tech-notes.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Markdown 入门指南" loading="lazy" decoding="async" width="1200" height="900"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/08/17/Markdown%20%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/" title="Markdown 入门指南">Markdown 入门指南</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-08-17T00:00:00.000Z" title="发表于 2026-08-17 00:00:00">2026-08-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">Markdown语法</span></span></div><div class="content">Markdown 入门指南 Markdown 概述、工作原理以及用途。 Markdown 是什么？ Markdown 是一种轻量级的标记语言</div></div></div>
-<div class="nova-note-card nova-note-card--side" data-href="/2026/08/17/Markdown%20%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" role="link" tabindex="0" aria-label="阅读文章：Markdown 基本语法"><div class="post_cover"><a href="/2026/08/17/Markdown%20%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" title="Markdown 基本语法"><img class="post-bg" src="/img/covers/tech-notes.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Markdown 基本语法" loading="lazy" decoding="async" width="1200" height="900"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/08/17/Markdown%20%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" title="Markdown 基本语法">Markdown 基本语法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-08-17T00:00:00.000Z" title="发表于 2026-08-17 00:00:00">2026-08-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">Markdown语法</span></span></div><div class="content">Markdown 基本语法 John Gruber 的 Markdown 设计文档中列出的所有 Markdown 元素。 总览 几乎所有 M</div></div></div>
-<div class="nova-note-card nova-note-card--side" data-href="/2026/08/17/Markdown%20%E6%89%A9%E5%B1%95%E8%AF%AD%E6%B3%95/" role="link" tabindex="0" aria-label="阅读文章：Markdown 扩展语法"><div class="post_cover"><a href="/2026/08/17/Markdown%20%E6%89%A9%E5%B1%95%E8%AF%AD%E6%B3%95/" title="Markdown 扩展语法"><img class="post-bg" src="/img/covers/tech-notes.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Markdown 扩展语法" loading="lazy" decoding="async" width="1200" height="900"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/08/17/Markdown%20%E6%89%A9%E5%B1%95%E8%AF%AD%E6%B3%95/" title="Markdown 扩展语法">Markdown 扩展语法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-08-17T00:00:00.000Z" title="发表于 2026-08-17 00:00:00">2026-08-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">Markdown语法</span></span></div><div class="content">Markdown 扩展语法 构建在 Markdown 基本语法上的扩展功能。 概述 即便 John Gruber 的原始设计文档中所列出的 </div></div></div>
-<div class="nova-note-card nova-note-card--side" data-href="/2026/08/17/Markdown%20%E8%AF%AD%E6%B3%95%E9%80%9F%E6%9F%A5%E8%A1%A8/" role="link" tabindex="0" aria-label="阅读文章：Markdown 语法速查表"><div class="post_cover"><a href="/2026/08/17/Markdown%20%E8%AF%AD%E6%B3%95%E9%80%9F%E6%9F%A5%E8%A1%A8/" title="Markdown 语法速查表"><img class="post-bg" src="/img/covers/tech-notes.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Markdown 语法速查表" loading="lazy" decoding="async" width="1200" height="900"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/08/17/Markdown%20%E8%AF%AD%E6%B3%95%E9%80%9F%E6%9F%A5%E8%A1%A8/" title="Markdown 语法速查表">Markdown 语法速查表</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-08-17T00:00:00.000Z" title="发表于 2026-08-17 00:00:00">2026-08-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">Markdown语法</span></span></div><div class="content">Markdown 语法速查表 Markdown 语法参考手册 / 速查表。 总览 此 Markdown 语法速查表提供了所有 Markdow</div></div></div>
-<div class="nova-note-card nova-note-card--side" data-href="/2026/08/17/Markdown%20%E5%AE%9E%E7%94%A8%E8%AF%AD%E6%B3%95/" role="link" tabindex="0" aria-label="阅读文章：Markdown 实用语法"><div class="post_cover"><a href="/2026/08/17/Markdown%20%E5%AE%9E%E7%94%A8%E8%AF%AD%E6%B3%95/" title="Markdown 实用语法"><img class="post-bg" src="/img/covers/tech-notes.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Markdown 实用语法" loading="lazy" decoding="async" width="1200" height="900"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/08/17/Markdown%20%E5%AE%9E%E7%94%A8%E8%AF%AD%E6%B3%95/" title="Markdown 实用语法">Markdown 实用语法</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-08-17T00:00:00.000Z" title="发表于 2026-08-17 00:00:00">2026-08-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">Markdown语法</span></span></div><div class="content">Markdown实用语法 本文以Typora作演示书写页面，不能完成的操作切换到源代码模式界面进行（打开\关闭源代码界面：ctrl+/），在</div></div></div>
-<div class="nova-note-card nova-note-card--side" data-href="/2026/08/17/LM-Studio-OpenCode%20%E6%8E%A5%E5%85%A5%E6%8C%87%E5%8D%97/" role="link" tabindex="0" aria-label="阅读文章：LM Studio 接入 OpenCode 指南"><div class="post_cover"><a href="/2026/08/17/LM-Studio-OpenCode%20%E6%8E%A5%E5%85%A5%E6%8C%87%E5%8D%97/" title="LM Studio 接入 OpenCode 指南"><img class="post-bg" src="/img/covers/tech-notes.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LM Studio 接入 OpenCode 指南" loading="lazy" decoding="async" width="1200" height="900"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/08/17/LM-Studio-OpenCode%20%E6%8E%A5%E5%85%A5%E6%8C%87%E5%8D%97/" title="LM Studio 接入 OpenCode 指南">LM Studio 接入 OpenCode 指南</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-08-17T00:00:00.000Z" title="发表于 2026-08-17 00:00:00">2026-08-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">AI</span></span></div><div class="content">LM Studio 本地模型接入 OpenCode TUI/GUI 配置指南 1. 环境信息 项目 值 ------ ----- LM St</div></div></div>
-<div class="nova-note-card nova-note-card--side" data-href="/2026/08/17/%E7%BB%98%E4%B8%96-Stable%20Diffusion/" role="link" tabindex="0" aria-label="阅读文章：绘世 Stable Diffusion"><div class="post_cover"><a href="/2026/08/17/%E7%BB%98%E4%B8%96-Stable%20Diffusion/" title="绘世 Stable Diffusion"><img class="post-bg" src="/img/covers/tech-notes.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="绘世 Stable Diffusion" loading="lazy" decoding="async" width="1200" height="900"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/08/17/%E7%BB%98%E4%B8%96-Stable%20Diffusion/" title="绘世 Stable Diffusion">绘世 Stable Diffusion</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-08-17T00:00:00.000Z" title="发表于 2026-08-17 00:00:00">2026-08-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">AI绘画</span></span></div><div class="content">title: WebUI-Stable Diffusion Tutorial author: Han xiaoxiao date: 2025</div></div></div>
-<div class="nova-note-card nova-note-card--side" data-href="/2026/08/17/%E5%8F%98%E5%A3%B0%E5%99%A8%E6%93%8D%E4%BD%9C%E8%AE%B0%E5%BD%95/" role="link" tabindex="0" aria-label="阅读文章：变声器操作记录"><div class="post_cover"><a href="/2026/08/17/%E5%8F%98%E5%A3%B0%E5%99%A8%E6%93%8D%E4%BD%9C%E8%AE%B0%E5%BD%95/" title="变声器操作记录"><img class="post-bg" src="/img/covers/tech-notes.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="变声器操作记录" loading="lazy" decoding="async" width="1200" height="900"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/08/17/%E5%8F%98%E5%A3%B0%E5%99%A8%E6%93%8D%E4%BD%9C%E8%AE%B0%E5%BD%95/" title="变声器操作记录">变声器操作记录</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-08-17T00:00:00.000Z" title="发表于 2026-08-17 00:00:00">2026-08-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">工具</span></span></div><div class="content">变声器操作记录 一、前置 1.1软件 virtual voice 音频转接 --------------------------------</div></div></div>
-<div class="nova-note-card nova-note-card--side" data-href="/2026/08/17/%E7%BA%A2%E7%9F%B3%E7%A7%91%E6%8A%80/" role="link" tabindex="0" aria-label="阅读文章：红石科技"><div class="post_cover"><a href="/2026/08/17/%E7%BA%A2%E7%9F%B3%E7%A7%91%E6%8A%80/" title="红石科技"><img class="post-bg" src="/img/covers/tech-notes.webp" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="红石科技" loading="lazy" decoding="async" width="1200" height="900"></a></div><div class="recent-post-info"><a class="article-title" href="/2026/08/17/%E7%BA%A2%E7%9F%B3%E7%A7%91%E6%8A%80/" title="红石科技">红石科技</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2026-08-17T00:00:00.000Z" title="发表于 2026-08-17 00:00:00">2026-08-17</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">杂记</span></span></div><div class="content"><span style="color: FF0000" 红石科技</span</div></div></div>
-      </div>
+        <div class="nova-featured-grid"><div class="nova-note-card nova-note-card--lead" data-href="/projects/led-matrix/" role="link" tabindex="0" aria-label="查看工程：ESP32 LED 点阵屏"><div class="post_cover"><a href="/projects/led-matrix/" title="ESP32 LED 点阵屏"><img class="post-bg" src="/img/projects/led-matrix.webp" alt="ESP32 LED 点阵屏" loading="lazy" decoding="async" width="1280" height="720"></a></div><div class="recent-post-info"><a class="article-title" href="/projects/led-matrix/" title="ESP32 LED 点阵屏">ESP32 LED 点阵屏</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发布于</span><time datetime="2025" title="2025">2025</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">单片机</span></span></div><div class="content">使用 ESP32 + 16×16 WS2812 灯板，借鉴 Flip 思路实现流动的水与跳动的火焰等实时算法特效，多帧率可调、可扩展。</div></div></div>
+<div class="nova-note-card nova-note-card--side" data-href="/projects/drone/" role="link" tabindex="0" aria-label="查看工程：琛光无人机"><div class="post_cover"><a href="/projects/drone/" title="琛光无人机"><img class="post-bg" src="/img/projects/drone.webp" alt="琛光无人机" loading="lazy" decoding="async" width="535" height="372"></a></div><div class="recent-post-info"><a class="article-title" href="/projects/drone/" title="琛光无人机">琛光无人机</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发布于</span><time datetime="2026" title="2026">2026</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">单片机</span></span></div><div class="content">琛光 E1_MINI 是迷你四轴无人机，主控使用 ESP32 开发板，仅使用一块陀螺仪传感器，自带网页遥控器，手机连接即可起飞。</div></div></div>
+<div class="nova-note-card nova-note-card--side" data-href="/projects/line-car/" role="link" tabindex="0" aria-label="查看工程：智能循迹小车"><div class="post_cover"><a href="/projects/line-car/" title="智能循迹小车"><img class="post-bg" src="/img/projects/line-car.webp" alt="智能循迹小车" loading="lazy" decoding="async" width="1600" height="1200"></a></div><div class="recent-post-info"><a class="article-title" href="/projects/line-car/" title="智能循迹小车">智能循迹小车</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发布于</span><time datetime="2025" title="2025">2025</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><span class="article-meta__categories">单片机</span></span></div><div class="content">工程训练结课作业的全流程开源项目：四路红外循迹小车。Arduino Uno 主控，红外循迹、蓝牙遥控、超声避障三种玩法一键切换；PWM 调速，全套文件公开。</div></div></div></div>
       </section>
 
+      <section class="nova-recent nova-reveal" id="nova-recent">
+        <header class="nova-section-heading">
+          <div><span class="nova-section-eyebrow">LATEST NOTES</span><h2 class="nova-section-title">最新文章</h2></div>
+        </header>
+        <div class="nova-recent-grid"><a class="nova-recent-card" href="/posts/Markdown%20%E5%85%A5%E9%97%A8%E6%8C%87%E5%8D%97/" role="link" aria-label="阅读文章：Markdown 入门指南"><span class="nova-recent-cover"><img class="post-bg" src="/img/covers/tech-notes.webp" alt="Markdown 入门指南" loading="lazy" decoding="async" width="1200" height="900"></span><span class="nova-recent-info"><span class="nova-recent-title">Markdown 入门指南</span><span class="nova-recent-meta"><time datetime="2026-08-17" title="发表于 2026-08-17"><i class="far fa-calendar-alt" aria-hidden="true"></i>发表于 2026-08-17</time><span class="nova-recent-tag"><i class="fas fa-inbox" aria-hidden="true"></i>Markdown语法</span></span></span></a>
+<a class="nova-recent-card" href="/posts/%E7%BB%98%E4%B8%96-Stable%20Diffusion/" role="link" aria-label="阅读文章：绘世 Stable Diffusion"><span class="nova-recent-cover"><img class="post-bg" src="/img/covers/tech-notes.webp" alt="绘世 Stable Diffusion" loading="lazy" decoding="async" width="1200" height="900"></span><span class="nova-recent-info"><span class="nova-recent-title">绘世 Stable Diffusion</span><span class="nova-recent-meta"><time datetime="2026-08-17" title="发表于 2026-08-17"><i class="far fa-calendar-alt" aria-hidden="true"></i>发表于 2026-08-17</time><span class="nova-recent-tag"><i class="fas fa-inbox" aria-hidden="true"></i>AI绘画</span></span></span></a>
+<a class="nova-recent-card" href="/posts/Markdown%20%E5%9F%BA%E6%9C%AC%E8%AF%AD%E6%B3%95/" role="link" aria-label="阅读文章：Markdown 基本语法"><span class="nova-recent-cover"><img class="post-bg" src="/img/covers/tech-notes.webp" alt="Markdown 基本语法" loading="lazy" decoding="async" width="1200" height="900"></span><span class="nova-recent-info"><span class="nova-recent-title">Markdown 基本语法</span><span class="nova-recent-meta"><time datetime="2026-08-17" title="发表于 2026-08-17"><i class="far fa-calendar-alt" aria-hidden="true"></i>发表于 2026-08-17</time><span class="nova-recent-tag"><i class="fas fa-inbox" aria-hidden="true"></i>Markdown语法</span></span></span></a>
+<a class="nova-recent-card" href="/posts/Markdown%20%E6%89%A9%E5%B1%95%E8%AF%AD%E6%B3%95/" role="link" aria-label="阅读文章：Markdown 扩展语法"><span class="nova-recent-cover"><img class="post-bg" src="/img/covers/tech-notes.webp" alt="Markdown 扩展语法" loading="lazy" decoding="async" width="1200" height="900"></span><span class="nova-recent-info"><span class="nova-recent-title">Markdown 扩展语法</span><span class="nova-recent-meta"><time datetime="2026-08-17" title="发表于 2026-08-17"><i class="far fa-calendar-alt" aria-hidden="true"></i>发表于 2026-08-17</time><span class="nova-recent-tag"><i class="fas fa-inbox" aria-hidden="true"></i>Markdown语法</span></span></span></a>
+<a class="nova-recent-card" href="/posts/Markdown%20%E8%AF%AD%E6%B3%95%E9%80%9F%E6%9F%A5%E8%A1%A8/" role="link" aria-label="阅读文章：Markdown 语法速查表"><span class="nova-recent-cover"><img class="post-bg" src="/img/covers/tech-notes.webp" alt="Markdown 语法速查表" loading="lazy" decoding="async" width="1200" height="900"></span><span class="nova-recent-info"><span class="nova-recent-title">Markdown 语法速查表</span><span class="nova-recent-meta"><time datetime="2026-08-17" title="发表于 2026-08-17"><i class="far fa-calendar-alt" aria-hidden="true"></i>发表于 2026-08-17</time><span class="nova-recent-tag"><i class="fas fa-inbox" aria-hidden="true"></i>Markdown语法</span></span></span></a>
+<a class="nova-recent-card" href="/posts/%E5%93%80%E6%B1%9F%E5%8D%97%E8%B5%8B/" role="link" aria-label="阅读文章：哀江南赋"><span class="nova-recent-cover"><img class="post-bg" src="/img/covers/tech-notes.webp" alt="哀江南赋" loading="lazy" decoding="async" width="1200" height="900"></span><span class="nova-recent-info"><span class="nova-recent-title">哀江南赋</span><span class="nova-recent-meta"><time datetime="2026-08-29" title="发表于 2026-08-29"><i class="far fa-calendar-alt" aria-hidden="true"></i>发表于 2026-08-29</time><span class="nova-recent-tag"><i class="fas fa-inbox" aria-hidden="true"></i>赋文</span></span></span></a></div>
+      </section>
       <section class="nova-fragments nova-reveal">
         <div class="nova-section-heading">
           <div><span class="nova-section-eyebrow">FRAGMENTS</span><h2 class="nova-section-title">生活碎片</h2></div>
         </div>
         <div class="nova-fragment-grid">
           <a href="/music/" class="nova-fragment nova-fragment--music">
-            <div><small>MUSIC</small><h3>夜里的旋律</h3><span>进入播放空间 →</span></div>
-            <img src="/img/music_back.webp" alt="夜色玫瑰歌单封面" loading="lazy" decoding="async" width="1672" height="941">
+            <div><small>MUSIC</small><h3>夜里的旋律</h3><span>进入音乐 →</span></div>
+            <img src="/img/music/music-hero-bg.webp" alt="夜色玫瑰歌单封面" loading="lazy" decoding="async" width="1672" height="941">
           </a>
-          <a href="/shuoshuo/" class="nova-fragment nova-fragment--moments">
-            <div><small>DAILY FRAGMENTS</small><h3>生活碎片</h3><span>进入日常记录 →</span></div>
+          <a href="/moments/" class="nova-fragment nova-fragment--moments">
+            <div><small>DAILY FRAGMENTS</small><h3>漫游的思想</h3><span>进入说说 →</span></div>
           </a>
         </div>
       </section>
@@ -269,9 +278,12 @@ const asideStatus = saveToLocal.get('aside-status')
 
     <footer class="nova-footer">
       <div><b>✣</b><strong>NOVA MARLIN</strong><small>Built quietly in 2026.</small></div>
-      <nav><a href="https://github.com/MikeJosion">GitHub</a><a href="mailto:257399435@qq.com">Email</a><a href="/music/">Music</a><a href="/shuoshuo/">Moments</a></nav>
+      <nav><a target="_blank" rel="noopener" href="https://github.com/MikeJosion">GitHub</a><a href="mailto:257399435@qq.com">Email</a><a href="/music/">Music</a><a href="/moments/">Moments</a></nav>
     </footer>
-  </div></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.6.1"></script><script src="/js/main.js?v=5.6.1"></script><script defer="" src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(() => {
+  </div></div>
+
+<div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button>
+</div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.7.0"></script><script src="/js/main.js?v=5.7.0"></script><script defer="" src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script><div class="js-pjax"><script>(() => {
   const parseViewBox = viewBox => {
     if (!viewBox) return null
     const parts = viewBox.trim().split(/[\s,]+/).map(n => Number(n))
@@ -633,12 +645,16 @@ const asideStatus = saveToLocal.get('aside-status')
 
   btf.addGlobalFn('encrypt', loadMermaid, 'mermaid')
   window.pjax ? loadMermaid() : document.addEventListener('DOMContentLoaded', loadMermaid)
-})()</script><script defer="" data-pjax="" src="/rose-galaxy/js/galaxy-canvas.js?v=20260813-prince-quotes-v1"></script>
-<script defer="" data-pjax="" src="/rose-galaxy/js/nova-home.js?v=20260813-prince-quotes-v1"></script></div><script defer="" src="/rose-galaxy/js/nova-ux.js?v=20260817-theme-pref"></script><script defer="" src="/rose-galaxy/js/night-visitor.js?v=20260813-prince-quotes-v1"></script><script defer="" src="/rose-galaxy/js/decorative-loader.js?v=20260730-performance"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+})()</script>
+  <script defer="" data-pjax="" src="/rose-galaxy/animation/galaxy-canvas.js?v=20260829-p1"></script>
+<script defer="" data-pjax="" src="/rose-galaxy/js/nova-home.js?v=20260829-p1"></script>
+
+
+</div><script defer="" src="/rose-galaxy/js/nova-ux.js?v=20260829-p1"></script><script defer="" src="/rose-galaxy/js/nova-visitor.js?v=20260829-p1"></script><script defer="" src="/rose-galaxy/animation/decorative-loader.js?v=20260829-p1"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
   const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
 
   window.pjax = new Pjax({
-    elements: 'a:not([target="_blank"]):not([data-fancybox]):not([href="/"]):not([href="/articles/"]):not([href="/shuoshuo/"]):not([href="/music/"]):not([href="/about/"])',
+    elements: 'a:not([target="_blank"]):not([data-fancybox]):not([href="/"]):not([href="/articles/"]):not([href="/moments/"]):not([href="/music/"]):not([href="/about/"]):not([href="/projects/"])',
     selectors: pjaxSelectors,
     cacheBust: false,
     analytics: false,
@@ -692,5 +708,5 @@ const asideStatus = saveToLocal.get('aside-status')
       window.location.href = responseURL
     }
   })
-})</script><script async="" data-pjax="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button" type="button" aria-label="关闭搜索"><i class="fas fa-times" aria-hidden="true"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><label class="sr-only" for="global-search-input">搜索文章</label><input placeholder="Search..." type="text" id="global-search-input"></div><hr><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script defer="" src="/js/search/local-search.js?v=5.6.1"></script></div></div>
+})</script><script async="" data-pjax="" src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button" type="button" aria-label="关闭搜索"><i class="fas fa-times" aria-hidden="true"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><label class="sr-only" for="global-search-input">搜索文章</label><input placeholder="Search..." type="text" id="global-search-input"></div><hr><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script defer="" src="/js/search/local-search.js?v=5.7.0"></script></div></div>
 </body></html>

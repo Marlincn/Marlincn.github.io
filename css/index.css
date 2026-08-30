@@ -1,3 +1,9 @@
+/*!
+ * Butterfly 主题上游样式副本(196KB, 含 normalize v8.0.1)
+ * ⚠️ 本文件为上游文件, 请勿修改! 全站覆盖规则一律写 source/css/custom.css
+ *     页级定制写 source/rose-galaxy/css/{page}-page.css
+ === 上游 Butterfly 5.7.0 index.css ===
+ */
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 html {
   line-height: 1.15;
@@ -225,7 +231,7 @@ template {
 .type-404 .error-content,
 .layout > div:first-child:not(.nc),
 #recent-posts .recent-post-item,
-#article-container .shuoshuo-item,
+#article-container .moments-item,
 #aside-content .card-widget,
 .layout .pagination > *:not(.space) {
   background: var(--card-bg);
@@ -242,7 +248,7 @@ template {
 .type-404 .error-content:hover,
 .layout > div:first-child:not(.nc):hover,
 #recent-posts .recent-post-item:hover,
-#article-container .shuoshuo-item:hover,
+#article-container .moments-item:hover,
 #aside-content .card-widget:hover,
 .layout .pagination > *:not(.space):hover {
   -webkit-box-shadow: var(--card-hover-box-shadow);
@@ -450,7 +456,7 @@ canvas:not(#ribbon-canvas),
   animation: donate_effcet 0.3s 0.1s ease both;
 }
 .btn-effects,
-.shuoshuo-navigation button:not(:disabled),
+.moments-navigation button:not(:disabled),
 #aside-content .card-info #card-info-btn,
 .post-reward .reward-button,
 #rightside > div > button,
@@ -473,7 +479,7 @@ canvas:not(#ribbon-canvas),
   transform: translateZ(0);
 }
 .btn-effects:hover,
-.shuoshuo-navigation button:not(:disabled):hover,
+.moments-navigation button:not(:disabled):hover,
 #aside-content .card-info #card-info-btn:hover,
 .post-reward .reward-button:hover,
 #rightside > div > button:hover,
@@ -492,7 +498,7 @@ canvas:not(#ribbon-canvas),
   transform: translateY(-1px) scale(1.02);
 }
 .btn-effects:active,
-.shuoshuo-navigation button:not(:disabled):active,
+.moments-navigation button:not(:disabled):active,
 #aside-content .card-info #card-info-btn:active,
 .post-reward .reward-button:active,
 #rightside > div > button:active,
@@ -513,7 +519,7 @@ canvas:not(#ribbon-canvas),
   transform: translateY(0) scale(0.98);
 }
 .btn-effects i,
-.shuoshuo-navigation button:not(:disabled) i,
+.moments-navigation button:not(:disabled) i,
 #aside-content .card-info #card-info-btn i,
 .post-reward .reward-button i,
 #rightside > div > button i,
@@ -531,7 +537,7 @@ canvas:not(#ribbon-canvas),
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-effects:hover i,
-.shuoshuo-navigation button:not(:disabled):hover i,
+.moments-navigation button:not(:disabled):hover i,
 #aside-content .card-info #card-info-btn:hover i,
 .post-reward .reward-button:hover i,
 #rightside > div > button:hover i,
@@ -547,7 +553,7 @@ canvas:not(#ribbon-canvas),
   animation: buttonIconBounce 0.6s ease-in-out;
 }
 .btn-effects i + span,
-.shuoshuo-navigation button:not(:disabled) i + span,
+.moments-navigation button:not(:disabled) i + span,
 #aside-content .card-info #card-info-btn i + span,
 .post-reward .reward-button i + span,
 #rightside > div > button i + span,
@@ -565,7 +571,7 @@ canvas:not(#ribbon-canvas),
   transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-effects:hover i + span,
-.shuoshuo-navigation button:not(:disabled):hover i + span,
+.moments-navigation button:not(:disabled):hover i + span,
 #aside-content .card-info #card-info-btn:hover i + span,
 .post-reward .reward-button:hover i + span,
 #rightside > div > button:hover i + span,
@@ -577,7 +583,7 @@ canvas:not(#ribbon-canvas),
   margin-left: 8px;
 }
 .btn-effects::before,
-.shuoshuo-navigation button:not(:disabled)::before,
+.moments-navigation button:not(:disabled)::before,
 #aside-content .card-info #card-info-btn::before,
 .post-reward .reward-button::before,
 #rightside > div > button::before,
@@ -605,7 +611,7 @@ canvas:not(#ribbon-canvas),
   transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .btn-effects:hover::before,
-.shuoshuo-navigation button:not(:disabled):hover::before,
+.moments-navigation button:not(:disabled):hover::before,
 #aside-content .card-info #card-info-btn:hover::before,
 .post-reward .reward-button:hover::before,
 #rightside > div > button:hover::before,
@@ -617,7 +623,7 @@ canvas:not(#ribbon-canvas),
   left: 100%;
 }
 .btn-effects > *,
-.shuoshuo-navigation button:not(:disabled) > *,
+.moments-navigation button:not(:disabled) > *,
 #aside-content .card-info #card-info-btn > *,
 .post-reward .reward-button > *,
 #rightside > div > button > *,
@@ -2771,16 +2777,16 @@ figure.highlight pre .javascript .function {
   -webkit-line-clamp: 2;
   word-break: break-word;
 }
-#article-container .shuoshuo-item {
+#article-container .moments-item {
   margin-bottom: 20px;
   padding: 35px 30px 30px;
 }
 @media screen and (max-width: 768px) {
-  #article-container .shuoshuo-item {
+  #article-container .moments-item {
     padding: 25px 20px 20px;
   }
 }
-#article-container .shuoshuo-item-header {
+#article-container .moments-item-header {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -2795,32 +2801,32 @@ figure.highlight pre .javascript .function {
   align-items: center;
   cursor: default;
 }
-#article-container .shuoshuo-avatar {
+#article-container .moments-avatar {
   overflow: hidden;
   width: 40px;
   height: 40px;
   border-radius: 40px;
 }
-#article-container .shuoshuo-avatar img {
+#article-container .moments-avatar img {
   margin: 0;
   width: 100%;
   height: 100%;
 }
-#article-container .shuoshuo-info {
+#article-container .moments-info {
   margin-left: 10px;
   line-height: 1.5;
 }
-#article-container .shuoshuo-date {
+#article-container .moments-date {
   color: #858585;
   font-size: 0.8em;
 }
-#article-container .shuoshuo-content {
+#article-container .moments-content {
   padding: 15px 0 10px;
 }
-#article-container .shuoshuo-content > *:last-child {
+#article-container .moments-content > *:last-child {
   margin-bottom: 0;
 }
-#article-container .shuoshuo-footer {
+#article-container .moments-footer {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -2834,7 +2840,7 @@ figure.highlight pre .javascript .function {
   -webkit-align-items: center;
   align-items: center;
 }
-#article-container .shuoshuo-footer.flex-between {
+#article-container .moments-footer.flex-between {
   -webkit-box-pack: justify;
   -moz-box-pack: justify;
   -o-box-pack: justify;
@@ -2842,7 +2848,7 @@ figure.highlight pre .javascript .function {
   -webkit-justify-content: space-between;
   justify-content: space-between;
 }
-#article-container .shuoshuo-footer.flex-end {
+#article-container .moments-footer.flex-end {
   -webkit-box-pack: end;
   -moz-box-pack: end;
   -o-box-pack: end;
@@ -2850,7 +2856,7 @@ figure.highlight pre .javascript .function {
   -webkit-justify-content: flex-end;
   justify-content: flex-end;
 }
-#article-container .shuoshuo-footer .shuoshuo-tag {
+#article-container .moments-footer .moments-tag {
   display: inline-block;
   margin-right: 8px;
   padding: 0 8px;
@@ -2866,25 +2872,25 @@ figure.highlight pre .javascript .function {
   -ms-transition: all 0.2s ease-in-out;
   transition: all 0.2s ease-in-out;
 }
-#article-container .shuoshuo-footer .shuoshuo-tag:hover {
+#article-container .moments-footer .moments-tag:hover {
   background: #a47789;
   color: var(--white);
 }
-#article-container .shuoshuo-footer .shuoshuo-comment-btn {
+#article-container .moments-footer .moments-comment-btn {
   padding: 2px;
   color: #90a4ae;
   cursor: pointer;
 }
-#article-container .shuoshuo-footer .shuoshuo-comment-btn:hover {
+#article-container .moments-footer .moments-comment-btn:hover {
   color: #a47789;
 }
-#article-container .shuoshuo-comment {
+#article-container .moments-comment {
   padding-top: 10px;
 }
-#article-container .shuoshuo-comment.no-comment {
+#article-container .moments-comment.no-comment {
   display: none;
 }
-.shuoshuo-navigation {
+.moments-navigation {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -2907,7 +2913,7 @@ figure.highlight pre .javascript .function {
   padding: 20px 0;
 /* 震動動畫 */
 }
-.shuoshuo-navigation button {
+.moments-navigation button {
   display: -webkit-box;
   display: -moz-box;
   display: -webkit-flex;
@@ -2939,10 +2945,10 @@ figure.highlight pre .javascript .function {
   transition: all 0.2s ease-in-out;
   border-radius: 6px;
 }
-.shuoshuo-navigation button:hover:not(:disabled) {
+.moments-navigation button:hover:not(:disabled) {
   background-color: var(--btn-hover-color);
 }
-.shuoshuo-navigation button:disabled {
+.moments-navigation button:disabled {
   background: #f5f5f5;
   color: #ccc;
   opacity: 0.5;
@@ -2950,13 +2956,13 @@ figure.highlight pre .javascript .function {
   filter: alpha(opacity=50);
   cursor: not-allowed;
 }
-.shuoshuo-navigation .shuoshuo-page-info {
+.moments-navigation .moments-page-info {
   margin: 0 15px;
   color: #858585;
   white-space: nowrap;
   font-size: 0.9em;
 }
-.shuoshuo-navigation .shuoshuo-page-input {
+.moments-navigation .moments-page-input {
   margin-right: 12px;
   padding: 0 15px;
   height: 2.7em;
@@ -2977,19 +2983,19 @@ figure.highlight pre .javascript .function {
 /* 當作為頁碼按鈕時的樣式 */
 /* 超出範圍時的紅色樣式 */
 }
-.shuoshuo-navigation .shuoshuo-page-input:focus {
+.moments-navigation .moments-page-input:focus {
   outline: none;
   border-width: 2px;
 }
-.shuoshuo-navigation .shuoshuo-page-input:focus::placeholder {
+.moments-navigation .moments-page-input:focus::placeholder {
   color: transparent;
 }
-.shuoshuo-navigation .shuoshuo-page-input::-webkit-outer-spin-button,
-.shuoshuo-navigation .shuoshuo-page-input::-webkit-inner-spin-button {
+.moments-navigation .moments-page-input::-webkit-outer-spin-button,
+.moments-navigation .moments-page-input::-webkit-inner-spin-button {
   margin: 0;
   -webkit-appearance: none;
 }
-.shuoshuo-navigation .shuoshuo-page-input.shuoshuo-page-num {
+.moments-navigation .moments-page-input.moments-page-num {
   min-width: 40px;
   width: 40px;
   border: none;
@@ -2998,12 +3004,12 @@ figure.highlight pre .javascript .function {
   font-weight: 500;
   cursor: text;
 }
-.shuoshuo-navigation .shuoshuo-page-input.shuoshuo-page-num:focus {
+.moments-navigation .moments-page-input.moments-page-num:focus {
   border: 1px solid #a47789;
   background: var(--white);
   color: #333;
 }
-.shuoshuo-navigation .shuoshuo-page-input.invalid {
+.moments-navigation .moments-page-input.invalid {
   border-color: #ff4757;
   background-color: #ffeaea;
   color: #ff4757;
@@ -4849,7 +4855,7 @@ figure.highlight pre .javascript .function {
   -webkit-line-clamp: 1;
 }
 #pagination .pagination-related .info-2 .info-item-1 {
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
 }
 #pagination.pagination-post {
   overflow: hidden;
@@ -6856,31 +6862,75 @@ blockquote.pullquote.right {
   --waline-info-color: rgba(255,255,255,0.5);
 }
 .read-mode {
-  --font-color: #4c4948;
-  --readmode-light-color: #fff;
-  --white: #4c4948;
-  --light-grey: #4c4948;
-  --gray: #d6dbdf;
-  --hr-border: #d6dbdf;
-  --hr-before-color: #b9c2c9;
-  --highlight-bg: #f7f7f7;
-  --exit-btn-bg: #c0c0c0;
-  --exit-btn-color: #fff;
-  --exit-btn-hover: #8d8d8d;
+  --font-color: #33302b;
+  --readmode-light-color: #faf8f4;
+  --white: #33302b;
+  --light-grey: #66615a;
+  --gray: #d9c8bb;
+  --hr-border: #e3d5c9;
+  --hr-before-color: #d0b9a6;
+  --highlight-bg: #f6efe8;
+  --exit-btn-bg: #e0c8b8;
+  --exit-btn-color: #7a4a33;
+  --exit-btn-hover: #c98a6e;
   --pseudo-hover: none;
+  /* 覆盖文章正文变量(陶土橙,marlin-minted-light) —— 仅 body.read-mode 时生效 */
+  --post-page-bg: #faf8f4;
+  --post-page-bg-secondary: #f2efe9;
+  --post-surface: #fffdfa;
+  --post-surface-secondary: #faf6f1;
+  --post-surface-raised: #f4efe9;
+  --post-surface-soft: #efe9e2;
+  --post-text: #33302b;
+  --post-text-secondary: #66615a;
+  --post-text-muted: #8b857c;
+  --post-border: rgba(90, 72, 55, .12);
+  --post-border-strong: rgba(90, 72, 55, .2);
+  --post-accent: #d97757;
+  --post-accent-hover: #bf6344;
+  --post-accent-soft: rgba(217, 119, 87, .12);
+  --post-code-bg: #faf8f4;
+  --post-code-header-bg: #f1ece5;
+  --post-code-gutter-bg: #f3efe8;
+  --post-code-text: #33302b;
+  --post-inline-code-bg: rgba(217, 119, 87, .1);
+  --post-shadow: 0 12px 32px rgba(88, 70, 55, .08);
+  --post-shadow-soft: 0 5px 16px rgba(88, 70, 55, .06);
 }
 [data-theme='dark'] .read-mode {
-  --font-color: rgba(255,255,255,0.7);
-  --readmode-light-color: #0d0d0d;
-  --white: rgba(255,255,255,0.9);
-  --light-grey: rgba(255,255,255,0.7);
-  --gray: rgba(255,255,255,0.7);
-  --hr-border: rgba(255,255,255,0.5);
-  --hr-before-color: rgba(255,255,255,0.7);
-  --highlight-bg: #171717;
-  --exit-btn-bg: #1f1f1f;
-  --exit-btn-color: rgba(255,255,255,0.9);
-  --exit-btn-hover: #525252;
+  --font-color: rgba(232,236,247,0.75);
+  --readmode-light-color: #171c2e;
+  --white: rgba(232,236,247,0.92);
+  --light-grey: rgba(232,236,247,0.7);
+  --gray: rgba(198,207,230,0.42);
+  --hr-border: rgba(198,207,230,0.4);
+  --hr-before-color: rgba(198,207,230,0.62);
+  --highlight-bg: #26303e;
+  --exit-btn-bg: #2d3750;
+  --exit-btn-color: rgba(232,236,247,0.9);
+  --exit-btn-hover: #e59b7d;
+  /* 覆盖文章正文变量(提亮橙,marlin-minted-dark) —— 仅 body.read-mode 时生效 */
+  --post-page-bg: #171c2e;
+  --post-page-bg-secondary: #1d2336;
+  --post-surface: #222a3e;
+  --post-surface-secondary: #272f45;
+  --post-surface-raised: #2d3750;
+  --post-surface-soft: #333d59;
+  --post-text: #e8ecf7;
+  --post-text-secondary: #b9c3d8;
+  --post-text-muted: #8b95ac;
+  --post-border: rgba(198, 207, 230, .12);
+  --post-border-strong: rgba(198, 207, 230, .2);
+  --post-accent: #e59b7d;
+  --post-accent-hover: #f0b49a;
+  --post-accent-soft: rgba(229, 155, 125, .18);
+  --post-code-bg: #26303e;
+  --post-code-header-bg: #2d3848;
+  --post-code-gutter-bg: #28323f;
+  --post-code-text: #dde6f2;
+  --post-inline-code-bg: rgba(229, 155, 125, .14);
+  --post-shadow: 0 16px 42px rgba(0, 0, 0, .3);
+  --post-shadow-soft: 0 7px 20px rgba(0, 0, 0, .2);
 }
 .read-mode {
   background: var(--readmode-light-color);
@@ -6949,7 +6999,10 @@ blockquote.pullquote.right {
   display: none !important;
 }
 .read-mode .container a {
-  color: #99a9bf;
+  color: #c96a45;
+}
+[data-theme='dark'] .read-mode .container a {
+  color: #e59b7d;
 }
 .read-mode .container pre,
 .read-mode .container .highlight:not(.js-file-line-container) {

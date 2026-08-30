@@ -1,3 +1,24 @@
+/* ============================================================================
+   Marlin-web 全站覆盖样式 custom.css (Butterfly 主题覆盖层, ~56KB)
+
+   规范:
+   - 本文件 = 全站覆盖的唯一去处(上游 index.css 勿改)
+   - 页级定制在 source/rose-galaxy/css/{page}-page.css
+   - 分段头注释(按域, 从上到下):
+
+     1. 全局调色板与工具     Nova visual authority(palette) / .sr-only / :root 变量
+     2. 通用页面覆盖          Homepage / Category+tag indexes / About / Moments /
+                              Template atlas / Gallery / Music / Article+Note
+     3. 首屏 Loading          全站首次加载层(会话记忆)
+     4. 搜索对话框            Native-feeling midnight search dialog
+     5. 文章详情              Article detail — Night Rose(正文/排版/工具/评论)
+     6. 导航                  Navigation(全局模板/深浅主题/下拉/高亮/搜索按钮)
+     7. 交互与动画            入场动画轻量化 / Waline emoji z-index / 滚动条
+     8. 页脚横幅              Site footer(A-scheme: global unified banner, 深浅两态)
+     9. 杂项                  404 page / rightside 控件等
+
+   改动提示: 每段以 /* ---- 段名 ---- */ 开头; 版本变更请保留注释中的日期与意图说明。
+   ============================================================================ */
 /* Nova visual authority: the only source for shared dark/light palette values. */
 .sr-only {
   position: absolute !important;
@@ -70,7 +91,7 @@
   --about-accent-soft: #d7afbd;
   --about-shadow: 0 24px 64px rgba(2, 3, 10, .28);
 
-  /* Shuoshuo. */
+  /* Moments. */
   --shuo-bg: #080b16;
   --shuo-panel: rgba(18, 22, 39, .76);
   --shuo-panel-soft: rgba(24, 27, 47, .58);
@@ -264,12 +285,11 @@ html[data-theme="light"] {
   --post-shadow-soft: 0 5px 16px rgba(47, 40, 48, .05);
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) #waline-wrap {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) #waline-wrap {
   color: var(--nova-comment-text);
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-panel {
-  overflow: hidden;
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-panel {
   border: 1px solid var(--nova-comment-border) !important;
   border-radius: var(--nova-radius-control) !important;
   background: var(--nova-comment-panel) !important;
@@ -277,39 +297,39 @@ html[data-theme="light"] {
   transition: border-color 190ms ease, box-shadow 190ms ease, background-color 190ms ease;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-header,
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-editor {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-header,
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-editor {
   border-color: var(--nova-comment-border) !important;
   background: transparent !important;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) :is(input, textarea) {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) :is(input, textarea) {
   color: var(--nova-comment-text) !important;
   background: var(--nova-comment-field) !important;
   transition: background-color 190ms ease, color 190ms ease;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-panel:focus-within {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-panel:focus-within {
   border-color: var(--nova-focus) !important;
   box-shadow: 0 0 0 3px var(--nova-focus-ring) !important;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) :is(input, textarea):focus {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) :is(input, textarea):focus {
   outline: 0 !important;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-btn.primary {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-btn.primary {
   border-color: var(--nova-comment-accent) !important;
   color: #fff !important;
   background: var(--nova-comment-accent) !important;
   transition: filter 190ms ease, transform 190ms ease, border-color 190ms ease;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) .wl-btn.primary:hover {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-btn.primary:hover {
   filter: brightness(1.07);
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-shuoshuo-comments) :is(button, a, input, textarea, select):focus-visible {
+:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) :is(button, a, input, textarea, select):focus-visible {
   outline: 2px solid var(--nova-focus) !important;
   outline-offset: 2px;
 }
@@ -349,10 +369,10 @@ body.nova-loading-active {
   justify-content: center;
   visibility: hidden;
   opacity: 0;
+  /* 柔和深蓝玫瑰氛围(避免纯黑死板):中心偏亮,带环境光 */
   background:
-    radial-gradient(circle at 50% 42%,rgba(92,39,57,.1) 0%,rgba(10,16,28,.98) 36%,#050912 78%);
-  transform: scale(1.01);
-  transition: opacity 180ms ease, visibility 0s linear 180ms, transform 180ms ease;
+    radial-gradient(circle at 50% 40%, rgba(120,58,84,.22) 0%, rgba(14,20,34,.94) 40%, #0a0f1e 82%);
+  transition: opacity 180ms ease, visibility 0s linear 180ms;
   pointer-events: none;
   isolation: isolate;
 }
@@ -360,16 +380,15 @@ body.nova-loading-active {
 .nova-page-loading.is-visible {
   visibility: visible;
   opacity: 1;
-  transform: scale(1);
-  transition: opacity 160ms ease, transform 160ms ease;
+  transition: opacity 220ms ease;
   pointer-events: auto;
 }
 
+/* 退场:整体渐隐淡出,让下方页面平滑浮现 */
 .nova-page-loading.is-leaving {
   visibility: hidden;
   opacity: 0;
-  transform: scale(.995);
-  transition: opacity 180ms ease, visibility 0s linear 180ms, transform 180ms ease;
+  transition: opacity 480ms ease, visibility 0s linear 480ms;
   pointer-events: none;
 }
 
@@ -382,13 +401,13 @@ body.nova-loading-active {
   flex-direction: column;
   text-align: center;
   opacity: 1;
-  transform: scale(1);
-  transition: opacity 180ms ease, transform 180ms ease;
+  transition: opacity 220ms ease;
 }
 
+/* 退场时 MARLIN 内容先快速淡出,避免标记残留 */
 .nova-page-loading.is-leaving .nova-page-loading__inner {
   opacity: 0;
-  transform: translateY(-2px) scale(.985);
+  transition: opacity 260ms ease;
 }
 
 .nova-page-loading__mark {
@@ -847,6 +866,7 @@ html[data-theme="light"] #local-search .local-search-hit-item:hover {
   width: 280px;
   min-width: 0;
   padding: 0;
+  align-self: stretch;
 }
 
 #body-wrap.post #aside-content .card-widget {
@@ -893,17 +913,31 @@ html[data-theme="light"] #local-search .local-search-hit-item:hover {
   transform: translateY(-1px);
 }
 
-#body-wrap.post #aside-content .sticky_layout { position: static; }
+#body-wrap.post #aside-content .sticky_layout {
+  position: static;
+}
+@media(min-width:1101px) and (min-height:820px) {
+  #body-wrap.post #aside-content .sticky_layout {
+    position: sticky;
+    top: 88px;
+    align-self: start;
+    max-height: calc(100vh - 112px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+  }
+  #body-wrap.post #aside-content .sticky_layout::-webkit-scrollbar {
+    display: none;
+  }
+}
 #body-wrap.post #card-toc {
-  position: sticky;
-  top: 82px;
+  position: static;
 }
 
 #body-wrap.post #card-toc .toc-content {
-  max-height: calc(100vh - 110px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-width: thin;
+  max-height: none;
+  overflow: visible;
 }
 
 #body-wrap.post #card-toc .toc-link {
@@ -1358,12 +1392,8 @@ html[data-theme="light"] #body-wrap.post #pagination .pagination-related {
 
 /* Navigation dropdown */
 
-/* Remove the theme's hover underline (3px bar under nav items): on high-DPI
-   screens it reads as a red frame and makes the item look taller than its
-   neighbours. Hover feedback stays as a color change only. */
-#nav .site-page:not(.child)::after {
-  display: none !important;
-}
+/* 导航悬停下划线滑动效果(主题默认): ::after 下划线 width 0 -> 100% 滑动,
+   颜色沿用主题(玫瑰系)。2026-08-27 按要求重新开启。 */
 
 /* Unify nav font size across all routes (theme default 0.78em renders
    16-17px on some pages; homepage fixed 14px). */
@@ -1452,14 +1482,14 @@ html[data-theme="light"] #body-wrap.post #pagination .pagination-related {
 
 @media (min-width: 769px) {
   body.nova-template-route #nav .menus_item_child a[href="/templates/"],
-  body.nova-shuoshuo-route #nav .menus_item_child a[href="/shuoshuo/"],
+  body.nova-moments-route #nav .menus_item_child a[href="/moments/"],
   body.nova-gallery-route #nav .menus_item_child a[href="/Gallery/"] {
     color: rgba(234, 155, 186, .98);
     background: rgba(194, 122, 151, .13);
   }
 
   html[data-theme="light"] body.nova-template-route #nav .menus_item_child a[href="/templates/"],
-  html[data-theme="light"] body.nova-shuoshuo-route #nav .menus_item_child a[href="/shuoshuo/"],
+  html[data-theme="light"] body.nova-moments-route #nav .menus_item_child a[href="/moments/"],
   html[data-theme="light"] body.nova-gallery-route #nav .menus_item_child a[href="/Gallery/"] {
     color: rgba(174, 82, 121, .98);
     background: rgba(205, 142, 168, .15);
@@ -1573,6 +1603,13 @@ html[data-theme="dark"] body:not(.nova-home-active) #rightside .marlin-rightside
   background:#b86a83;
 }
 
+
+/* ---- 导航 hover 下划线: 主站玫瑰浅色 + 更细(2026-08-27) ----
+   主题默认色为淡灰紫 rgb(191,160,172), 此处收敛为主站玫瑰系(与首页高亮同源);
+   高度 3px->2px 更精致, 动画滑动保持主题默认行为。 */
+#nav .menus_item .site-page:not(.child)::after{background-color:#c97993;height:2px}
+html[data-theme="light"] #nav .menus_item .site-page:not(.child)::after{background-color:#a66f82}
+
 /* ===== 导航栏全局模板:以音乐页为基准,双主题全透明 (2026-08-17) =====
    除首页外所有页面统一;首页(nova-home-active)悬浮透明导航保持独立。
    未滚动:深/浅主题均全透明(透出各页 hero);浅色滚动后保持全透明
@@ -1651,3 +1688,135 @@ html[data-theme="light"] body:not(.nova-home-active) #page-header:not(.nav-fixed
   text-shadow: none !important;
 }
 
+/* ===== 当前页导航高亮:进入各页对应菜单标玫瑰色 (2026-08-19) =====
+   与首页"首页"高亮同款色值:深色 #ce8299 / 浅色 #9a6177。
+   JS 按路径给匹配的 .menus_item 加 .active(桌面 #page-header #nav + 移动 #sidebar)。
+   特异性:浅色规则带 #page-header 以压过 1653 行 (2,3,3) 的浅色未滚动白字规则。 */
+body:not(.nova-home-active) #page-header #nav .menus_item.active > a,
+body:not(.nova-home-active) #sidebar #sidebar-menus .menus_item.active > a {
+  color: #ce8299 !important;
+  text-shadow: none !important;
+}
+html[data-theme="light"] body:not(.nova-home-active) #page-header #nav .menus_item.active > a,
+html[data-theme="light"] body:not(.nova-home-active) #sidebar #sidebar-menus .menus_item.active > a {
+  color: #9a6177 !important;
+}
+/* 滚动后(浅色毛玻璃条)也保持高亮 */
+html[data-theme="light"] body:not(.nova-home-active) #page-header.nav-fixed #nav .menus_item.active > a {
+  color: #9a6177 !important;
+}
+/* hover 时保持高亮色,不退回普通色 */
+body:not(.nova-home-active) #page-header #nav .menus_item.active > a:hover,
+body:not(.nova-home-active) #sidebar #sidebar-menus .menus_item.active > a:hover {
+  color: #ce8299 !important;
+}
+html[data-theme="light"] body:not(.nova-home-active) #page-header #nav .menus_item.active > a:hover,
+html[data-theme="light"] body:not(.nova-home-active) #sidebar #sidebar-menus .menus_item.active > a:hover {
+  color: #9a6177 !important;
+}
+
+/* ---- 入场动画轻量化(2026-08-18):保留动画,减小位移/缩放幅度,消除"先错位后归位" ---- */
+@keyframes nova-title-soft {
+  0% { opacity: 0; transform: scale(.94); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@keyframes nova-header-soft {
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes nova-content-soft {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes nova-about-soft {
+  0% { opacity: .35; transform: translateY(4px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+#site-title,
+#site-subtitle {
+  animation: nova-title-soft .45s ease-out !important;
+}
+#page-header:not(.full_page),
+#nav.show {
+  animation: nova-header-soft .4s ease-out !important;
+}
+#content-inner,
+#footer {
+  animation: nova-content-soft .4s ease-out !important;
+}
+body.nova-about-route .nova-about-hero-copy,
+body.nova-about-route .nova-about-profile {
+  animation: nova-about-soft .3s ease-out !important;
+}
+
+
+
+
+/* ---- Waline emoji panel: z-index fix (P2.7) ---- */
+#waline-wrap .wl-emoji-popup{
+  z-index:9999!important;
+}
+#waline-wrap .wl-emoji-popup img.wl-emoji{
+  cursor:pointer;
+}
+
+/* ---- 文章相关页右侧滚动条 (P2.8):参考 DSH 宽度,圆角,浅玫瑰->悬停深玫瑰 ----
+   覆盖范围:
+     . 文章详情页    => #body-wrap.post
+     . 文章列表/分类页 => #content-inner.nova-tag-content(仅 articles 系列使用)
+   首页/说说/音乐/课程/关于 等版块不命中,保持原细滚动条。
+   注意:不要与 scrollbar-width/scrollbar-color(标准属性)混用,否则
+   Chrome 会忽略 ::-webkit-scrollbar 的宽度定制。 */
+body:has(#body-wrap.post,
+        #content-inner.nova-tag-content)::-webkit-scrollbar{
+  width:8px;
+  height:8px;
+}
+body:has(#body-wrap.post,
+        #content-inner.nova-tag-content)::-webkit-scrollbar-thumb{
+  background: rgba(190,112,138,.45);
+  border-radius:4px;
+}
+body:has(#body-wrap.post,
+        #content-inner.nova-tag-content)::-webkit-scrollbar-thumb:hover{
+  background: rgba(164,90,120,.92);
+}
+body:has(#body-wrap.post,
+        #content-inner.nova-tag-content)::-webkit-scrollbar-track{
+  background-color:transparent;
+  border-radius:4px;
+}
+body:has(#body-wrap.post,
+        #content-inner.nova-tag-content)::-webkit-scrollbar-corner{
+  background-color:transparent;
+}
+/* Firefox 不支持 ::-webkit-scrollbar,用标准属性(宽度只能 auto/thin) */
+@-moz-document url-prefix(){
+  body:has(#body-wrap.post,
+          #content-inner.nova-tag-content){
+    scrollbar-width:auto;
+    scrollbar-color: rgba(190,112,138,.45) transparent;
+  }
+}
+
+/* ---- Site footer (A-scheme: global unified banner) ----
+   Background image rendered ONCE (cover + no-repeat). Stops per-page inline
+   `background-image` or tag-page/music-page `background` shorthand from
+   resetting size/repeat, which caused the banner to tile (two layers).
+   Homepage excluded (it uses its own .nova-footer styles). */
+html[data-theme="dark"] body:not(.nova-home-active) footer#footer {
+  background: url(/img/hero/archive-bg.webp) center bottom / cover no-repeat #080c17;
+  color: #bcb5bf;
+}
+
+html[data-theme="light"] body:not(.nova-home-active) footer#footer {
+  background: url(/img/hero/archive-bg.webp) center bottom / cover no-repeat #d5d4de;
+  color: #514c59;
+}
+
+/* ===== 导航栏滚动态贴不齐修复(全站, 2026-08-28) =====
+   主题规则 .nav-fixed #nav{top:-60px} + .nav-visible:not(.fixed) #nav{translate3d(0,100%,0)}
+   在缺少 .fixed class 时(本站从不加)使 nav 出现后停在 y=6~8, 与顶部/滚动位置不齐。
+   仅在出现态(.nav-fixed.nav-visible)归位 top:0 并清除 translate3d 残留;
+   隐藏态(仅 .nav-fixed)的 top:-60 保持不变, 不破坏向下滚动隐藏行为。 */
+#page-header.nav-fixed.nav-visible #nav { top: 0 !important; transform: none !important; }
