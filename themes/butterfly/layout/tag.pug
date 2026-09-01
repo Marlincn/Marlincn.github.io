@@ -3,12 +3,12 @@ extends ./base.pug
 block headOpts
   - page.bodyClass = 'nova-tag-route'
   - var tagUrl = encodeURI(siteUrl + '/articles/' + page.tagName + '/')
-  - page.headOpts = { title: '文章: ' + page.tagName + ' | Marlin', siteTitle: '文章: ' + page.tagName, description: '浏览 Marlin 博客中标记为“' + page.tagName + '”的文章与学习记录。', ogUrl: tagUrl, canonical: tagUrl, pageType: 'tag', extraCss: '<link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=20260829-p1">', extraHead: page.ldjson }
+  - page.headOpts = { title: '文章: ' + page.tagName + ' | Marlin', siteTitle: '文章: ' + page.tagName, description: '浏览 Marlin 博客中标记为“' + page.tagName + '”的文章与学习记录。', ogUrl: tagUrl, canonical: tagUrl, pageType: 'tag', extraCss: '<link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=20260831-p1">', extraHead: page.ldjson }
 
 block content
   != page.shellTop
   h1#site-title.nova-tag-title= page.tagName
-  p.nova-tag-description 围绕该主题整理的代码、笔记与实践记录。
+  p.nova-tag-description 文章本天成，妙手偶得之。
   a.nova-tag-scroll-hint(href='#nova-tag-notes') EXPLORE THE NOTES
   | </div></header>
   main.nova-tag-content#content-inner

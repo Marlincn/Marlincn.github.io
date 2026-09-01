@@ -77,7 +77,7 @@ body.nova-moments-route footer#footer {
 
 .nova-moments-hero {
   position: relative;
-  min-height: clamp(470px, 61vh, 640px);
+  min-height: clamp(430px, 52vh, 610px);
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -102,6 +102,21 @@ body.nova-moments-route footer#footer {
   background: linear-gradient(180deg, rgba(4, 7, 16, .14) 0%, rgba(6, 9, 18, .10) 57%, #0a1021 100%);
 }
 
+/* 底部过渡: 与工程页/文章索引页一致的 hero 收尾渐变 */
+.nova-moments-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 8%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--shuo-bg));
+}
+
+.nova-moments-hero-copy {
+  z-index: 2;
+}
+
 .nova-moments-hero-copy {
   width: min(720px, calc(100% - 40px));
   margin-top: 26px;
@@ -109,7 +124,6 @@ body.nova-moments-route footer#footer {
   text-shadow: 0 3px 28px rgba(0, 0, 0, .52);
 }
 
-.nova-moments-hero-copy p,
 .nova-moments-side-kicker {
   margin: 0;
   color: var(--shuo-rose-soft);
@@ -120,7 +134,7 @@ body.nova-moments-route footer#footer {
 .nova-moments-hero-copy h1 {
   margin: 19px 0 16px;
   color: #f2dce5;
-  font: 500 clamp(54px, 6.1vw, 88px)/1.05 "Noto Serif SC", "Songti SC", serif;
+  font: 500 clamp(38px, 4.6vw, 62px)/1.05 "Noto Serif SC", "Songti SC", serif;
   letter-spacing: .18em;
   transform: translateX(.09em);
 }
@@ -612,11 +626,10 @@ html[data-theme="light"] body.nova-moments-route footer#footer {
 }
 
 [data-theme="light"] .nova-moments-hero-shade {
-  background: linear-gradient(180deg, rgba(4, 7, 16, .14), rgba(6, 9, 18, .08) 59%, #d9d7e1 100%);
+  background: linear-gradient(180deg, rgba(4, 7, 16, .10), rgba(6, 9, 18, .05) 57%, rgba(3, 5, 12, .58) 100%);
 }
 
 [data-theme="light"] .nova-moments-hero-copy h1,
-[data-theme="light"] .nova-moments-hero-copy p,
 [data-theme="light"] .nova-moments-hero-copy > span,
 [data-theme="light"] .nova-moments-hero-copy a {
   color: #f9edf2;
@@ -688,7 +701,7 @@ html[data-theme="light"] body.nova-moments-route footer#footer {
   }
 
   .nova-moments-hero-copy h1 {
-    font-size: 52px;
+    font-size: 36px;
   }
 
   .nova-moments-hero-copy > span {

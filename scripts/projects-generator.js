@@ -50,7 +50,7 @@ function dlHref(p) {
 
 function projectLdjson() {
   const url = encodeURI(SITE + '/projects/')
-  return '<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","@id":"' + url + '#webpage","name":"\u5de5\u7a0b","url":"' + url + '","description":"\u5355\u7247\u673a\u4e0e\u5efa\u6a21\u7684\u52a8\u624b\u5b9e\u5f55\u2014\u2014\u4ece\u5f00\u6e90\u590d\u523b\u5230\u8bfe\u7a0b\u8bbe\u8ba1\u3002","inLanguage":"zh-CN","isPartOf":{"@type":"WebSite","@id":"' + SITE + '/#website","url":"' + SITE + '/","name":"Marlin"}}</script>'
+  return '<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","@id":"' + url + '#webpage","name":"\u5de5\u7a0b","url":"' + url + '","description":"\u5982\u679c\u6211\u770b\u5f97\u66f4\u8fdc\uff0c\u90a3\u662f\u56e0\u4e3a\u6211\u7ad9\u5728\u5de8\u4eba\u7684\u80a9\u818a\u4e0a\u3002","inLanguage":"zh-CN","isPartOf":{"@type":"WebSite","@id":"' + SITE + '/#website","url":"' + SITE + '/","name":"Marlin"}}</script>'
 }
 
 hexo.extend.generator.register('nova-projects', function () {

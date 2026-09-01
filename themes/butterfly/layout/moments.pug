@@ -2,7 +2,7 @@ extends ./base.pug
 
 block headOpts
   - page.bodyClass = 'nova-moments-route'
-  - page.headOpts = { title: '说说 | Marlin', siteTitle: '说说', description: '记录学习之外的日常想法、生活片段与随手札记。', ogUrl: siteUrl + '/moments/', pageType: 'page', extraCss: '<link href="/rose-galaxy/css/moments-page.css?v=20260829-p1" rel="stylesheet" data-nova-moments-style="">' }
+  - page.headOpts = { title: '说说 | Marlin', siteTitle: '说说', description: '记录学习之外的日常想法、生活片段与随手札记。', ogUrl: siteUrl + '/moments/', pageType: 'page', extraCss: '<link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=20260831-p1"><link href="/rose-galaxy/css/moments-page.css?v=20260831-p1" rel="stylesheet" data-nova-moments-style="">' }
 
 block content
   != page.body
