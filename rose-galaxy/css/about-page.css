@@ -89,7 +89,7 @@ html[data-theme="light"] body.nova-about-route .nova-about-hero-shade {
 .nova-about-hero-copy h1 {
   margin: 14px 0 12px;
   color: #f3edef;
-  font-size: clamp(3.2rem, 6.5vw, 6rem);
+  font-size: clamp(2.4rem, 4.8vw, 4.2rem);
   font-weight: 520;
   letter-spacing: .06em;
   line-height: 1;
@@ -102,7 +102,7 @@ html[data-theme="light"] body.nova-about-route .nova-about-hero-copy h1 {
 
 .nova-about-hero-copy > span {
   display: block;
-  max-width: 670px;
+  max-width: 740px;
   color: rgba(237, 230, 234, .82);
   font-size: clamp(.98rem, 1.35vw, 1.14rem);
   line-height: 1.8;
@@ -110,10 +110,11 @@ html[data-theme="light"] body.nova-about-route .nova-about-hero-copy h1 {
 
 .nova-about-hero-copy > small {
   display: block;
-  margin-top: 7px;
+  margin-top: 18px;
   color: rgba(196, 187, 199, .68);
   font-size: .72rem;
   letter-spacing: .08em;
+  line-height: 1.7;
 }
 
 html[data-theme="light"] body.nova-about-route .nova-about-hero-copy > span {
@@ -225,7 +226,7 @@ html[data-theme="light"] body.nova-about-route .nova-about-status.nova-about-con
   display: grid;
   grid-template-columns: minmax(0, 1.25fr) minmax(330px, .75fr);
   gap: 44px;
-  padding: clamp(30px, 4vw, 52px);
+  padding: clamp(22px, 3vw, 40px);
   border-radius: 24px;
   animation: nova-about-reveal .48s .06s ease-out both;
 }
@@ -233,8 +234,12 @@ html[data-theme="light"] body.nova-about-route .nova-about-status.nova-about-con
 .nova-about-profile-intro {
   display: grid;
   grid-template-columns: 112px minmax(0, 1fr);
-  gap: 28px;
+  gap: 20px 28px;
   align-items: start;
+}
+
+.nova-about-profile-intro .nova-about-desc {
+  grid-column: 1 / -1;
 }
 
 .nova-about-profile-intro img {
