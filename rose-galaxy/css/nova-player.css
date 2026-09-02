@@ -17,7 +17,30 @@
   -webkit-backdrop-filter: blur(18px);
   user-select: none;
   touch-action: none;
+}
+
+.nova-mini-drag-handle {
+  position: absolute;
+  right: 9px;
+  bottom: 7px;
+  width: 12px;
+  height: 12px;
+  color: #8f96a5;
   cursor: grab;
+  opacity: .6;
+  transition: opacity 180ms ease;
+}
+
+.nova-mini-drag-handle:hover {
+  opacity: 1;
+}
+
+.nova-mini-drag-handle::before {
+  content: "";
+  display: block;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, currentColor 1px, transparent 1.4px) 0 0 / 6px 6px;
 }
 
 .nova-mini-player.is-dragging {
@@ -192,4 +215,19 @@ html[data-theme="light"] .nova-mini-btn.nova-mini-toggle {
 
 html[data-theme="light"] .nova-mini-progress {
   background: rgba(75, 62, 83, .12);
+}
+
+/* 浅色: 文字/时间与音乐页浅色 meta(「共 N 首 · 当前第 N 首」)一致 */
+html[data-theme="light"] .nova-mini-title {
+  color: #443f4c;
+}
+
+html[data-theme="light"] .nova-mini-artist,
+html[data-theme="light"] .nova-mini-time,
+html[data-theme="light"] .nova-mini-duration {
+  color: rgba(70, 62, 84, .62);
+}
+
+html[data-theme="light"] .nova-mini-drag-handle {
+  color: rgba(70, 62, 84, .5);
 }
