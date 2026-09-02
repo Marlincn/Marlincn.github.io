@@ -17,7 +17,8 @@
   const BILI_UID = window.NOVA_SITE.bili.uid;
   const BILI_FOLDER = window.NOVA_SITE.bili.folder;
   const STORAGE_KEY = "novaPlayerState";
-  const PROGRESS_SAVE_INTERVAL = 15;
+  // 音乐页悬浮窗开关(会话级, 默认关闭): 开启后迷你条在音乐页/其他页都显示
+  const MINI_ENABLED_KEY = "novaMiniEnabled";
 
   // 跨 PJAX 脚本重跑持久: audio/进度/歌单放全局 core(pjax 同文档切换保留)
   const state = (window.__novaPlayerCore || (window.__novaPlayerCore = {
@@ -25,10 +26,8 @@
     songs: [],
     currentIndex: -1,
     loadAbort: null,
-    objectUrls: new Set(),
     loading: false,
-    initialized: false,
-    lastPlayedIndex: -1,
+    loadedBvid: null, // 当前 audio 已加载的歌曲 bvid(判断无需重拉流)
   }));
 
   // ---- sessionStorage 记忆(会话级): { songIndex, songs } (songs 仅元信息, 含 bvid/name/artist/cover) ----
@@ -60,34 +59,45 @@
     } catch (_) {}
   }
 
-  // ---- 云函数音频流(与音乐页同源) ----
+  // ---- 云函数音频流(与音乐页同源): SCF 函数 URL 网关把二进制音频以
+  //      base64 文本传输(并注入 application/json 头), 前端需 base64 解码为
+  //      blob; 失败/未来网关若直接解码二进制则原样使用。基于响应体字节判定,
+  //      不依赖 Content-Type。
   async function fetchAudioBlob(bvid, signal) {
-    const resp = await fetch(BILI_PROXY + "/stream2?bvid=" + bvid, { signal });
+    const resp = await fetch(BILI_PROXY + "/stream2?bvid=" + encodeURIComponent(bvid), { signal });
     if (!resp.ok) throw new Error("音频请求失败 HTTP " + resp.status);
-    const ct = resp.headers.get("Content-Type") || "";
-    if (ct.includes("json")) {
-      const text = await resp.text();
-      if (text.trim().startsWith("{")) {
-        const j = JSON.parse(text);
-        throw new Error(j.error || "音频获取失败");
+    const bytes = new Uint8Array(await resp.arrayBuffer());
+    // 错误响应: JSON 对象(以 { 开头)
+    try {
+      const head = new TextDecoder().decode(bytes.subarray(0, 64)).trimStart();
+      if (head.startsWith("{")) {
+        const j = JSON.parse(new TextDecoder().decode(bytes));
+        throw new Error((j && j.error) || "音频获取失败");
       }
-      const bin = atob(text.trim());
-      const bytes = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-      return new Blob([bytes], { type: "audio/mp4" });
+    } catch (e) {
+      if (e instanceof SyntaxError) { /* 非 JSON 正常 */ } else { throw e; }
     }
-    return resp.blob();
+    // 前 16 字节均为 base64 字符集 → 按 base64 解码; 否则(二进制直传)原样使用
+    const head16 = bytes.subarray(0, 16);
+    const isBase64Text = head16.every(b =>
+      (b >= 65 && b <= 90) || (b >= 97 && b <= 122) || (b >= 48 && b <= 57) ||
+      b === 43 || b === 47 || b === 61 || b === 10 || b === 13 || b === 32 || b === 9);
+    if (isBase64Text) {
+      const text = new TextDecoder().decode(bytes);
+      const bin = atob(text.trim());
+      const out = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+      return new Blob([out], { type: "audio/mp4" });
+    }
+    return new Blob([bytes], { type: "audio/mp4" });
   }
 
   function setAudioSource(blob) {
     const audio = ensureAudio();
     const url = URL.createObjectURL(blob);
-    state.objectUrls.add(url);
     const old = audio.src;
     audio.src = url;
-    // 旧 blob 稍后回收
     if (old) setTimeout(() => URL.revokeObjectURL(old), 60_000);
-    state.objectUrls.delete(url); // 当前 url 由 audio 持有, 不共管
   }
 
   function ensureAudio() {
@@ -95,9 +105,7 @@
     const audio = new Audio();
     audio.preload = "metadata";
     audio.addEventListener("play", () => {
-      // 真正开始播放: 标记 played + 清除关闭态(悬浮条可重新出现)
-      miniClosed = false;
-      try { sessionStorage.removeItem("novaMiniClosed"); } catch (_) {}
+      // 真正开始播放: 标记 played
       saveMemory(true);
       emit("play");
     });
@@ -131,6 +139,7 @@
       currentTime: state.audio ? state.audio.currentTime : 0,
       duration: state.audio ? state.audio.duration : 0,
       song: state.songs[state.currentIndex] || null,
+      loadedBvid: state.loadedBvid,
       hasMemory: Boolean(loadMemory()),
     };
   }
@@ -161,7 +170,7 @@
       const blob = await fetchAudioBlob(song.bvid, ac.signal);
       if (ac.signal.aborted) return;
       setAudioSource(blob);
-      state.lastPlayedIndex = state.currentIndex;
+      state.loadedBvid = String(song.bvid || "");
       saveMemory();
       if (autoplay !== false) {
         const result = state.audio.play();
@@ -208,7 +217,6 @@
   // 迷你悬浮条 (非音乐页常驻)
   // =============================================================
   let miniRoot = null;
-  let miniDrag = null;
 
   function buildMiniBar() {
     if (miniRoot) return miniRoot;
@@ -236,9 +244,8 @@
     root.querySelector(".nova-mini-toggle").addEventListener("click", togglePlayback);
     root.querySelector(".nova-mini-close").addEventListener("click", () => {
       state.audio?.pause();
-      miniClosed = true;
-      try { sessionStorage.setItem("novaMiniClosed", "1"); } catch (_) {}
-      hideMiniBar();
+      // 关闭 = 关闭开关本身: 音乐页按钮与全局状态同步, 不会在别处"复活"
+      setMiniEnabled(false);
       emit("mini-closed");
     });
     enableDrag(root);
@@ -252,8 +259,11 @@
 
   function enableDrag(root) {
     let startX = 0, startY = 0, startLeft = 0, startTop = 0, moved = false;
-    root.addEventListener("pointerdown", e => {
-      if (e.target.closest("button, .nova-mini-progress, .nova-mini-close")) return;
+    // 仅手柄可拖动, 避免误触(封面/文字区点击不影响, 进度条区域保持原生交互)
+    const handle = root.querySelector(".nova-mini-drag-handle");
+    if (!handle) return;
+    handle.addEventListener("pointerdown", e => {
+      e.preventDefault();
       moved = false;
       startX = e.clientX; startY = e.clientY;
       const r = root.getBoundingClientRect();
@@ -282,7 +292,6 @@
   }
 
   function showMiniBar() {
-    if (miniClosed) return; // 用户关闭过: 不再自动显示
     const root = buildMiniBar();
     root.hidden = false;
     if (!root.dataset.posLoaded) {
@@ -299,15 +308,26 @@
     if (miniRoot) miniRoot.hidden = true;
   }
 
-  let miniClosed = false; // 用户点击关闭后不再自动浮现(直到重新播放)
-  try { miniClosed = sessionStorage.getItem("novaMiniClosed") === "1"; } catch (_) {}
+  function miniEnabled() {
+    try { return sessionStorage.getItem(MINI_ENABLED_KEY) === "1"; } catch (_) { return false; }
+  }
+
+  function setMiniEnabled(on) {
+    try {
+      if (on) sessionStorage.setItem(MINI_ENABLED_KEY, "1");
+      else sessionStorage.removeItem(MINI_ENABLED_KEY);
+    } catch (_) {}
+    if (on) {
+      if (state.songs.length) showMiniBar();
+    } else {
+      hideMiniBar();
+    }
+    emit("mini-enabled", { enabled: Boolean(on) });
+  }
 
   function shouldShowMini() {
-    if (document.body.classList.contains("nova-music-route")) return false;
-    if (miniClosed) return false;
-    const mem = loadMemory();
-    // 仅在音乐页真正播放过(记忆 played)才弹出悬浮条
-    return Boolean(mem && mem.played && state.songs.length);
+    if (!miniEnabled()) return false;
+    return state.songs.length > 0;
   }
 
   function updateMiniBar() {
@@ -337,9 +357,9 @@
       updateMiniBar();
     }
     if (type === "play" || type === "pause" || type === "playlist" || type === "loadstart" || type === "loadend" || type === "error" || type === "load-error" || type === "play-blocked") {
-      // 音乐页隐藏悬浮条; 离开音乐页后按记忆显示
-      if (document.body.classList.contains("nova-music-route")) hideMiniBar();
-      else if (shouldShowMini()) showMiniBar();
+      // 悬浮条显隐完全由音乐页开关决定(音乐页/其他页一致)
+      if (shouldShowMini()) showMiniBar();
+      else hideMiniBar();
     }
   }
 
@@ -356,6 +376,8 @@
     subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); },
     showMiniBar,
     hideMiniBar,
+    setMiniEnabled,
+    isMiniEnabled: miniEnabled,
     ensureAudio,
   };
 
@@ -369,10 +391,9 @@
       }
     }
     const route = document.body.classList.contains("nova-music-route");
+    if (shouldShowMini()) showMiniBar();
     if (!route) {
-      // 非音乐页: 若有记忆, 显示悬浮条(等待用户点击播放, 不自动出声)
-      if (shouldShowMini()) showMiniBar();
-      // 预载歌曲(不自动播): 悬浮条点击播放时音频已就绪, 立即出声(从头)
+      // 非音乐页: 若歌单有歌, 预载歌曲(不自动播): 悬浮条点击播放时音频已就绪, 立即出声(从头)
       if (state.songs.length && !state.loading) {
         playSongAt(state.currentIndex, false);
       }
@@ -385,4 +406,9 @@
   } else {
     bootstrap();
   }
+
+  // PJAX 切换后: audio 常驻不中断, 按开关状态立即重挂悬浮条(无缝)
+  document.addEventListener("pjax:complete", () => {
+    if (state.songs.length && shouldShowMini()) showMiniBar();
+  });
 })();

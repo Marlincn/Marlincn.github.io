@@ -14,7 +14,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const { composeShellTop, buildFooter, RIGHTSIDE_ASIDE } = require('./parts-common')
+const { composeShellTop, buildFooter, RIGHTSIDE_ASIDE, PAGE_STYLES } = require('./parts-common')
 const { fmtDate } = require('./lib/date')
 const projectsData = require('./projects-data')
 
@@ -158,7 +158,7 @@ hexo.extend.generator.register('nova-home', function (locals) {
     layout: 'home',
     data: {
       // 公共壳 + 页级 hero 段(nova-homepage 开/hero/滚动提示; LATEST 动态注入原位置)
-      shellTop: composeShellTop({ headerCls: 'full_page', pre: WEB_BG }) + '\n' +
+      shellTop: composeShellTop({ headerCls: 'full_page', pre: WEB_BG, pageCss: PAGE_STYLES.home }) + '\n' +
         read('top.html').split('<!--NOVA-LATEST-->').join(signal ? latestSignal(signal) : ''),
       // 中部骨架: 精选工程 + 最新文章(卡片由生成器注入占位)
       mid: read('mid.html')

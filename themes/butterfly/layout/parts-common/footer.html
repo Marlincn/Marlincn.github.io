@@ -363,11 +363,11 @@
 })()</script>
   <!--NOVA-PAGE-SCRIPTS-->
 
-</div><script defer="" src="/rose-galaxy/js/nova-ux.js?v=20260831-p19"></script><script defer="" src="/rose-galaxy/js/nova-visitor.js?v=20260831-p19"></script><script defer="" src="/rose-galaxy/animation/decorative-loader.js?v=20260831-p19"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
+</div><script defer="" src="/rose-galaxy/js/nova-ux.js?v=20260831-p28"></script><script defer="" src="/rose-galaxy/js/nova-visitor.js?v=20260831-p28"></script><script defer="" src="/rose-galaxy/animation/decorative-loader.js?v=20260831-p28"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js" defer="defer"></script><script>document.addEventListener('DOMContentLoaded', () => {
   const pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
 
   window.pjax = new Pjax({
-    elements: 'a:not([target="_blank"]):not([data-fancybox]):not([href="/"]):not([href^="/articles/"]):not([href^="/moments/"]):not([href^="/music/"]):not([href^="/about/"]):not([href^="/projects/"])',
+    elements: 'a:not([target="_blank"]):not([data-fancybox]):not([href^="#"]):not([href^="mailto:"]):not([href^="http"]):not([href^="//"])',
     selectors: pjaxSelectors,
     cacheBust: false,
     analytics: false,

@@ -53,7 +53,18 @@ html[data-theme="light"] .nova-music-hero::after{content:"";position:absolute;z-
 .nova-music-control:hover{transform:translateY(-2px);border-color:rgba(205,105,143,.56);background:rgba(205,105,143,.2);box-shadow:0 6px 18px rgba(205,105,143,.16)}
 .nova-music-toggle{width:64px;height:64px;border-color:var(--nova-tag-accent,#ce718f);background:var(--nova-tag-accent,#ce718f);color:#fff;font-size:22px;box-shadow:0 0 28px rgba(205,105,143,.28)}
 .nova-music-toggle:hover{background:#df86a3;border-color:#df86a3;box-shadow:0 8px 24px rgba(205,105,143,.34)}
-.nova-music-meta{display:flex;justify-content:space-between;gap:16px;padding-top:17px;border-top:1px solid rgba(255,255,255,.1);color:rgba(219,210,221,.68);font-size:12.5px}
+.nova-music-meta{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-top:17px;border-top:1px solid rgba(255,255,255,.1);color:rgba(219,210,221,.68);font-size:12.5px}
+.nova-music-mini-toggle{display:inline-flex;align-items:center;gap:7px;padding:0;border:0;background:none;color:rgba(228,219,229,.72);font-size:12px;letter-spacing:.06em;cursor:pointer}
+.nova-music-mini-toggle-track{position:relative;flex:none;width:34px;height:18px;border-radius:999px;border:1px solid rgba(222,210,221,.22);background:rgba(255,255,255,.1);transition:background-color 220ms ease,border-color 220ms ease}
+.nova-music-mini-toggle-track::after{content:"";position:absolute;top:2px;left:2px;width:12px;height:12px;border-radius:50%;background:#cbc2cc;transition:transform 220ms ease,background-color 220ms ease}
+.nova-music-mini-toggle[aria-pressed="true"] .nova-music-mini-toggle-track{background:rgba(205,113,143,.45);border-color:rgba(205,113,143,.65)}
+.nova-music-mini-toggle[aria-pressed="true"] .nova-music-mini-toggle-track::after{transform:translateX(16px);background:#f3d3de}
+/* 浅色: 文字/轨道与旁边 meta(「共 N 首 · 当前第 N 首」)同灰调, 无 hover 变色 */
+html[data-theme="light"] .nova-music-mini-toggle{color:var(--nova-music-player-muted)}
+html[data-theme="light"] .nova-music-mini-toggle-track{border-color:rgba(70,62,84,.2);background:rgba(70,62,84,.08)}
+html[data-theme="light"] .nova-music-mini-toggle-track::after{background:rgba(70,62,84,.42)}
+html[data-theme="light"] .nova-music-mini-toggle[aria-pressed="true"] .nova-music-mini-toggle-track{background:rgba(179,83,119,.3);border-color:rgba(179,83,119,.52)}
+html[data-theme="light"] .nova-music-mini-toggle[aria-pressed="true"] .nova-music-mini-toggle-track::after{background:#fff}
 html[data-theme="light"] .nova-music-player{border-color:rgba(255,255,255,.46);background:linear-gradient(145deg,rgba(242,239,245,.78),rgba(219,216,228,.62));box-shadow:0 24px 64px rgba(26,22,39,.2),inset 0 1px rgba(255,255,255,.42);backdrop-filter:blur(22px) saturate(115%);-webkit-backdrop-filter:blur(22px) saturate(115%)}
 html[data-theme="light"] .nova-music-retry{color:#6c5060;background:rgba(198,95,130,.08)}
 html[data-theme="light"] .nova-music-current h2{color:var(--nova-music-player-title)}

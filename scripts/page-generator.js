@@ -7,7 +7,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const { composeShell, WALINE_COMMENT, RIGHTSIDE_COMMENT } = require('./parts-common')
+const { composeShell, WALINE_COMMENT, RIGHTSIDE_COMMENT, PAGE_STYLES } = require('./parts-common')
 const { VERSION } = require('./site-config')
 
 const partsDir = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'page-parts')
@@ -23,6 +23,7 @@ const PAGES = [
     mainCls: 'layout hide-aside',
     // 全站背景层(P1 补回): 与 prod 一致——DOM 保留, 页面 css 隐藏
     pre: '<div class="bg-animation" id="web_bg"></div>',
+    pageCss: PAGE_STYLES.music,
     showExtra: RIGHTSIDE_COMMENT,
     pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/music-page.js?v=' + VERSION + '"></script>'
   },
@@ -33,6 +34,7 @@ const PAGES = [
     pageClass: '',
     headerCls: 'not-home-page nova-moments-nav-header',
     mainCls: 'nova-moments-shell',
+    pageCss: PAGE_STYLES.moments,
     showExtra: RIGHTSIDE_COMMENT,
     pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/moments-page.js?v=' + VERSION + '"></script>'
   },
@@ -43,6 +45,7 @@ const PAGES = [
     pageClass: 'type-about',
     headerCls: 'not-top-img nova-about-nav-header',
     mainCls: 'nova-about-shell',
+    pageCss: PAGE_STYLES.about,
     showExtra: RIGHTSIDE_COMMENT,
     pageScripts: WALINE_COMMENT
   },
@@ -69,6 +72,7 @@ hexo.extend.generator.register('nova-pages', function () {
         mainCls: p.mainCls,
         mainInner: readMain(p.name),
         pre: p.pre,
+        pageCss: p.pageCss,
         showExtra: p.showExtra,
         pageScripts: p.pageScripts
       })

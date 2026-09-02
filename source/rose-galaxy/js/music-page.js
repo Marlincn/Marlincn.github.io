@@ -101,6 +101,7 @@
       count: root.querySelector(".nova-music-count"),
       notesCount: root.querySelector(".nova-music-notes-count"),
       retry: root.querySelector(".nova-music-retry"),
+      miniToggle: root.querySelector(".nova-music-mini-toggle"),
       cards: [...root.querySelectorAll(".nova-music-card")],
     };
 
@@ -196,11 +197,17 @@
       els.progress.style.setProperty("--nova-music-progress", `${value / 10}%`);
     }
 
+    function syncMiniToggle() {
+      const on = player.isMiniEnabled();
+      if (els.miniToggle) els.miniToggle.setAttribute("aria-pressed", String(on));
+    }
+
     function bindMusicControls() {
       on(els.previous, "click", () => player.playPrevious());
       on(els.next, "click", () => player.playNext());
       on(els.toggle, "click", () => player.togglePlayback());
       on(els.progress, "input", event => player.seekTo(Number(event.target.value) / 1000));
+      on(els.miniToggle, "click", () => player.setMiniEnabled(!player.isMiniEnabled()));
       els.cards.forEach((card, slot) => {
         const warm = () => warmCardImage(card.querySelector("img"));
         on(card, "pointerenter", warm);
@@ -232,7 +239,8 @@
           renderVisibleCards();
           updateProgress();
           // 搜索直达: ?song=<bvid> → 定位并播放对应歌曲;
-          // 无参数时预载当前歌曲(不自动播): 点击播放时音频已就绪, 立即出声
+          // 无参数时: 若 audio 已加载同一首歌(无缝返回音乐页)则保持, 不重拉流;
+          // 否则预载当前歌曲(不自动播): 点击播放时音频已就绪, 立即出声
           const targetBvid = new URLSearchParams(location.search).get("song");
           const targetIndex = targetBvid
             ? j.songs.findIndex(s => String(s.bvid || "") === targetBvid)
@@ -240,8 +248,14 @@
           if (targetIndex >= 0) {
             player.playSongAt(targetIndex, true);
           } else {
-            player.playSongAt(player.state.currentIndex, false);
+            const snapNow = player.state;
+            const sameSong = Boolean(
+              snapNow.loadedBvid &&
+              snapNow.loadedBvid === String(j.songs[snapNow.currentIndex]?.bvid)
+            );
+            if (!sameSong) player.playSongAt(player.state.currentIndex, false);
           }
+          syncMiniToggle();
         })
         .catch(e => {
           showLoadFailure("收藏夹加载失败", String(e?.message || e).slice(0, 90));
@@ -293,6 +307,9 @@
       }
       if (type === "play-blocked") {
         els.title.textContent = "点击 ▶ 开始播放";
+      }
+      if (type === "mini-enabled") {
+        syncMiniToggle();
       }
     });
     listeners.push(unsubscribe);
