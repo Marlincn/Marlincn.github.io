@@ -75,18 +75,6 @@
     <author>
       <name>Marlin</name>
     </author>
-    <category term="赋文" scheme="https://marlincn.github.io/articles/%E8%B5%8B%E6%96%87/"/>
-    <id>https://marlincn.github.io/posts/洛神赋/</id>
-    <link href="https://marlincn.github.io/posts/洛神赋/"/>
-    <published>2026-08-29T00:00:00.000Z</published>
-    <summary>黄初三年，余朝京师，还济洛川。古人有言：斯水之神，名曰宓妃。感宋玉对楚王神女之事，遂作斯赋。其辞曰： 余从京域，言归东藩，背伊阙，越轘辕，经通谷，陵景山。日既西倾，车殆马烦。尔乃税</summary>
-    <title>洛神赋</title>
-    <updated>2026-08-29T00:00:00.000Z</updated>
-  </entry>
-  <entry>
-    <author>
-      <name>Marlin</name>
-    </author>
     <category term="诗词" scheme="https://marlincn.github.io/articles/%E8%AF%97%E8%AF%8D/"/>
     <id>https://marlincn.github.io/posts/西江月·春色三分过二/</id>
     <link href="https://marlincn.github.io/posts/西江月·春色三分过二/"/>
@@ -99,36 +87,24 @@
     <author>
       <name>Marlin</name>
     </author>
-    <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://marlincn.github.io/posts/Markdown 扩展语法/</id>
-    <link href="https://marlincn.github.io/posts/Markdown 扩展语法/"/>
-    <published>2026-08-17T00:00:00.000Z</published>
-    <summary>构建在 Markdown 基本语法上的扩展功能。 概述 即便 John Gruber 的原始设计文档中所列出的 Markdown 基本语法 已经囊括了许多满足日常所需的元素，但对于</summary>
-    <title>Markdown 扩展语法</title>
-    <updated>2026-08-17T00:00:00.000Z</updated>
-  </entry>
-  <entry>
-    <author>
-      <name>Marlin</name>
-    </author>
-    <category term="AI" scheme="https://marlincn.github.io/articles/AI/"/>
-    <id>https://marlincn.github.io/posts/LM-Studio-OpenCode 接入指南/</id>
-    <link href="https://marlincn.github.io/posts/LM-Studio-OpenCode 接入指南/"/>
-    <published>2026-08-17T00:00:00.000Z</published>
-    <summary>1. 环境信息 项目 值 LM Studio 版本 0.4.0+（需要 API Token 功能） LM Studio 地址 http://192.168.133.2:1234 本</summary>
-    <title>LM Studio 接入 OpenCode 指南</title>
-    <updated>2026-08-17T00:00:00.000Z</updated>
+    <category term="赋文" scheme="https://marlincn.github.io/articles/%E8%B5%8B%E6%96%87/"/>
+    <id>https://marlincn.github.io/posts/洛神赋/</id>
+    <link href="https://marlincn.github.io/posts/洛神赋/"/>
+    <published>2026-08-29T00:00:00.000Z</published>
+    <summary>黄初三年，余朝京师，还济洛川。古人有言：斯水之神，名曰宓妃。感宋玉对楚王神女之事，遂作斯赋。其辞曰： 余从京域，言归东藩，背伊阙，越轘辕，经通谷，陵景山。日既西倾，车殆马烦。尔乃税</summary>
+    <title>洛神赋</title>
+    <updated>2026-08-29T00:00:00.000Z</updated>
   </entry>
   <entry>
     <author>
       <name>Marlin</name>
     </author>
     <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://marlincn.github.io/posts/Markdown 入门指南/</id>
-    <link href="https://marlincn.github.io/posts/Markdown 入门指南/"/>
+    <id>https://marlincn.github.io/posts/Markdown 语法速查表/</id>
+    <link href="https://marlincn.github.io/posts/Markdown 语法速查表/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>Markdown 概述、工作原理以及用途。 Markdown 是什么？ Markdown 是一种轻量级的标记语言，可用于在纯文本文档中添加格式化元素。Markdown 由 John</summary>
-    <title>Markdown 入门指南</title>
+    <summary>Markdown 语法参考手册 / 速查表。 总览 此 Markdown 语法速查表提供了所有 Markdown 语法元素的快速参考。但是此速查表无法涵盖所有极限用法，因此，如果您</summary>
+    <title>Markdown 语法速查表</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
@@ -160,6 +136,18 @@
       <name>Marlin</name>
     </author>
     <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
+    <id>https://marlincn.github.io/posts/Markdown 扩展语法/</id>
+    <link href="https://marlincn.github.io/posts/Markdown 扩展语法/"/>
+    <published>2026-08-17T00:00:00.000Z</published>
+    <summary>构建在 Markdown 基本语法上的扩展功能。 概述 即便 John Gruber 的原始设计文档中所列出的 Markdown 基本语法 已经囊括了许多满足日常所需的元素，但对于</summary>
+    <title>Markdown 扩展语法</title>
+    <updated>2026-08-17T00:00:00.000Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Marlin</name>
+    </author>
+    <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
     <id>https://marlincn.github.io/posts/Markdown 实用语法/</id>
     <link href="https://marlincn.github.io/posts/Markdown 实用语法/"/>
     <published>2026-08-17T00:00:00.000Z</published>
@@ -172,11 +160,11 @@
       <name>Marlin</name>
     </author>
     <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://marlincn.github.io/posts/Markdown 语法速查表/</id>
-    <link href="https://marlincn.github.io/posts/Markdown 语法速查表/"/>
+    <id>https://marlincn.github.io/posts/Markdown 入门指南/</id>
+    <link href="https://marlincn.github.io/posts/Markdown 入门指南/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>Markdown 语法参考手册 / 速查表。 总览 此 Markdown 语法速查表提供了所有 Markdown 语法元素的快速参考。但是此速查表无法涵盖所有极限用法，因此，如果您</summary>
-    <title>Markdown 语法速查表</title>
+    <summary>Markdown 概述、工作原理以及用途。 Markdown 是什么？ Markdown 是一种轻量级的标记语言，可用于在纯文本文档中添加格式化元素。Markdown 由 John</summary>
+    <title>Markdown 入门指南</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
@@ -189,6 +177,18 @@
     <published>2026-08-17T00:00:00.000Z</published>
     <summary>一、提示词 1.0概念 提示词(tag)：相对独立的词或短语，告诉AI画什么 权重：单独提示词在总提示词中突出的程度，说明主要画什么 采样：采集文字特征，得到清晰图像的过程，不同采</summary>
     <title>绘世 Stable Diffusion</title>
+    <updated>2026-08-17T00:00:00.000Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Marlin</name>
+    </author>
+    <category term="AI" scheme="https://marlincn.github.io/articles/AI/"/>
+    <id>https://marlincn.github.io/posts/LM-Studio-OpenCode 接入指南/</id>
+    <link href="https://marlincn.github.io/posts/LM-Studio-OpenCode 接入指南/"/>
+    <published>2026-08-17T00:00:00.000Z</published>
+    <summary>1. 环境信息 项目 值 LM Studio 版本 0.4.0+（需要 API Token 功能） LM Studio 地址 http://192.168.133.2:1234 本</summary>
+    <title>LM Studio 接入 OpenCode 指南</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
 </feed>

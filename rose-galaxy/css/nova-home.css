@@ -11,7 +11,7 @@
 .nova-petal{position:fixed;z-index:20000;width:9px;height:15px;border-radius:80% 10% 70% 20%;background:#b93257;pointer-events:none;animation:novaPetal 1.5s ease-out forwards}
 .nova-observatory>section{width:min(1180px,100%);margin:0 auto 72px}.nova-section-heading h2,.nova-fragments h2{margin:0 0 18px;color:var(--text-main);font:600 clamp(1.5rem,3vw,2.15rem)/1.1 Georgia,serif}
 .nova-section-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:22px}.nova-section-heading p{margin:0 0 5px;color:var(--text-secondary);font-size:.63rem;letter-spacing:.18em}.nova-section-heading h2{margin:0}.nova-section-heading>a{color:var(--text-secondary);font-size:.72rem}.nova-note-card--lead{grid-row:1/3}.nova-note-card .post_cover{position:absolute;inset:0;width:100%!important;height:100%!important;margin:0!important}.nova-note-card .post_cover::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,6,13,.96),rgba(4,6,13,.08) 75%)}.nova-note-card .post_cover a,.nova-note-card .post_cover img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .55s}.nova-note-card:hover .post_cover img{transform:scale(1.035)}.nova-note-card .recent-post-info{position:absolute!important;z-index:2;inset:auto 0 0;padding:46px 24px 14px!important;color:#fff;background:none!important}.nova-year-lines a{display:flex;align-items:center;gap:10px;flex:1;color:var(--text-secondary);font-size:.57rem}.nova-year-lines i{height:1px;flex:1;background:var(--line)}
-.nova-fragment-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.nova-fragment>div{position:relative;z-index:2}.nova-fragment small{color:#e4b2c2;font-size:.58rem;letter-spacing:.16em}.nova-fragment span{color:#d18aa0;font-size:.62rem}.nova-fragment--music img{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:none;filter:saturate(.72) brightness(.8)}.nova-footer::before{content:"";position:absolute;top:-1px;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--rose),var(--steel),transparent)}.nova-footer>div{display:grid;grid-template-columns:auto auto;gap:0 9px}.nova-footer>div b{grid-row:1/3;color:var(--rose)}
+.nova-fragment-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.nova-fragment>div{position:relative;z-index:2}.nova-fragment small{color:#e4b2c2;font-size:.58rem;letter-spacing:.16em}.nova-fragment span{color:#d18aa0;font-size:.7rem}.nova-fragment--music img{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:none;filter:saturate(.72) brightness(.8)}.nova-footer::before{content:"";position:absolute;top:-1px;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--rose),var(--steel),transparent)}.nova-footer>div{display:grid;grid-template-columns:auto auto;gap:0 9px}.nova-footer>div b{grid-row:1/3;color:var(--rose)}
 .nova-reveal{opacity:0;transform:translateY(18px);transition:.7s ease}.nova-reveal.is-visible{opacity:1;transform:none}
 @keyframes novaMist{to{transform:translate3d(1.5%,-1%,0);opacity:.75}}@keyframes novaPetal{to{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}}
 
@@ -266,7 +266,7 @@
 .nova-note-card--side .content{-webkit-line-clamp:1}
 
 .nova-fragment::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(7,9,16,.94),rgba(7,9,16,.42) 52%,rgba(7,9,16,.12));pointer-events:none}
-.nova-fragment h3{margin:5px 0 24px;color:#fff;font-size:18px}
+.nova-fragment h3{margin:12px 0 24px;color:#fff;font-size:18px}
 .nova-fragment{position:relative;display:flex;align-items:center;border:1px solid var(--line);background-position:center;transition:transform .35s;padding:26px;border-radius:13px;box-shadow:0 18px 42px rgba(0,0,0,.18);background-size:105%;min-height:216px;overflow:hidden}
 .nova-fragment--moments{background-image:url("/img/hero/archive-bg.webp");background-position:center 58%}
 .nova-fragment:hover{border-color:rgba(216,91,125,.38);transform:translateY(-3px);background-size:109%}
@@ -1549,4 +1549,14 @@ html[data-theme="light"] body.nova-home-active .nova-hero .nova-actions a:last-c
 /* P5: 最新文章 移动端单列(置于 base 规则之后以保证层叠生效) */
 @media(max-width:650px){
   .nova-recent-grid{grid-template-columns:1fr}
+}
+
+/* 区块三段式说明(字体回退初始形态 .95rem/.04em, 与标题间距保持关于页一致 12px) */
+/* 特异性 .nova-section-heading .nova-section-desc(0,2,0) > .nova-section-heading p(0,1,1), 否则被旧规则覆盖 */
+.nova-section-heading .nova-section-desc {
+  margin: 12px 0 0;
+  max-width: 740px;
+  color: var(--text-secondary);
+  font-size: .875rem;
+  letter-spacing: .04em;
 }

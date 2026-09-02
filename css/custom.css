@@ -539,7 +539,8 @@ body.nova-loading-active {
 }
 
 #local-search .search-dialog-title {
-  font-family:"Noto Serif SC","Songti SC",serif;
+  margin-top:4px;
+  font-family:"Noto Sans SC","Source Han Sans SC","Microsoft YaHei",sans-serif;
   font-size:1.35rem;
   font-weight:500;
   letter-spacing:.12em;
@@ -584,7 +585,7 @@ body.nova-loading-active {
 #local-search .local-search-input::before {
   position:absolute;
   z-index:2;
-  top:50%;
+  top:26px;
   left:19px;
   content:"\f002";
   color:#a76c82;
