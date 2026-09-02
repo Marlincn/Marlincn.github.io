@@ -52,7 +52,8 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 | --- | --- |
 | `site-config.js` | Node 构建期配置单源：`SITE`(从 `_config.yml` 的 url 解析，**顶层不碰 hexo**——见 Hexo 坑①) |
 | `parts-common.js` | 公共壳组装函数 + 组件读取(loading/sidebar/nav/footer/评论/按钮) |
-| `nova-tags.js` | 标签/索引页 + `search.xml`/`sitemap.xml`/`atom.xml` 生成器；`fmtDate` 来自 `lib/date.js` |
+| `nova-tags.js` | 标签/索引页 + `search.xml`/`sitemap.xml`/`atom.xml` 生成器；`fmtDate` 来自 `lib/date.js`；search.xml 含歌曲条目(构建期抓取) |
+| `lib/music-playlist.js` | 音乐歌单(搜索索引数据源)：构建时请求 B 站云函数 `/api/playlist`，成功回写 `data/music-playlist.json` 缓存，失败用缓存兜底；加减歌曲零人工 |
 | `home-generator.js` | 首页：shellTop + hero 段(LATEST 动态注入)+ mid(精选工程/最新文章卡注入)+ 页级 bottom + 公共尾；P5 数据规则见「首页 P5 数据流」 |
 | `page-generator.js` | 静态页：PAGES 配置表(pageClass/headerCls/mainCls/pre/showExtra/pageScripts) |
 | `projects-generator.js` | 工程页：列表 + 详情(下载链接由 `SITE + encodeURI(url)` 生成) |
@@ -71,7 +72,8 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 - **最新文章** = 文章按 `updated → 浏览量 → 标题` 取前 6(2 列 3 行)。
 - **浏览量**：`views-cache.json` 的 `pv` 段(= busuanzi 真实值 + 人工偏移);缺失时兜底 `projects-data.js` 的 `views` 字段(可选)。
 - **文章 updated**：Hexo 原生(无 `updated:` 时=文件 mtime;Marlin-web 本地工作目录 generate,时间真实)。
-- **工程 updated**：`projects-data.js` 的 `updated:` 字段(可选) > `source/assets/projects/<工程名>/` 目录 mtime > `date` 兜底。
+- **工程 updated**：`projects-data.js` 的 `updated:` 字段(可选) > **`source/assets/projects/<工程名>/` 目录内最新文件的 mtime(自动记录,robocopy 保留源文件时间故同步不污染)** > `date` 兜底。工程页概览第 4 栏"最近更新"与首页 LATEST SIGNAL 的工程日期统一读此链；**更新工程即上传/替换目录内文件,日期自动取最新文件 mtime,零人工**。
+- **概览统计条数据**：文章索引(/articles/)四栏 = TOPICS 主题总数 / ARTICLES 文章总数 / TOP TOPIC(最多文章主题+名称) / LATEST UPDATE(最新文章日期+标题)，数值由 `nova-tags.js` 注入；工程页(/projects/)四栏 = PROJECTS 项目总数 / TAGS 技术标签 / TOP PROJECT(真实 pv 最高的工程，pv 数字+工程名) / LATEST UPDATE(更新日期+工程名)，由 `projects-generator.js` 计算(真实 pv 取 `views-cache.json` 的 `lastRaw` 段；全部为 0 时第 3 栏兜底显示最新更新工程)。
 - **卡片注入**：mid.html 的 `<!--NOVA-FEATURED-->`/`<!--NOVA-RECENT-->` 与 top.html 的 `<!--NOVA-LATEST-->` 占位由生成器 `split().join()` 替换;卡片 HTML 拼装在 `home-generator.js` 的 `featuredCardsHtml`/`recentCardsHtml`/`latestSignal`。
 
 ### `themes/butterfly/layout/`
@@ -176,6 +178,8 @@ npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 - **换 B 站收藏夹源**：改 `source/rose-galaxy/js/lib/site-config.js` 的 `NOVA_SITE.bili` → bump `utils.js?` 无需，但 **bump site-config.js 引用处版本号**(yml inject) 防缓存。
 - **换页脚横幅图**：替换 `source/img/hero/archive-bg.webp`(保持文件名)；改色 → `custom.css` 两套规则；**勿在页级 css 加 footer 背景**。
 - **换页面 hero 背景**：页面级 css(`{page}-page.css`)中对应 `#page-header`/`.nova-hero-bg` 规则 → 图片放 `img/hero/` → bump 该 css 版本号。
+- **更新工程(日期同步)**：替换/新增 `source/assets/projects/<工程名>/` 下资源 → 工程页"最近更新"与首页 LATEST SIGNAL 自动更新为目录内最新文件 mtime(无需改代码);无文件时回退 `projects-data.js` 的 `date`(仅年份)。
+- **版本号升级**：改 `_config.yml` 的 `version:` 一行(权威源, pug/生成器引用自动生效) → 全站搜索 `?v=` 确认 `_config.butterfly.yml`(10 处) 与 html 片段(parts-common/footer、page-scripts 等) 的字面量同步手动改(这些无插值能力)。
 - **发布**：见「构建与部署」+「审批规则」。
 
 ---

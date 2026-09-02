@@ -258,7 +258,7 @@ html[data-theme="light"] body.nova-about-route .nova-about-status.nova-about-con
 .nova-about-site h2,
 .nova-about-contact h2,
 .nova-about-comments h2 {
-  margin: 7px 0 0;
+  margin: 4px 0 0;
   color: var(--about-text);
   font-weight: 560;
   letter-spacing: .04em;
@@ -331,7 +331,7 @@ html[data-theme="light"] body.nova-about-route .nova-about-status.nova-about-con
 
 .nova-about-section-head > span {
   display: block;
-  margin-top: 8px;
+  margin-top: 5px;
   color: var(--about-muted);
   font-size: .84rem;
 }

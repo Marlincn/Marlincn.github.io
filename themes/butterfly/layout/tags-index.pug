@@ -2,22 +2,22 @@ extends ./base.pug
 
 block headOpts
   - page.bodyClass = 'nova-tag-route nova-tags-route'
-  - page.headOpts = { title: '文章 | Marlin', siteTitle: '文章', description: '通过文章查找 Marlin 博客中的技术笔记、算法练习与学习记录。', ogUrl: siteUrl + '/articles/', pageType: 'page', extraCss: '<link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=20260831-p1">', extraHead: page.ldjson }
+  - page.headOpts = { title: '文章 | Marlin', siteTitle: '文章', description: '通过文章查找 Marlin 博客中的技术笔记、算法练习与学习记录。', ogUrl: siteUrl + '/articles/', pageType: 'page', extraCss: '<link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=' + config.version + '">', extraHead: page.ldjson }
 
 block content
   != page.shellTop
   section.nova-tag-summary.nova-tags-summary(aria-label='文章概览')
     div
       strong= page.topicsCount
-      span ARTICLES
-      small 有效文章
+      span TOPICS
+      small 主题总数
     div
       strong= page.articlesCount
       span ARTICLES
-      small 公开文章
+      small 文章总数
     div
       strong= page.topTopicCount
-      span TOP ARTICLE
+      span TOP TOPIC
       small= page.topTopicName
     div
       strong= page.latestDate

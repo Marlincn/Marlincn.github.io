@@ -17,6 +17,7 @@ const readTagBottom = fs.readFileSync(path.join(tagParts, 'bottom.html'), 'utf8'
 const readIdxTop = fs.readFileSync(path.join(idxParts, 'top.html'), 'utf8')
 
 const { SITE } = require('./site-config')
+const { loadSearchSongs } = require('./lib/music-playlist')
 
 function stripMd(text) {
   return text
@@ -53,7 +54,7 @@ function htmlToText(html) {
     .replace(/\u00a0/g, ' ')
 }
 
-function renderSearchXml(posts) {
+function renderSearchXml(posts, songs) {
   const entries = posts
     .slice()
     .sort((a, b) => b.date - a.date)
@@ -71,7 +72,23 @@ function renderSearchXml(posts) {
       return '<entry>\n    <title>' + escXml(p.title) + '</title>\n    <url>' + escXml(url) + '</url>\n    <content><![CDATA[' + content + ']]></content>\n  </entry>'
     })
     .join('\n')
-  return '<?xml version="1.0" encoding="utf-8"?>\n<search>\n' + entries + '\n</search>\n'
+  // 歌曲条目(构建期抓取/缓存, 点击直达 /music/?song=<bvid> 定位并播放);
+  // content = 歌曲标题(含歌名/简介文案) + 作者, 音乐页框架说明文字不入索引
+  const musicEntries = (songs || [])
+    .map(s => {
+      const title = String(s.title || '').trim()
+      const artist = String(s.artist || '').trim()
+      const bvid = String(s.bvid || '')
+      if (!title || !bvid) return ''
+      const content = (title + '\n' + artist).replace(/\]\]>/g, '] ]>')
+      return '<entry>\n    <title>' + escXml(title) + '</title>\n    <url>/music/?song=' + encodeURIComponent(bvid) + '</url>\n    <content><![CDATA[' + content + ']]></content>\n  </entry>'
+    })
+    .filter(Boolean)
+    .join('\n')
+  return '<?xml version="1.0" encoding="utf-8"?>\n<search>\n'
+    + (entries ? entries + '\n' : '')
+    + (musicEntries ? musicEntries + '\n' : '')
+    + '</search>\n'
 }
 
 function renderSitemap(posts) {
@@ -113,7 +130,7 @@ function idxLdjson() {
   return '<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","@id":"' + SITE + '/articles/#webpage","name":"\u6587\u7ae0","url":"' + SITE + '/articles/","description":"\u901a\u8fc7\u6587\u7ae0\u67e5\u627e Marlin \u535a\u5ba2\u4e2d\u7684\u6280\u672f\u7b14\u8bb0\u3001\u7b97\u6cd5\u7ec3\u4e60\u4e0e\u5b66\u4e60\u8bb0\u5f55\u3002","inLanguage":"zh-CN","isPartOf":{"@type":"WebSite","@id":"' + SITE + '/#website","url":"' + SITE + '/","name":"Marlin"}}</script>'
 }
 
-hexo.extend.generator.register('nova-tags', function (locals) {
+hexo.extend.generator.register('nova-tags', async function (locals) {
   const posts = locals.posts.toArray ? locals.posts.toArray() : locals.posts
   const tagMap = new Map()
   posts.forEach(p => {
@@ -150,8 +167,11 @@ hexo.extend.generator.register('nova-tags', function (locals) {
   // tag 页级: 单双栏切换按钮 + 页级脚本(tag-page.js)
   const tagShellBottom = buildFooter({ hideExtra: RIGHTSIDE_ASIDE, pageScripts: readTagBottom })
 
+  // 音乐歌单(搜索索引用): 构建时抓取云函数, 失败用 data/music-playlist.json 缓存兜底
+  const searchSongs = await loadSearchSongs()
+
   const files = [
-    { path: 'search.xml', data: renderSearchXml(posts) },
+    { path: 'search.xml', data: renderSearchXml(posts, searchSongs) },
     { path: 'sitemap.xml', data: renderSitemap(posts) },
     { path: 'atom.xml', data: renderAtom(posts) },
     {

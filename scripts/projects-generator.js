@@ -81,14 +81,59 @@ hexo.extend.generator.register('nova-projects', function () {
     }))
   }))
 
-  const uniqueTags = new Set()
+  // 工程更新日期: 目录内最新文件的 mtime(robocopy 保留源文件时间, 同步不污染), 无则回退 date
+function updateDateOf(pp) {
+  try {
+    let d = (pp.downloads && pp.downloads[0] && (pp.downloads[0].href || pp.downloads[0].url)) || ''
+    d = decodeURIComponent(d.replace(/^https?:\/\/[^/]+/, ''))
+    const m = d.match(/^\/assets\/projects\/([^/]+)\//)
+    if (m) {
+      const dir = path.join(__dirname, '..', 'source', 'assets', 'projects', m[1])
+      if (fs.existsSync(dir)) {
+        let maxM = 0
+        for (const f of fs.readdirSync(dir)) {
+          try { maxM = Math.max(maxM, fs.statSync(path.join(dir, f)).mtime.getTime()) } catch (e) {}
+        }
+        if (maxM) return new Date(maxM).toISOString().slice(0, 10)
+      }
+    }
+  } catch (e) {}
+  return pp.date || ''
+}
+// —— 真实浏览量(lastRaw) + 工程"最后更新"(资产目录mtime或updated/date) ——
+function loadRawPv() {
+  try {
+    const c = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'views-cache.json'), 'utf8'))
+    return c.lastRaw || {}
+  } catch (e) { return {} }
+}
+function projectUpdated(p) {
+  if (p.updated) return String(p.updated)
+  const dl = (p.downloads && p.downloads[0] && p.downloads[0].url) || ''
+  const m = dl.match(/^\/assets\/projects\/([^/]+)\//)
+  if (m) {
+    const dir = path.join(__dirname, '..', 'source', 'assets', 'projects', m[1])
+    try { return fmtDate(fs.statSync(dir).mtime) } catch (e) {}
+  }
+  return p.date || ''
+}
+const uniqueTags = new Set()
   prepared.forEach(p => p.tags.forEach(t => uniqueTags.add(t)))
 
+  const rawPv = loadRawPv()
+  const pvOfP = pp => rawPv['/projects/' + pp.id + '/'] || 0
+  const updMs = pp => new Date(updateDateOf(pp) || 0).getTime()
+  const byPvUpd = (a, b) => (pvOfP(b) - pvOfP(a)) || (updMs(b) - updMs(a)) || a.title.localeCompare(b.title, 'zh')
+  const byUpd = (a, b) => (updMs(b) - updMs(a)) || a.title.localeCompare(b.title, 'zh')
+  const hasPv = prepared.some(pp => pvOfP(pp) > 0)
+  const topProject = prepared.slice().sort(byPvUpd)[0]
+  const latestProject = prepared.slice().sort(byUpd)[0]
+
   const stats = [
-    { value: String(prepared.length), en: 'PROJECTS', zh: '有效项目' },
-    { value: String(CATEGORIES.length), en: 'CATEGORIES', zh: '工程分类' },
+    { value: String(prepared.length), en: 'PROJECTS', zh: '项目总数' },
     { value: String(uniqueTags.size), en: 'TAGS', zh: '技术标签' },
-    { value: 'WIP', en: 'IN PROGRESS', zh: '持续更新中' }
+    { value: String(pvOfP(topProject)), en: 'TOP PROJECT', zh: hasPv ? topProject.title : latestProject.title },
+    { value: updateDateOf(latestProject), en: 'LATEST UPDATE', zh: latestProject.title }
   ]
 
   // 公共壳(P1 重建): sidebar 统计卡数字动态计算

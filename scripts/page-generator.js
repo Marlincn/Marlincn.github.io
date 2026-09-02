@@ -8,6 +8,7 @@
 const fs = require('fs')
 const path = require('path')
 const { composeShell, WALINE_COMMENT, RIGHTSIDE_COMMENT } = require('./parts-common')
+const { VERSION } = require('./site-config')
 
 const partsDir = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'page-parts')
 const readMain = name => fs.readFileSync(path.join(partsDir, name + '.html'), 'utf8')
@@ -23,7 +24,7 @@ const PAGES = [
     // 全站背景层(P1 补回): 与 prod 一致——DOM 保留, 页面 css 隐藏
     pre: '<div class="bg-animation" id="web_bg"></div>',
     showExtra: RIGHTSIDE_COMMENT,
-    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/music-page.js?v=20260831-p1"></script>'
+    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/music-page.js?v=' + VERSION + '"></script>'
   },
   {
     name: 'moments',
@@ -33,7 +34,7 @@ const PAGES = [
     headerCls: 'not-home-page nova-moments-nav-header',
     mainCls: 'nova-moments-shell',
     showExtra: RIGHTSIDE_COMMENT,
-    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/moments-page.js?v=20260831-p1"></script>'
+    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/moments-page.js?v=' + VERSION + '"></script>'
   },
   {
     name: 'about',

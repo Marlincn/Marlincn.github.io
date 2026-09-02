@@ -38,7 +38,17 @@ function projectUpdated(p) {
   const dl = (p.downloads && p.downloads[0] && p.downloads[0].url) || ''
   const m = dl.match(/^\/assets\/projects\/([^/]+)\//)
   if (m) {
-    const dir = path.join(__dirname, '..', 'source', 'assets', 'projects', m[1])
+    const dir = path.join(__dirname, '..', 'source', 'assets', 'projects', decodeURIComponent(m[1]))
+    // 目录内最新文件的 mtime(robocopy 保留源时间, 同步不污染)
+    try {
+      if (fs.existsSync(dir)) {
+        let maxM = 0
+        for (const f of fs.readdirSync(dir)) {
+          try { maxM = Math.max(maxM, fs.statSync(path.join(dir, f)).mtime.getTime()) } catch (e) {}
+        }
+        if (maxM) return new Date(maxM).toISOString().slice(0, 10)
+      }
+    } catch (e) { /* 继续兜底 */ }
     try { return fmtDate(fs.statSync(dir).mtime) } catch (e) { /* 目录缺失则继续兜底 */ }
   }
   return p.date || ''

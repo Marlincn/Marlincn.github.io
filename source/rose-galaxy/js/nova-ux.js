@@ -74,7 +74,7 @@
       <p>输入关键词，或先浏览常用页面。</p>
       <nav aria-label="搜索快速入口">
         <a href="/articles/">文章</a>
-        <a href="/moments/">说说</a>
+        <a href="/projects/">工程</a>
         <a href="/music/">音乐</a>
       </nav>`
     results.before(state)

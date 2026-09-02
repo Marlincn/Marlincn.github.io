@@ -231,8 +231,17 @@
           renderCurrentSong();
           renderVisibleCards();
           updateProgress();
-          // 预载当前歌曲(不自动播): 点击播放时音频已就绪, 立即出声
-          player.playSongAt(player.state.currentIndex, false);
+          // 搜索直达: ?song=<bvid> → 定位并播放对应歌曲;
+          // 无参数时预载当前歌曲(不自动播): 点击播放时音频已就绪, 立即出声
+          const targetBvid = new URLSearchParams(location.search).get("song");
+          const targetIndex = targetBvid
+            ? j.songs.findIndex(s => String(s.bvid || "") === targetBvid)
+            : -1;
+          if (targetIndex >= 0) {
+            player.playSongAt(targetIndex, true);
+          } else {
+            player.playSongAt(player.state.currentIndex, false);
+          }
         })
         .catch(e => {
           showLoadFailure("收藏夹加载失败", String(e?.message || e).slice(0, 90));
