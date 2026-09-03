@@ -1,7 +1,9 @@
-# Marlin-web 维护文档
+# Marlin-web 维护文档(Agent 版)
 
-> 面向维护者的内部文档：架构实现、目录职责、Hexo 工程坑、构建部署流程。
-> 「怎么用/怎么写内容」请看同目录 `README.md`；历史分期台账(STRUCTURE-REFACTOR.md, 早期重构记录)原在本地 `Desktop\data\`, 已随 2026-09-03 归档整理下架(不入 git)。
+> 本文件主要面向 **AI/Agent 维护者**:架构事实、改动纪律、部署流程、工程坑。
+> 操作者必须遵守,避免误触误删;人类用户看 `README.md` 与演示站交互即可。
+> 线上发布仍须用户逐次明确批准;GitHub 提交注释用**英文简洁**风格。
+> 历史分期台账(STRUCTURE-REFACTOR.md)原在本地 `Desktop\data\`,已于 2026-09-03 归档下架(不入 git)。
 
 ---
 
@@ -141,6 +143,9 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 
 ## 构建与部署
 
+**仓库分支**:`main`(源码) / `public`(Pages 产物) / `waline`(Waline 后端)；
+本地: `web\SourceCode`(main 工作区) + `web\Marlin-web-demo2`(演示站, node_modules junction, 4007)。
+
 ```bash
 npm run build     # hexo generate && node scripts/minify.js(esbuild 压缩全部 JS)
 npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
@@ -165,10 +170,19 @@ npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 2. **未经用户明确批准，禁止任何提交/推送/部署**（git push / hexo deploy / GitHub Pages / SourceCode）。发布动作必须逐次明确授权。
 3. 结构性/行为性决策先询问用户。
 4. 修复完成后只汇报验证结果并请求批准；禁止以"已验证/惯例/之前授权过"为由自行发布。
+5. GitHub 提交注释一律**英文简洁**(如 "Globalize page CSS into inject.head … v20260831-p37")；本地演示站 git 注释可中文。
 
 ---
 
-## Hexo 工程坑（务必阅读）
+## Agent 操作守则(零容忍项, 违反=误触)
+
+1. **不改** `source/css/index.css`(Butterfly 上游副本, 标注"勿改")与 `themes/butterfly/layout/includes/`(原版布局链:文章详情页依赖;`includes/third-party/pjax.pug`、`additional-js.pug` 为**孤儿文件**, 主题版渲染链在本站不存在, 勿依赖/勿开启 `theme.pjax`)。
+2. **编辑前先停 hexo server**(Windows 文件锁 → edit EIO);改 `scripts/*.js` 或 `_config*.yml` 后必须**重启 server** 再验证。
+3. **页级 CSS 只有一处来源**:`_config.butterfly.yml inject.head`。**勿**恢复 head extraCss / body 内 PAGE_STYLES 双份机制(2026-09-03 A 方案已全局化, 死代码已清)。
+4. **发布三连**:robocopy 同步(注意不删目标多余文件 → 手动清残留)→ `hexo generate`(clean 后如有 minify ENOENT 重跑一次)→ 用户批准后 `push main` + `hexo deploy`。
+5. **SCF 云函数**:响应勿加自定义 `Content-Length`(网关注入双 CT);前端 fetch 按响应体字节判定 base64, 勿再改回 audio 直连(网关注入 `application/json`, 实测不可行)。
+
+## Hexo 工程坑
 
 1. **hexo 用 vm 包装加载 scripts/*.js**：`(async function(exports, require, module, __filename, __dirname, hexo){...})`——`hexo` 只作为参数传给**被直接加载的脚本**；**内部 `require` 的模块拿不到 hexo**（写共享模块勿在顶层用 hexo——曾致 "hexo is not defined"/"not a function"）。共享模块要么不依赖 hexo（如 site-config.js 直接读 yml），要么导出工厂由生成器传参——后者同样可能有加载顺序问题，**首选零依赖方案**。
 2. **hexo 会执行 scripts/ 下所有 .js**：一次性工具(顶层立即写文件)放这里会污染源文件——`pure_parts.js`/`extract_parts.js`/`slice_footer.js` 曾把 page-parts 与 footer.html 覆盖回旧版（"双 nav/横幅丢失"的元凶），已迁 `py-tools/archive/`。
@@ -178,6 +192,10 @@ npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 6. **Hexo excerpt 是渲染后的 HTML**：生成摘要须先剥离 HTML 标签，否则残留未闭合标签破坏卡片 DOM。
 7. **hexo generate 不删孤儿文件**：删除文章/页面后需 `hexo clean` 再 generate；偶尔 `2026/`/空目录残留需手动删（server 竞争或 clean 未彻底时）。
 8. **headless 截图陷阱**：虚拟时钟会冻结入场动画、缓存旧 CSS，验证用全新 profile + 像素采样。
+9. **SCF 网关注入**:`Content-Type: application/json` 被强制附加(双头),二进制音频经 **base64 文本**传输;`audio.src` 直连会被浏览器拒播——前端必须 fetch→字节判定→base64 解码→Blob。
+10. **robocopy 不删目标多余文件**:源端删除的文件(图片/文档)不会从 `SourceCode` 消失,需手动删(常见于图标/旧 logo/zip 遗留)。
+11. **主题版 PJAX / additional-js 为孤儿**:自制 `base.pug` 无渲染链,`theme.pjax.enable` 永远不要开(注释已写);要改 PJAX 只改 `parts-common/footer.html`。
+12. **agent 编辑纪律**:删除任何文件前确认「它是上游副本/一次性工具/被其他文件引用」;一次性脚本放 `Desktop\data\_archive-2026-09\`(已归档)或 `py-tools/archive/`,严禁放入 `scripts/`(hexo 会执行脚本目录全部 .js)。
 
 ---
 
