@@ -6,7 +6,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const { composeShellTop, buildFooter, PAGE_STYLES } = require('./parts-common')
+const { composeShellTop, buildFooter } = require('./parts-common')
 const { fmtDate } = require('./lib/date')
 const { projectUpdated } = require('./lib/project-date')
 
@@ -116,7 +116,6 @@ const uniqueTags = new Set()
     headerCls: 'not-home-page nova-tag-hero',
     headerStyle: 'background-image:url(/img/hero/projects-hero.webp)',
     siteData: projectsStat,
-    pageCss: PAGE_STYLES.projects,
     closeHeader: false
   }) + '\n' + readProjectTop
   const shellBottom = buildFooter()

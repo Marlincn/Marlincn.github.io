@@ -31,20 +31,8 @@ const RIGHTSIDE_ASIDE = read('rightside-aside.html')
 // page-parts 中的 <!--NOVA-COMMENT-CORE--> 占位符; 标题/文案仍属页内容
 const COMMENT_CORE = read('comment-core.html')
 
-/* 页级 CSS(与各 pug headOpts.extraCss 同值):
-   - head 里输出一份(首屏直出, 避免 FOUC)
-   - body-wrap 内再输出一份(由生成器经 pageCss 注入): PJAX 切换时随内容替换,
-     使页级样式在 PJAX 下自动生效/失效, 无需注入器。
-   注意: custom.css / project-detail-page.css / nova-player.css / nova-visitor.css
-   已在 _config.butterfly.yml 全局注入 head, 不需要这里声明。 */
-const PAGE_STYLES = {
-  home: '<link rel="stylesheet" href="/rose-galaxy/css/nova-home.css?v=' + VERSION + '" data-nova-home-style="">',
-  music: '<link href="/rose-galaxy/css/music-page.css?v=' + VERSION + '" rel="stylesheet" data-nova-music-style="">',
-  about: '<link href="/rose-galaxy/css/about-page.css?v=' + VERSION + '" rel="stylesheet" data-nova-about-style="">',
-  tag: '<link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=' + VERSION + '">',
-  projects: '<link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=' + VERSION + '"><link href="/rose-galaxy/css/projects-page.css?v=' + VERSION + '" rel="stylesheet" data-nova-projects-style="">',
-  moments: '<link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=' + VERSION + '"><link href="/rose-galaxy/css/moments-page.css?v=' + VERSION + '" rel="stylesheet" data-nova-moments-style="">'
-}
+/* 页级 CSS(2026-09-03 A 方案): 已全量全局注入(_config.butterfly.yml inject.head),
+   body 内不再随内容注入——原 PAGE_STYLES/pageCss 机制废弃(直入/PJAX 均零异步窗口) */
 
 // footer 拆段: 主体(含 body-wrap 闭合</div>) / 尾部(rightside+脚本+local-search)
 const FOOTER_BODY = FOOTER.slice(0, FOOTER.indexOf('<div id="rightside">'))
@@ -78,8 +66,6 @@ function composeShellTop(opts) {
   if (o.pre) out += o.pre + '\n'
   out += buildSidebar(o.siteData) + '\n'
   out += '<div class="page' + (o.pageClass ? ' ' + o.pageClass : '') + '" id="body-wrap">'
-  // 页级 CSS(PJAX 随内容切换): 置于 header 之前, 保证样式先于内容解析
-  if (o.pageCss) out += o.pageCss + '\n'
   out += '<header' + (o.headerCls ? ' class="' + o.headerCls + '"' : '') + ' id="page-header"'
   if (o.headerStyle) out += ' style="' + o.headerStyle + '"'
   out += '>' + NAV
@@ -94,7 +80,6 @@ function composeShell(opts) {
     pageClass: o.pageClass,
     headerCls: o.headerCls,
     pre: o.pre,
-    pageCss: o.pageCss,
     siteData: o.siteData
   })
   let main = '<main' + (o.mainCls ? ' class="' + o.mainCls + '"' : '') + ' id="content-inner">'
@@ -113,7 +98,6 @@ module.exports = {
   // 组件
   LOADING, NAV, SIDEBAR, FOOTER,
   WALINE_COMMENT, RIGHTSIDE_COMMENT, RIGHTSIDE_ASIDE, COMMENT_CORE,
-  PAGE_STYLES,
   // 构建函数
   buildSidebar, buildFooter, composeShellTop, composeShell
 }

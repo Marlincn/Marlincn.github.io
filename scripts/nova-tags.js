@@ -7,7 +7,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const { composeShellTop, buildFooter, RIGHTSIDE_ASIDE, PAGE_STYLES } = require('./parts-common')
+const { composeShellTop, buildFooter, RIGHTSIDE_ASIDE } = require('./parts-common')
 const { fmtDate } = require('./lib/date')
 
 const tagParts = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'tag-parts')
@@ -154,7 +154,6 @@ hexo.extend.generator.register('nova-tags', async function (locals) {
     headerCls: 'not-home-page nova-tag-hero',
     headerStyle: 'background-image:url(/img/hero/tag-hero.webp)',
     siteData: articles,
-    pageCss: PAGE_STYLES.tag,
     closeHeader: false
   }) + '\n' + readIdxTop
   const idxShellBottom = buildFooter()
@@ -163,7 +162,6 @@ hexo.extend.generator.register('nova-tags', async function (locals) {
     headerCls: 'not-home-page nova-tag-hero',
     headerStyle: 'background-image:url(/img/hero/leetcode.webp)',
     siteData: articles,
-    pageCss: PAGE_STYLES.tag,
     closeHeader: false
   }) + '\n' + readTagTop
   // tag 页级: 单双栏切换按钮 + 页级脚本(tag-page.js)

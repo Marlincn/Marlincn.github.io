@@ -221,8 +221,7 @@ mixin head(opts)
         pageType: !{JSON.stringify(opts.pageType || 'page')}
       }
     != (theme.inject && theme.inject.head ? theme.inject.head.join('') : '')
-    //- 页级 CSS: head extraCss(首屏直出, 各 pug headOpts 提供) + body 内 PAGE_STYLES(PJAX 随内容切换)——
-    //- 机制性双份(B6 修订 2026-09-03): 直入/刷新无裸渲染, PJAX 切换样式随内容;
-    //- 同 URL 首屏自动去重; 版本由 bump 脚本全量同步(低风险)。
-    != opts.extraCss || ''
+    //- 页级 CSS(A 方案 2026-09-03): 已全量全局注入(butterfly.yml inject.head, 见上),
+    //- 此处不再输出 extraCss——各 pug headOpts.extraCss 值为废弃配置(保留无影响)。
+    != '' || ''
     != opts.extraHead || ''
