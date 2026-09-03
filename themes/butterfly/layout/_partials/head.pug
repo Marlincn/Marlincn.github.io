@@ -221,8 +221,8 @@ mixin head(opts)
         pageType: !{JSON.stringify(opts.pageType || 'page')}
       }
     != (theme.inject && theme.inject.head ? theme.inject.head.join('') : '')
-    //- B6 单源(2026-09-02): 页级 CSS link 不再由 head extraCss 输出(各 pug 中的
-    //- extraCss 值保留为无害配置), 统一由生成器注入 #body-wrap 内(PAGE_STYLES),
-    //- 首屏与 PJAX 切换共享同一份渲染链路。
-    != '' || ''
+    //- 页级 CSS: head extraCss(首屏直出, 各 pug headOpts 提供) + body 内 PAGE_STYLES(PJAX 随内容切换)——
+    //- 机制性双份(B6 修订 2026-09-03): 直入/刷新无裸渲染, PJAX 切换样式随内容;
+    //- 同 URL 首屏自动去重; 版本由 bump 脚本全量同步(低风险)。
+    != opts.extraCss || ''
     != opts.extraHead || ''
