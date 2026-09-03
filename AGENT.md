@@ -1,4 +1,4 @@
-# Marlin-web 维护文档(Agent 版)
+# Marlin-web 维护文档
 
 > 本文件主要面向 **AI/Agent 维护者**:架构事实、改动纪律、部署流程、工程坑。
 > 操作者必须遵守,避免误触误删;人类用户看 `README.md` 与演示站交互即可。
@@ -175,7 +175,9 @@ npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 
 ---
 
-## Agent 操作守则(零容忍项, 违反=误触)
+## Agent 操作守则
+
+>**零容忍项, 违反=误触**
 
 1. **不改** `source/css/index.css`(Butterfly 上游副本, 标注"勿改")与 `themes/butterfly/layout/includes/`(原版布局链:文章详情页依赖;`includes/third-party/pjax.pug`、`additional-js.pug` 为**孤儿文件**, 主题版渲染链在本站不存在, 勿依赖/勿开启 `theme.pjax`)。
 2. **编辑前先停 hexo server**(Windows 文件锁 → edit EIO);改 `scripts/*.js` 或 `_config*.yml` 后必须**重启 server** 再验证。

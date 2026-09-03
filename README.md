@@ -325,7 +325,7 @@ Marlin-web/
 │   ├── {home,tag,idx,page,project}-parts/   各页静态骨架片段(纯页级内容)
 │   ├── home.pug / tag.pug / tags-index.pug / music.pug / moments.pug / about.pug / projects.pug / project-detail.pug / 404.pug
 │   └── includes/            Butterfly 原版布局链(文章详情页使用)
-└── README.md                本站文档(本文档)+ MAINTENANCE.md(技术维护)
+└── README.md                本站文档(本文档)+ AGENT.md(AI维护手册)
 ```
 
 ---
@@ -420,4 +420,4 @@ Marlin-web/
 - **headless 截图陷阱**:虚拟时钟会冻结入场动画、缓存旧 CSS,验证用全新 profile + 像素采样
 ---
 ## 维护文档
-> 本文档面向"人"(怎么用/怎么写内容);架构内部细节、部署流程与 Hexo 踩坑见 **`MAINTENANCE.md`**(维护文档,与本文档同目录)。
+> 本文档面向"人"(怎么用/怎么写内容);架构内部细节、部署流程与 Hexo 踩坑见 **`AGENT.md`**(AI 维护手册,与本文档同目录)。
