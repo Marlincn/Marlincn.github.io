@@ -37,7 +37,7 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 
 **公共壳要点**（`scripts/parts-common.js`）：
 
-- `composeShellTop({pageClass, headerCls, headerStyle, siteData, pageCss, pre, closeHeader})` → loading + 背景层(web_bg) + sidebar(统计卡插槽) + `body-wrap` 开 + **页级 CSS link(pageCss, PJAX 随内容切换)** + `header` 开 + nav；`closeHeader:false` 表示 header 由页级(模板/parts)闭合
+- `composeShellTop({pageClass, headerCls, headerStyle, siteData, pre, closeHeader})` → loading + 背景层(web_bg) + sidebar(统计卡插槽) + `body-wrap` 开 + `header` 开 + nav；`closeHeader:false` 表示 header 由页级(模板/parts)闭合；**页级 CSS 已全量全局注入**(butterfly.yml inject.head, A 方案 2026-09-03, 不再随内容注入)
 - `buildFooter({hideExtra, showExtra, pageScripts, withFooter})` → footer 主体(可关,首页自定义页脚)+ rightside(按钮插槽)+ 公共脚本群 + **页级脚本插槽**(js-pjax 内 mermaid 之后)+ local-search
 - `composeShell(opts)` 静态页完整壳(header 恒空、main 内容传入)
 - 插槽标记：`<!--NOVA-SITE-DATA-->` / `<!--NOVA-RIGHTSIDE-HIDE--|SHOW-->` / `<!--NOVA-PAGE-SCRIPTS-->` / `<!--NOVA-LATEST-->`(首页最新文章,由 home-generator 动态注入) / `<!--NOVA-COMMENT-CORE-->`(评论内核, page-generator 注入 comment-core.html, C9)
