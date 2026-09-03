@@ -1,7 +1,7 @@
 # Marlin-web 维护文档
 
 > 面向维护者的内部文档：架构实现、目录职责、Hexo 工程坑、构建部署流程。
-> 「怎么用/怎么写内容」请看同目录 `README.md`；重构问题清单与分期台账在本地 `C:\Users\mabin\Desktop\data\STRUCTURE-REFACTOR.md`（不入 git）。
+> 「怎么用/怎么写内容」请看同目录 `README.md`；历史分期台账(STRUCTURE-REFACTOR.md, 早期重构记录)原在本地 `Desktop\data\`, 已随 2026-09-03 归档整理下架(不入 git)。
 
 ---
 
