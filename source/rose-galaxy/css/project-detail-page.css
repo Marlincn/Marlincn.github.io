@@ -91,7 +91,7 @@ html[data-theme="light"] .nova-project-detail-panel {
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--nova-tag-accent, #cd6990);
+  background: var(--nova-tag-accent, var(--nova-rose));
 }
 
 /* 「工程链接」标题: 与资料下载标题同款(图标前缀), 与正文略微拉开 */
@@ -611,7 +611,7 @@ html[data-theme="light"] .nova-project-detail-dl-files li {
 
 .nova-project-detail-comments .comment-headline i {
   margin-right: 8px;
-  color: var(--nova-tag-accent, #cd6990);
+  color: var(--nova-tag-accent, var(--nova-rose));
 }
 
 @media (max-width: 1180px) {

@@ -12,13 +12,16 @@
   const BILI_UID = window.NOVA_SITE.bili.uid;
   const BILI_FOLDER = window.NOVA_SITE.bili.folder;
 
-  const visualImages = [
-    "/img/music/music1.webp",
-    "/img/music/music2.webp",
-    "/img/music/music3.webp",
-    "/img/music/music4.webp",
-    "/img/music/music5.webp",
-  ];
+  // B5 单源(2026-09-02): 视觉图列表改为运行时从音乐页卡片 DOM 收集(data-src),
+  // 与 music.html 卡片 img 单一来源, 换图只改模板
+  // C7/C10 2026-09-02: 共享工具从 NOVA_UTILS 解构(原局部 songName/songArtist/formatTime 包装已收敛)
+  const formatTime = window.NOVA_UTILS.formatTime;
+  const songName = window.NOVA_UTILS.songName;
+  const songArtist = window.NOVA_UTILS.songArtist;
+
+  const visualImages = Array.from(document.querySelectorAll(".nova-music-card img"))
+    .map(img => img.dataset.src || "")
+    .filter(Boolean);
   const visibleOffsets = [-2, -1, 0, 1, 2];
   const loadedVisualImages = new Set();
   const pendingVisualImages = new Map();
@@ -82,10 +85,6 @@
       .catch(error => console.warn(error.message));
   }
 
-  function formatTime(seconds) {
-    return window.NOVA_UTILS.formatTime(seconds);
-  }
-
   function createMusicPageController(root) {
     const player = window.__novaPlayer;
     const els = {
@@ -111,8 +110,6 @@
       listeners.push(() => target?.removeEventListener(type, handler, options));
     };
 
-    const songName = song => song?.name || song?.title || "未命名歌曲";
-    const songArtist = song => song?.artist || song?.author || "未知歌手";
     const songCover = (song, index) => song?.cover || song?.pic || visualImages[normalizeIndex(index, visualImages.length)];
 
     function normalizeIndex(index, length) {

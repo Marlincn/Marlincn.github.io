@@ -37,6 +37,15 @@
   --nova-focus: #b86a83;
   --nova-focus-ring: rgba(184, 106, 131, .14);
 
+  /* 主题玫瑰主色(A2 令牌, 2026-09-02): 全站唯一来源。
+     --nova-rose = hex 别名; --nova-rose-rgb 供 rgb(var(--nova-rose-rgb) / <alpha>) 使用 */
+  --nova-rose: #ce718f;
+  --nova-rose-rgb: 206 113 143;
+
+  /* 字体栈(C11 单源, 2026-09-02): 衬线/无衬线官方栈, 各页面 CSS 引用 */
+  --font-serif: "Cormorant Garamond","Playfair Display",Georgia,serif;
+  --font-sans: "Inter","Noto Sans SC","Source Han Sans SC","Microsoft YaHei",sans-serif;
+
   /* Shared comments. */
   --nova-comment-panel: rgba(20, 25, 39, .78);
   --nova-comment-field: rgba(31, 33, 49, .68);
@@ -66,7 +75,7 @@
   --nova-category-text-secondary: rgba(224, 219, 227, .76);
   --nova-category-text-muted: rgba(194, 188, 202, .64);
   --nova-category-text-faint: rgba(174, 168, 183, .52);
-  --nova-category-accent: #ce718f;
+  --nova-category-accent: var(--nova-rose);
   --nova-category-border: rgba(229, 198, 213, .11);
   --nova-tag-bg: #080e1a;
   --nova-tag-bg-soft: #0a1322;
@@ -74,7 +83,7 @@
   --nova-tag-text: #f1edf2;
   --nova-tag-secondary: rgba(224, 219, 227, .76);
   --nova-tag-muted: rgba(195, 189, 202, .64);
-  --nova-tag-accent: #ce718f;
+  --nova-tag-accent: var(--nova-rose);
   --nova-tag-slate: #8196aa;
   --nova-tag-line: rgba(229, 198, 213, .11);
 
@@ -442,7 +451,7 @@ body.nova-loading-active {
 .nova-page-loading__inner strong {
   margin-top: 16px;
   color: rgba(224,218,223,.84);
-  font: 500 1rem/1.2 "Cormorant Garamond",Georgia,serif;
+  font: 500 1rem/1.2 var(--font-serif);
   letter-spacing: .26em;
 }
 
@@ -540,7 +549,7 @@ body.nova-loading-active {
 
 #local-search .search-dialog-title {
   margin-top:4px;
-  font-family:"Noto Sans SC","Source Han Sans SC","Microsoft YaHei",sans-serif;
+  font-family:var(--font-sans);
   font-size:1.35rem;
   font-weight:500;
   letter-spacing:.12em;

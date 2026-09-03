@@ -37,10 +37,10 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 
 **公共壳要点**（`scripts/parts-common.js`）：
 
-- `composeShellTop({pageClass, headerCls, headerStyle, siteData, pre, closeHeader})` → loading + 背景层(web_bg) + sidebar(统计卡插槽) + `body-wrap` 开 + `header` 开 + nav；`closeHeader:false` 表示 header 由页级(模板/parts)闭合
+- `composeShellTop({pageClass, headerCls, headerStyle, siteData, pageCss, pre, closeHeader})` → loading + 背景层(web_bg) + sidebar(统计卡插槽) + `body-wrap` 开 + **页级 CSS link(pageCss, PJAX 随内容切换)** + `header` 开 + nav；`closeHeader:false` 表示 header 由页级(模板/parts)闭合
 - `buildFooter({hideExtra, showExtra, pageScripts, withFooter})` → footer 主体(可关,首页自定义页脚)+ rightside(按钮插槽)+ 公共脚本群 + **页级脚本插槽**(js-pjax 内 mermaid 之后)+ local-search
 - `composeShell(opts)` 静态页完整壳(header 恒空、main 内容传入)
-- 插槽标记：`<!--NOVA-SITE-DATA-->` / `<!--NOVA-RIGHTSIDE-HIDE--|SHOW-->` / `<!--NOVA-PAGE-SCRIPTS-->` / `<!--NOVA-LATEST-->`(首页最新文章,由 home-generator 动态注入)
+- 插槽标记：`<!--NOVA-SITE-DATA-->` / `<!--NOVA-RIGHTSIDE-HIDE--|SHOW-->` / `<!--NOVA-PAGE-SCRIPTS-->` / `<!--NOVA-LATEST-->`(首页最新文章,由 home-generator 动态注入) / `<!--NOVA-COMMENT-CORE-->`(评论内核, page-generator 注入 comment-core.html, C9)
 
 ---
 
@@ -56,7 +56,8 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 | `lib/music-playlist.js` | 音乐歌单(搜索索引数据源)：构建时请求 B 站云函数 `/api/playlist`，成功回写 `data/music-playlist.json` 缓存，失败用缓存兜底；加减歌曲零人工 |
 | `home-generator.js` | 首页：shellTop + hero 段(LATEST 动态注入)+ mid(精选工程/最新文章卡注入)+ 页级 bottom + 公共尾；P5 数据规则见「首页 P5 数据流」 |
 | `page-generator.js` | 静态页：PAGES 配置表(pageClass/headerCls/mainCls/pre/showExtra/pageScripts) |
-| `projects-generator.js` | 工程页：列表 + 详情(下载链接由 `SITE + encodeURI(url)` 生成) |
+| `projects-generator.js` | 工程页：列表 + 详情(下载链接由 `SITE + encodeURI(url)` 生成)；更新日期统一走 `lib/project-date.js` |
+| `lib/project-date.js` | 工程更新日期**唯一实现**(A1)：显式 `updated` → 资产目录内最新文件 mtime → 目录 mtime → `date` 兜底；列表/首页 LATEST SIGNAL 共用 |
 | `projects-data.js` / `projects-intro.js` | 工程数据(5 个工程)/ 详情介绍文案(自包含) |
 | `lib/fetch-views.js` | **浏览量抓取器(部署前手动运行)**：busuanzi API 带 Referer 查询各页真实 page_pv → 写 `views-cache.json`；24h 缓存、单条失败跳过、手动修改自动保留偏移 |
 | `views-cache.json` | 浏览量缓存：`pv`(显示值=排序用) / `shift`(人工偏移) / `lastRaw`·`lastDisplay`(脚本维护)。**手动改只动 `pv` 段**，详见 `views-cache.md` |
@@ -94,6 +95,16 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 - `tools/`：构建/验证常用(convert_* 图片转换、audit_imgs、check_pages_text、find_orphans、self_check、verify_*)
 - `archive/`：一次性/历史补丁(patch_*、fix_*、pure_parts、extract_parts、slice_*、rename_refs 等)
 
+### `data/`（运行时数据，非 hexo 源）
+
+- `music-playlist.json`：歌单缓存(构建期由 `lib/music-playlist.js` 抓取回写, 失败兜底)
+- `refresh-music-playlist.js`：手动刷新歌单缓存(离线预取/调试)
+- `views-cache.json` / `views-cache.md`：浏览量缓存 + 维护说明(fetch-views.js 使用)
+
+### `docs/`（仓库文档资源，不随站点发布）
+
+- `preview-dark.png` / `preview-light.png`：README 深浅主题预览图(2026-09-03 由 source 移出并更新为当前首页截图)
+
 ---
 
 ## 配置图鉴
@@ -102,8 +113,9 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 | --- | --- | --- | --- |
 | Node 构建期 | `scripts/site-config.js` | `SITE` | 从 `_config.yml` 读；改域名改 yml |
 | 前端运行时 | `source/rose-galaxy/js/lib/site-config.js` | `window.NOVA_SITE.bili`(云函数代理/UID/收藏夹) | 换 B 站源只改这里；加载顺序:yml inject.head 位于 nova-player.js 之前(defer 保序) |
-| 前端工具 | `source/rose-galaxy/js/lib/utils.js` | `window.NOVA_UTILS.formatTime` | 播放器/音乐页共用 |
+| 前端工具 | `source/rose-galaxy/js/lib/utils.js` | `window.NOVA_UTILS.formatTime / songName / songArtist` | 播放器/音乐页共用(C7/C10 收敛) |
 | 日期工具 | `scripts/lib/date.js` | `fmtDate` | |
+| 设计令牌 | `source/css/custom.css :root` | `--nova-rose`/`--nova-rose-rgb`(玫瑰 A2)、`--font-serif`/`--font-sans`(字体 C11) | 全站色值/字体引用变量, 改主题色/字体只改这里 |
 | 主题配置 | `_config.butterfly.yml` | 导航菜单/搜索/注入(共享件+播放器)/aside | inject.head 顺序=文档顺序 |
 | 站点配置 | `_config.yml` | url / permalink:`posts/:title/` / tag_dir:`articles` | |
 
@@ -123,7 +135,7 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 
 - **页脚横幅**：`custom.css` 中 `html[data-theme=dark|light] body:not(.nova-home-active) footer#footer`(玫瑰横幅 archive-bg.webp，深 `#080c17`/浅 `#d5d4de` 底)；首页为自定义 `.nova-footer` 排除在外；页级 css 中**不要再定义 footer 背景**(曾因覆盖导致横幅消失/矛盾,已收敛)
 - **#page-header 层叠（R6 标注）**：涉及 7 个文件(custom 19 处 / index 58 处 / 页级 19 处)——改 header 前需全局检索 `#page-header`；大部分为分层覆盖设计(主题底→全站覆盖→页级 hero)，勿简单增加规则，考虑现有层叠
-- **版本号约定**：所有 css/js 引用带 `?v=<日期>-<标签>`(当前 `20260829-p1`)。**引用文件内容变更时必须 bump**，否则浏览器用旧缓存(曾出现旧路径图片 404/样式回退)
+- **版本号约定**：所有 css/js 引用带 `?v=<日期>-<标签>`(当前 `20260831-p36`)。**引用文件内容变更时必须 bump**——`_config.yml` 的 `version:` 是单源(生成器/动态模板自动),yml 与 html 片段中的字面量需手动同步(全站约 17 处)。(曾出现旧路径图片 404/样式回退)
 
 ---
 
@@ -136,13 +148,11 @@ npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 
 **发布流程（演示站 → 线上）**：
 
-1. **演示站**（从 `Marlin-web` 克隆：`robocopy /E` + node_modules 符号链接(junction) + 预建 `public/` 空目录，否则 minify.js 启动即 ENOENT）完成改动 → `hexo clean && hexo generate` → 页面回归(元素/JS/图片 404)（注意：hexo server 用内存旧脚本，改 scripts/ 须重启 server）
+1. **演示站**（当前工作副本为 `web\Marlin-web-demo2`, 克隆自 SourceCode + node_modules junction; 改动验证完 **robocopy 整站同步回 SourceCode**(排除 node_modules/.git/public/.deploy_git/db.json) → `hexo clean && hexo generate` 回归）完成改动
 2. **用户验收 + 明确批准**后：
-   - 镜像演示站 → `Marlin-web`（工作区源）：layout / source(rose-galaxy,css,js,img,assets) / scripts / _config*.yml / README·MAINTENANCE·DEPLOY 等；**只复制改动文件**（或 robocopy 按目录，注意目标多出的旧文件会被删(这正是想要的)）
-   - （可选）`node scripts/lib/fetch-views.js` 刷新浏览量缓存（部署前运行，busuanzi 抓取；24h 内有缓存且未加 `--force` 不重复抓取）
-   - `Marlin-web` 下 `hexo clean && hexo generate`（先停任何 server；`hexo clean` 后若 `2026/` 等空目录残留手动删一次）
-   - `hexo deploy`（推送 **public 分支**，GitHub Pages 使用）
-   - 镜像 `Marlin-web` 的源码/文档/配置 → **`C:\Users\mabin\Desktop\web\SourceCode`（git main 仓库）** → `git add <改动文件> && commit && push`（SourceCode 是源码仓库，**只提交源码/文档，构建产物(public 根目录等)不入库**；历史提交均为显式列出的文件）
+   - SourceCode 下 `hexo clean && hexo generate`（先停任何 server；clean 后残留空目录手动删一次；generate 偶发 minify ENOENT, 重跑一次即完成压缩）
+   - `git add -A && commit`(简化信息) → `git push origin main`（main 存档）
+   - `hexo deploy`（推送 **public 分支**, GitHub Pages 使用）
 3. 线上验证：curl 关键路由(首页/moments/articles/posts 示例/projects/sitemap.xml) + 抽查资源版本号
 
 ---

@@ -7,7 +7,7 @@
 
 const fs = require('fs')
 const path = require('path')
-const { composeShell, WALINE_COMMENT, RIGHTSIDE_COMMENT, PAGE_STYLES } = require('./parts-common')
+const { composeShell, WALINE_COMMENT, RIGHTSIDE_COMMENT, PAGE_STYLES, COMMENT_CORE } = require('./parts-common')
 const { VERSION } = require('./site-config')
 
 const partsDir = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'page-parts')
@@ -70,7 +70,7 @@ hexo.extend.generator.register('nova-pages', function () {
         pageClass: p.pageClass,
         headerCls: p.headerCls,
         mainCls: p.mainCls,
-        mainInner: readMain(p.name),
+        mainInner: readMain(p.name).replace('<!--NOVA-COMMENT-CORE-->', COMMENT_CORE),
         pre: p.pre,
         pageCss: p.pageCss,
         showExtra: p.showExtra,

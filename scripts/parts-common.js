@@ -27,6 +27,9 @@ const FOOTER = read('footer.html')
 const WALINE_COMMENT = read('waline-comment.html')
 const RIGHTSIDE_COMMENT = read('rightside-comment.html')
 const RIGHTSIDE_ASIDE = read('rightside-aside.html')
+// 评论内核(C9 单源 2026-09-02): 评论容器(含 waline 挂载点), 由生成器注入
+// page-parts 中的 <!--NOVA-COMMENT-CORE--> 占位符; 标题/文案仍属页内容
+const COMMENT_CORE = read('comment-core.html')
 
 /* 页级 CSS(与各 pug headOpts.extraCss 同值):
    - head 里输出一份(首屏直出, 避免 FOUC)
@@ -109,7 +112,7 @@ function composeShell(opts) {
 module.exports = {
   // 组件
   LOADING, NAV, SIDEBAR, FOOTER,
-  WALINE_COMMENT, RIGHTSIDE_COMMENT, RIGHTSIDE_ASIDE,
+  WALINE_COMMENT, RIGHTSIDE_COMMENT, RIGHTSIDE_ASIDE, COMMENT_CORE,
   PAGE_STYLES,
   // 构建函数
   buildSidebar, buildFooter, composeShellTop, composeShell

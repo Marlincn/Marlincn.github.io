@@ -1,6 +1,8 @@
 /* =============================================================
    前端共享工具(单一来源, P1·R7 2026-08-27)
    - 全站统一加载(yml inject.head, 位于 nova-player.js 之前)
+   - C7 2026-09-02: songName/songArtist(歌曲名/艺术家兜底链, 原分散于
+     music-page.js/nova-player.js, 收敛至此)
    ============================================================= */
 (function () {
   "use strict";
@@ -11,6 +13,14 @@
       var m = Math.floor(seconds / 60);
       var s = Math.floor(seconds % 60).toString().padStart(2, "0");
       return m + ":" + s;
+    },
+    /* 歌曲名: name -> title -> 兜底文案(C7 统一) */
+    songName: function (song) {
+      return song?.name || song?.title || "未命名歌曲";
+    },
+    /* 艺术家: artist -> author -> 兜底文案 */
+    songArtist: function (song) {
+      return song?.artist || song?.author || "未知歌手";
     }
   };
 })();

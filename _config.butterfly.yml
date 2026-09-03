@@ -7,7 +7,7 @@
 # moments promoted to top level)
 
 nav:
-  logo: /img/brand/nova-rose-line-128.png
+  logo: /img/brand/magic-cube-logo.png
   display_title: true
   display_post_title: false
 menu:
@@ -18,9 +18,9 @@ menu:
   说说: /moments/
   关于: /about/
 
-# Sidebar avatar (original: /img/brand/logo1.jpg)
+# Sidebar avatar (2026-09-03: 由 logo1.jpg 更换为 headpicture.jpg, 与关于页头像一致)
 avatar:
-  img: /img/brand/logo1.jpg
+  img: /img/brand/headpicture.jpg
   effect: false
 
 # Site data shown in sidebar (2026-08-15: archives/categories removed, block dropped)
@@ -34,6 +34,15 @@ avatar:
 darkmode:
   enable: true
   button: true
+
+# PJAX 说明(A3, 2026-09-02): 本站 PJAX 由 themes/butterfly/layout/parts-common/footer.html
+# 的自定义实例实现(前缀排除 + 404 兜底), 不依赖主题自带 third-party/pjax.pug。
+# ★ 勿开启下方开关: 主题版渲染链(additional-js → third-party/pjax)在本站自制 base.pug
+# 下不存在, 开启会导致双实例/行为不一致。需要调整请在 footer.html 内维护。
+# （2026-09-02 实测对比: 主题版方案体验与自定义版一致, 但丢失前缀排除/404 兜底, 弃用。）
+pjax:
+  enable: false
+  exclude:
 
 # Local search (original: search.xml, preload=false, top_n=1, unescape=true, 8 hits/page)
 search:
@@ -82,17 +91,17 @@ default_top_img: /img/hero/post-hero-banner.webp
 
 inject:
   head:
-    - <link rel="stylesheet" href="/css/custom.css?v=20260831-p28">
-    - <link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260831-p28">
-    - <link rel="stylesheet" href="/rose-galaxy/css/nova-player.css?v=20260831-p28">
-    - <link rel="stylesheet" href="/rose-galaxy/css/nova-visitor.css?v=20260831-p28">
-    - <script defer src="/rose-galaxy/js/lib/site-config.js?v=20260831-p28"></script>
-    - <script defer src="/rose-galaxy/js/lib/utils.js?v=20260831-p28"></script>
-    - <script defer src="/rose-galaxy/js/nova-player.js?v=20260831-p28"></script>
+    - <link rel="stylesheet" href="/css/custom.css?v=20260831-p36">
+    - <link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260831-p36">
+    - <link rel="stylesheet" href="/rose-galaxy/css/nova-player.css?v=20260831-p36">
+    - <link rel="stylesheet" href="/rose-galaxy/css/nova-visitor.css?v=20260831-p36">
+    - <script defer src="/rose-galaxy/js/lib/site-config.js?v=20260831-p36"></script>
+    - <script defer src="/rose-galaxy/js/lib/utils.js?v=20260831-p36"></script>
+    - <script defer src="/rose-galaxy/js/nova-player.js?v=20260831-p36"></script>
   bottom:
-    - <script src="/rose-galaxy/js/nova-ux.js?v=20260831-p28"></script>
-    - <script src="/rose-galaxy/js/nova-visitor.js?v=20260831-p28"></script>
-    - <script src="/rose-galaxy/animation/decorative-loader.js?v=20260831-p28"></script>
+    - <script src="/rose-galaxy/js/nova-ux.js?v=20260831-p36"></script>
+    - <script src="/rose-galaxy/js/nova-visitor.js?v=20260831-p36"></script>
+    - <script src="/rose-galaxy/animation/decorative-loader.js?v=20260831-p36"></script>
 
 # Side widgets (2026-08-16: archives/categories widgets disabled; they
 # link to pages removed on 2026-08-15)

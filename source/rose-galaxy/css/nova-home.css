@@ -52,9 +52,9 @@
   background:var(--page-bg);
   font-size:16px;
   line-height:1.7;
-  font-family:Inter,"Noto Sans SC","Microsoft YaHei",sans-serif
+  font-family:var(--font-sans)
 }
-.nova-hero h1,.nova-section-eyebrow{font-family:"Cormorant Garamond","Playfair Display",Georgia,serif}
+.nova-hero h1,.nova-section-eyebrow{font-family:var(--font-serif)}
 .nova-section-title{font-family:"Noto Serif SC","Source Han Serif SC","Songti SC",serif;font-weight:600}
 .nova-section-eyebrow{display:block;margin-bottom:7px;color:var(--rose);font-size:12px;font-weight:600;letter-spacing:.16em}
 .nova-section-title{margin:0!important;color:var(--text-main);font-size:clamp(28px,3vw,34px)!important;line-height:1.2}
@@ -204,7 +204,7 @@
   mix-blend-mode:normal;
   filter:none;
 }
-.nova-home-active #nav .site-name{font-family:"Cormorant Garamond",Georgia,serif;color:#f0e9e8;font-size:15px;letter-spacing:.18em}
+.nova-home-active #nav .site-name{font-family:var(--font-serif);color:#f0e9e8;font-size:15px;letter-spacing:.18em}
 /* Hero copy flow guard: keep every copy element horizontal and prevent grid collapse. */
 .nova-hero .hero-copy{
   box-sizing:border-box;
@@ -499,7 +499,7 @@ html[data-theme="dark"] body.nova-home-active .nova-hero-bg::after{opacity:0}
 }
 .nova-scroll-hint .sh-text{
   margin-top:26px;
-  font:500 10px/1 "Cormorant Garamond","Playfair Display",Georgia,serif;
+  font:500 10px/1 var(--font-serif);
   letter-spacing:.4em;
   padding-left:.4em;
   color:rgba(238,231,236,.85);
@@ -514,7 +514,7 @@ html[data-theme="light"] body.nova-home-active .nova-scroll-hint .sh-text{
 
 /* Midnight carriage: homepage dark theme only */
 html[data-theme="dark"] body.nova-home-active .nova-homepage{
-  font-family:"Inter","Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-family:var(--font-sans);
 }
 html[data-theme="dark"] body.nova-home-active .nova-hero{
   height:100svh;
@@ -553,7 +553,7 @@ html[data-theme="dark"] body.nova-home-active .nova-hero .hero-copy.nova-hero-co
 html[data-theme="dark"] body.nova-home-active .nova-hero .nova-kicker{
   margin-bottom:24px;
   color:#c57c94;
-  font-family:"Inter",sans-serif;
+  font-family:var(--font-sans);
   font-size:11px;
   font-weight:600;
   line-height:1.4;
@@ -561,7 +561,7 @@ html[data-theme="dark"] body.nova-home-active .nova-hero .nova-kicker{
 }
 html[data-theme="dark"] body.nova-home-active .nova-hero .hero-title{
   margin-bottom:30px;
-  font-family:"Cormorant Garamond","Playfair Display",Georgia,serif;
+  font-family:var(--font-serif);
   line-height:.86;
   letter-spacing:-.03em;
 }
@@ -587,14 +587,14 @@ html[data-theme="dark"] body.nova-home-active .nova-hero .hero-title-marlin {
 html[data-theme="dark"] body.nova-home-active .nova-hero .nova-cn-subtitle{
   margin:0 0 9px;
   color:#ded9d9;
-  font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;
+  font-family:var(--font-sans);
   font-size:16px;
   font-weight:500;
   line-height:1.65;
 }
 html[data-theme="dark"] body.nova-home-active .nova-hero .nova-en-subtitle{
   color:#aaa5b0;
-  font-family:"Inter",sans-serif;
+  font-family:var(--font-sans);
   font-size:14px;
   font-weight:400;
   line-height:1.5;
@@ -607,7 +607,7 @@ html[data-theme="dark"] body.nova-home-active .nova-hero .nova-actions a{
   height:44px;
   min-height:44px;
   border-radius:6px;
-  font-family:"Inter","Noto Sans SC",sans-serif;
+  font-family:var(--font-sans);
   font-size:13px;
   font-weight:500;
   line-height:1;
@@ -643,7 +643,7 @@ html[data-theme="dark"] body.nova-home-active .nova-hero .nova-latest-signal{
   margin-top:36px;
   padding-top:14px;
   border-top-color:rgba(226,218,226,.11);
-  font-family:"Inter","Noto Sans SC",sans-serif;
+  font-family:var(--font-sans);
   font-size:12px;
   line-height:1.4;
   white-space:nowrap;
@@ -683,14 +683,14 @@ html[data-theme="dark"] body.nova-home-active #nav{
 html[data-theme="dark"] body.nova-home-active #nav a,
 html[data-theme="dark"] body.nova-home-active #nav .site-page{
   color:#d2ced5;
-  font-family:"Inter","Noto Sans SC",sans-serif;
+  font-family:var(--font-sans);
   font-size:17px;
   font-weight:500;
   letter-spacing:.01em;
 }
 html[data-theme="dark"] body.nova-home-active #nav .site-name{
   color:#eee8e7;
-  font-family:"Cormorant Garamond","Playfair Display",Georgia,serif;
+  font-family:var(--font-serif);
   font-size:18px;
   font-weight:600;
   letter-spacing:.06em;
@@ -706,7 +706,7 @@ html[data-theme="dark"] body.nova-home-active #page-header.nav-fixed #nav{
 
 /* Morning-mist bridge: homepage light theme only */
 html[data-theme="light"] body.nova-home-active .nova-homepage{
-  font-family:"Inter","Noto Sans SC","Source Han Sans SC","Microsoft YaHei",sans-serif;
+  font-family:"Inter",var(--font-sans);
 }
 html[data-theme="light"] body.nova-home-active .nova-hero{
   height:100svh;
@@ -719,7 +719,7 @@ html[data-theme="light"] body.nova-home-active .nova-hero-mist{
 html[data-theme="light"] body.nova-home-active .nova-hero .nova-kicker{
   margin-bottom:26px;
   color:#9a6177;
-  font-family:"Inter","Noto Sans SC",sans-serif;
+  font-family:var(--font-sans);
   font-size:11px;
   font-weight:600;
   line-height:1.4;
@@ -732,7 +732,7 @@ html[data-theme="light"] body.nova-home-active .nova-hero .hero-copy.nova-hero-c
 }
 html[data-theme="light"] body.nova-home-active .nova-hero .hero-title{
   margin-bottom:30px;
-  font-family:"Cormorant Garamond","Playfair Display",Georgia,serif;
+  font-family:var(--font-serif);
   line-height:.86;
   letter-spacing:-.03em;
 }
@@ -743,7 +743,7 @@ html[data-theme="light"] body.nova-home-active .nova-hero .nova-actions a{
   display:inline-flex;
   align-items:center;
   justify-content:center;
-  font-family:"Inter","Noto Sans SC","Source Han Sans SC",sans-serif;
+  font-family:var(--font-sans);
   font-size:13px;
   font-weight:500;
   line-height:1;
@@ -761,7 +761,7 @@ html[data-theme="light"] body.nova-home-active .nova-hero .nova-latest-signal{
   margin-top:36px;
   padding-top:14px;
   border-top-color:rgba(78,67,86,.14);
-  font-family:"Inter","Noto Sans SC","Source Han Sans SC",sans-serif;
+  font-family:var(--font-sans);
   font-size:12px;
   line-height:1.4;
   white-space:nowrap;
@@ -769,7 +769,7 @@ html[data-theme="light"] body.nova-home-active .nova-hero .nova-latest-signal{
 html[data-theme="light"] body.nova-home-active .nova-hero .nova-latest-signal span{
   color:#a45f78;
   flex:none;
-  font-family:"Inter",sans-serif;
+  font-family:var(--font-sans);
   font-weight:600;
   letter-spacing:.16em;
 }
@@ -782,7 +782,7 @@ html[data-theme="light"] body.nova-home-active .nova-hero .nova-latest-signal st
 }
 html[data-theme="light"] body.nova-home-active .nova-hero .nova-latest-signal time{
   flex:none;
-  font-family:"Inter",sans-serif;
+  font-family:var(--font-sans);
   font-weight:400;
   font-variant-numeric:tabular-nums;
 }
@@ -800,7 +800,7 @@ html[data-theme="light"] body.nova-home-active .nova-particle-layer .hero-galaxy
 }
 html[data-theme="light"] body.nova-home-active #nav{
   color:#1f1d24;
-  font-family:"Inter","Noto Sans SC","Source Han Sans SC","Microsoft YaHei",sans-serif;
+  font-family:"Inter",var(--font-sans);
   background:linear-gradient(180deg,rgba(218,219,226,.18),rgba(226,224,230,.06) 72%,transparent);
   text-shadow:none;
   -webkit-backdrop-filter:blur(3px);
@@ -819,7 +819,7 @@ html[data-theme="light"] body.nova-home-active #nav .site-page{
   letter-spacing:.01em;
 }
 html[data-theme="light"] body.nova-home-active #nav .site-name{
-  font-family:"Cormorant Garamond","Playfair Display",Georgia,serif;
+  font-family:var(--font-serif);
   font-size:18px;
   font-weight:600;
   line-height:1;
@@ -1078,7 +1078,7 @@ html[data-theme="light"] body.nova-home-active .nova-hero .hero-title-marlin {
 
 html[data-theme="light"] body.nova-home-active .nova-hero .nova-cn-subtitle {
   margin:0 0 10px;
-  font-family:"Noto Sans SC","Source Han Sans SC","Microsoft YaHei",sans-serif;
+  font-family:var(--font-sans);
   font-size:16px;
   font-weight:500;
   line-height:1.65;
@@ -1087,7 +1087,7 @@ html[data-theme="light"] body.nova-home-active .nova-hero .nova-cn-subtitle {
 }
 
 html[data-theme="light"] body.nova-home-active .nova-hero .nova-en-subtitle {
-  font-family:"Inter",sans-serif;
+  font-family:var(--font-sans);
   font-size:14px;
   font-weight:400;
   line-height:1.5;

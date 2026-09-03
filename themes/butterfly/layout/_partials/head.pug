@@ -33,13 +33,13 @@ mixin head(opts)
     if opts.description
       meta(property='og:description' content=opts.description)
     meta(property='og:locale' content='zh_CN')
-    meta(property='og:image' content=siteUrl + '/img/brand/logo1.jpg')
+    meta(property='og:image' content=siteUrl + '/img/brand/headpicture.jpg')
     if opts.articleDate
       meta(property='article:published_time' content=opts.articleDate)
       meta(property='article:modified_time' content=opts.articleDate)
       meta(property='article:author' content='Marlin')
     meta(name='twitter:card' content='summary')
-    meta(name='twitter:image' content=siteUrl + '/img/brand/logo1.jpg')
+    meta(name='twitter:image' content=siteUrl + '/img/brand/headpicture.jpg')
     link(rel='icon' type='image/png' href='/img/brand/favicon-small.png')
     if opts.canonical
       link(rel='canonical' href=opts.canonical)
@@ -221,5 +221,8 @@ mixin head(opts)
         pageType: !{JSON.stringify(opts.pageType || 'page')}
       }
     != (theme.inject && theme.inject.head ? theme.inject.head.join('') : '')
-    != opts.extraCss || ''
+    //- B6 单源(2026-09-02): 页级 CSS link 不再由 head extraCss 输出(各 pug 中的
+    //- extraCss 值保留为无害配置), 统一由生成器注入 #body-wrap 内(PAGE_STYLES),
+    //- 首屏与 PJAX 切换共享同一份渲染链路。
+    != '' || ''
     != opts.extraHead || ''

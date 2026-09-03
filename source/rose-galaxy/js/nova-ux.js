@@ -233,11 +233,47 @@
   function beginNavigation() {
     cleanupSearch()
     document.body.classList.remove(...ROUTE_CLASSES)
-    finishInitialLoading()
+    // PJAX 切页: 显示全屏 loading, 避免新页 CSS 未就绪时裸渲染
+    showNavLoading()
   }
 
   function finishNavigation() {
-    finishInitialLoading()
+    // 等新页页级 CSS 全部就绪后再退场(超时 2s 兜底), 退场动画期间样式完成应用
+    waitForPageStyles(2000).then(() => {
+      requestAnimationFrame(() => finishInitialLoading())
+    })
+  }
+
+  // 等待当前 body-wrap 内页级样式加载完成(含已缓存: sheet 非空视为就绪)
+  function waitForPageStyles(timeoutMs) {
+    const links = Array.from(document.querySelectorAll('#body-wrap link[rel="stylesheet"]'))
+    if (!links.length) return Promise.resolve()
+    return new Promise(resolve => {
+      let pending = links.length
+      const done = () => { if (--pending <= 0) resolve() }
+      const timer = window.setTimeout(resolve, timeoutMs || 2000)
+      links.forEach(link => {
+        if (link.sheet) done()
+        else {
+          link.addEventListener('load', done, { once: true })
+          link.addEventListener('error', done, { once: true })
+        }
+      })
+      // 超时直接放行(兜底, 不清计时器: resolve 幂等)
+      void timer
+    })
+  }
+
+  // 导航 loading: 复用首屏 loader(不写 sessionStorage, 不改变"首屏已显示"标记)
+  function showNavLoading() {
+    const loader = getLoader()
+    if (!loader.classList.contains('is-visible')) {
+      loader.classList.remove('is-leaving')
+      loader.dataset.novaLoadingState = 'visible'
+      loader.setAttribute('aria-hidden', 'false')
+      document.body.classList.add('nova-loading-active')
+      window.__novaLoaderVisibleAt = Date.now()
+    }
   }
 
   function normalizePath(value) {
@@ -495,10 +531,20 @@
     })
   }
 
-  /* 主题:会话内有手动选择则保持(导航不拉回);无则只按时间制。 */
+  /* 主题:会话内有手动选择则保持(导航不拉回);无则只按时间制。
+     URL ?theme=dark|light 可强制(预览/截图用, 不持久化, 关标签即失效)。 */
+  const urlTheme = () => {
+    try {
+      const v = new URLSearchParams(location.search).get('theme')
+      return v === 'dark' || v === 'light' ? v : null
+    } catch (e) {
+      return null
+    }
+  }
   const applyTimeTheme = () => {
+    const override = urlTheme()
     const session = getSessionTheme()
-    const target = session === 'dark' || session === 'light' ? session : isDarkTime() ? 'dark' : 'light'
+    const target = override || (session === 'dark' || session === 'light' ? session : isDarkTime() ? 'dark' : 'light')
     const current = document.documentElement.getAttribute('data-theme')
     if (current !== target) {
       target === 'dark' ? btf.activateDarkMode() : btf.activateLightMode()
@@ -538,10 +584,18 @@
 
   // 方案3:首页加载时,用浏览器原生 <link rel="prefetch"> 预取导航的其他页 HTML。
   // 只预取一级导航页(文章/音乐/说说/关于),不预取子页;浏览器空闲时进行,不阻塞首屏。
-  // 预取资源进入 HTTP 缓存,用户跳转时加载更快、避免未渲染界面。
-  const NAV_PREFETCH = ['/articles/', '/music/', '/moments/', '/about/']
+  // 预取列表运行时从导航菜单 DOM 收集(B4 单源: 菜单改这里自动跟随)
+  function collectNavLinks() {
+    const links = document.querySelectorAll(
+      '#menus .menus_item a[href^="/"], #sidebar-menus .menus_item a[href^="/"]'
+    )
+    return Array.from(links)
+      .map(a => a.getAttribute('href'))
+      .filter(h => h && h !== '/')
+  }
   function prefetchNavPages() {
     if (!isHomePage()) return
+    const NAV_PREFETCH = collectNavLinks()
     const run = () => {
       if (document.hidden) return
       NAV_PREFETCH.forEach(href => {

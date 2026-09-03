@@ -16,6 +16,7 @@ const fs = require('fs')
 const path = require('path')
 const { composeShellTop, buildFooter, RIGHTSIDE_ASIDE, PAGE_STYLES } = require('./parts-common')
 const { fmtDate } = require('./lib/date')
+const { projectUpdated } = require('./lib/project-date')
 const projectsData = require('./projects-data')
 
 const partsDir = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'home-parts')
@@ -30,28 +31,6 @@ function loadViewMap() {
     const c = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'views-cache.json'), 'utf8'))
     return c.pv || {}
   } catch (e) { return {} }
-}
-
-// —— 工程"最后提交日": 资产目录(按 downloads 首项 URL 提取) mtime; 可选 updated 字段覆盖; date 兜底 ——
-function projectUpdated(p) {
-  if (p.updated) return String(p.updated)
-  const dl = (p.downloads && p.downloads[0] && p.downloads[0].url) || ''
-  const m = dl.match(/^\/assets\/projects\/([^/]+)\//)
-  if (m) {
-    const dir = path.join(__dirname, '..', 'source', 'assets', 'projects', decodeURIComponent(m[1]))
-    // 目录内最新文件的 mtime(robocopy 保留源时间, 同步不污染)
-    try {
-      if (fs.existsSync(dir)) {
-        let maxM = 0
-        for (const f of fs.readdirSync(dir)) {
-          try { maxM = Math.max(maxM, fs.statSync(path.join(dir, f)).mtime.getTime()) } catch (e) {}
-        }
-        if (maxM) return new Date(maxM).toISOString().slice(0, 10)
-      }
-    } catch (e) { /* 继续兜底 */ }
-    try { return fmtDate(fs.statSync(dir).mtime) } catch (e) { /* 目录缺失则继续兜底 */ }
-  }
-  return p.date || ''
 }
 
 // —— 统一时间/排序工具(确定性 tie-break 链, 避免"同时更新许多"时乱跳) ——

@@ -337,7 +337,7 @@
     const title = miniRoot.querySelector(".nova-mini-title");
     const cover = miniRoot.querySelector(".nova-mini-cover");
     if (song) {
-      title.textContent = song?.name || song?.title || "未命名歌曲";
+      title.textContent = window.NOVA_UTILS.songName(song);
       const coverUrl = song?.cover || song?.pic || "";
       if (coverUrl && cover.src !== coverUrl) cover.src = coverUrl;
       else if (!coverUrl) cover.removeAttribute("src");
