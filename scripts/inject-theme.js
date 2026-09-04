@@ -13,4 +13,10 @@ const THEME_SCRIPT = `<script>
 })()
 </script>`
 
+/* 文章详情页 hero 大图预加载(2026-09-04 遮罩优化 C): 与页面并行下载,
+   遮罩淡出时 hero 已就绪 → 不再"图片后到"的突兀跳变; injector type 'post' 仅命中文章页 */
+const POST_HERO_PRELOAD =
+  '<link rel="preload" as="image" href="/img/hero/post-hero-banner.webp">'
+
 hexo.extend.injector.register('head_begin', THEME_SCRIPT, 'default')
+hexo.extend.injector.register('head_begin', POST_HERO_PRELOAD, 'post')

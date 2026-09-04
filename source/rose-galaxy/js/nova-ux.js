@@ -4,9 +4,9 @@
   if (window.__novaUxReady) return
   window.__novaUxReady = true
 
-  const INITIAL_MIN_DURATION = 150
+  const INITIAL_MIN_DURATION = 50
   const INITIAL_MAX_DURATION = 2000
-  const EXIT_DURATION = 480
+  const EXIT_DURATION = 300
   // 首页首屏 loading 最小展示时长:即使内容/背景图已就绪,loading 也至少展示这么久,
   // 避免"一闪而过"显得不稳定。退场时同时满足"已展示 ≥ INITIAL_MIN_SHOW" 与"背景图 ready"。
   const INITIAL_MIN_SHOW = 400

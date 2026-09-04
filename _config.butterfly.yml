@@ -91,25 +91,25 @@ default_top_img: /img/hero/post-hero-banner.webp
 
 inject:
   head:
-    - <link rel="stylesheet" href="/css/custom.css?v=20260831-p44">
-    - <link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260831-p44">
-    - <link rel="stylesheet" href="/rose-galaxy/css/nova-player.css?v=20260831-p44">
-    - <link rel="stylesheet" href="/rose-galaxy/css/nova-visitor.css?v=20260831-p44">
+    - <link rel="stylesheet" href="/css/custom.css?v=20260831-p45">
+    - <link rel="stylesheet" href="/rose-galaxy/css/project-detail-page.css?v=20260831-p45">
+    - <link rel="stylesheet" href="/rose-galaxy/css/nova-player.css?v=20260831-p45">
+    - <link rel="stylesheet" href="/rose-galaxy/css/nova-visitor.css?v=20260831-p45">
     # 页级 CSS 全量全局预载(A 方案 2026-09-03): 直入/PJAX 均零异步窗口(共享缓存,
     # 文件小); 移除 body 内 PAGE_STYLES 与 head extraCss 双份机制。
-    - <link rel="stylesheet" href="/rose-galaxy/css/nova-home.css?v=20260831-p44">
-    - <link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=20260831-p44">
-    - <link rel="stylesheet" href="/rose-galaxy/css/projects-page.css?v=20260831-p44">
-    - <link rel="stylesheet" href="/rose-galaxy/css/music-page.css?v=20260831-p44">
-    - <link rel="stylesheet" href="/rose-galaxy/css/about-page.css?v=20260831-p44">
-    - <link rel="stylesheet" href="/rose-galaxy/css/moments-page.css?v=20260831-p44">
-    - <script defer src="/rose-galaxy/js/lib/site-config.js?v=20260831-p44"></script>
-    - <script defer src="/rose-galaxy/js/lib/utils.js?v=20260831-p44"></script>
-    - <script defer src="/rose-galaxy/js/nova-player.js?v=20260831-p44"></script>
+    - <link rel="stylesheet" href="/rose-galaxy/css/nova-home.css?v=20260831-p45">
+    - <link rel="stylesheet" href="/rose-galaxy/css/tag-page.css?v=20260831-p45">
+    - <link rel="stylesheet" href="/rose-galaxy/css/projects-page.css?v=20260831-p45">
+    - <link rel="stylesheet" href="/rose-galaxy/css/music-page.css?v=20260831-p45">
+    - <link rel="stylesheet" href="/rose-galaxy/css/about-page.css?v=20260831-p45">
+    - <link rel="stylesheet" href="/rose-galaxy/css/moments-page.css?v=20260831-p45">
+    - <script defer src="/rose-galaxy/js/lib/site-config.js?v=20260831-p45"></script>
+    - <script defer src="/rose-galaxy/js/lib/utils.js?v=20260831-p45"></script>
+    - <script defer src="/rose-galaxy/js/nova-player.js?v=20260831-p45"></script>
   bottom:
-    - <script src="/rose-galaxy/js/nova-ux.js?v=20260831-p44"></script>
-    - <script src="/rose-galaxy/js/nova-visitor.js?v=20260831-p44"></script>
-    - <script src="/rose-galaxy/animation/decorative-loader.js?v=20260831-p44"></script>
+    - <script src="/rose-galaxy/js/nova-ux.js?v=20260831-p45"></script>
+    - <script src="/rose-galaxy/js/nova-visitor.js?v=20260831-p45"></script>
+    - <script src="/rose-galaxy/animation/decorative-loader.js?v=20260831-p45"></script>
 
 # Side widgets (2026-08-16: archives/categories widgets disabled; they
 # link to pages removed on 2026-08-15)

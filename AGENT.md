@@ -138,7 +138,7 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 
 - **页脚横幅**：`custom.css` 中 `html[data-theme=dark|light] body:not(.nova-home-active) footer#footer`(玫瑰横幅 archive-bg.webp，深 `#080c17`/浅 `#d5d4de` 底)；首页为自定义 `.nova-footer` 排除在外；页级 css 中**不要再定义 footer 背景**(曾因覆盖导致横幅消失/矛盾,已收敛)
 - **#page-header 层叠（R6 标注）**：涉及 7 个文件(custom 19 处 / index 58 处 / 页级 19 处)——改 header 前需全局检索 `#page-header`；大部分为分层覆盖设计(主题底→全站覆盖→页级 hero)，勿简单增加规则，考虑现有层叠
-- **版本号约定**：所有 css/js 引用带 `?v=<日期>-<标签>`(当前 `20260831-p44`, 线上 GitHub Pages 已同步发布)。**引用文件内容变更时必须 bump**——`_config.yml` 的 `version:` 是单源(生成器/动态模板自动),yml 与 html 片段中的字面量需手动同步(全站约 17 处)。(曾出现旧路径图片 404/样式回退)
+- **版本号约定**：所有 css/js 引用带 `?v=<日期>-<标签>`(当前 `20260831-p45`, 线上 GitHub Pages 同步)。**引用文件内容变更时必须 bump**——`_config.yml` 的 `version:` 是单源(生成器/动态模板自动),yml 与 html 片段中的字面量需手动同步(全站约 17 处)。(曾出现旧路径图片 404/样式回退)
 
 ---
 
