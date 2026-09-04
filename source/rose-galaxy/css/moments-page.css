@@ -125,12 +125,19 @@ body.nova-moments-route footer#footer {
 }
 
 .nova-moments-side-kicker {
-  margin: 0;
-  color: var(--shuo-rose-soft);
-  font: 600 12px/1.4 "Inter", "Noto Sans SC", sans-serif;
-  letter-spacing: .28em;
+  display: block;
+  margin: 0 0 2px;
+  color: var(--about-accent-soft); /* 2026-09-04: 同关于页「LEARNING NOW」 */
+  font-size: .7rem;
+  font-weight: 650;
+  letter-spacing: .2em;
 }
 
+/* CURRENT MOOD kicker: 字体与颜色对齐关于页 LEARNING NOW(界面字体 + about-accent-soft) */
+
+/* 摘录月头部(参考样式: 年小字灰衬线 + 月大字深衬线, 条数右对齐深玫瑰) */
+
+/* 卡片日期行(参考样式: 日期+时间, 整体浅灰; 具体规则见文件后部 L391 区) */
 .nova-moments-hero-copy h1 {
   margin: 19px 0 16px;
   color: #f2dce5;
@@ -234,7 +241,7 @@ body.nova-moments-route footer#footer {
 .nova-moments-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(250px, 320px);
-  align-items: start;
+  align-items: start; /* 2026-09-04: 去掉 stretch, mood 卡按内容自适应高度, 不再被拉高 */
   gap: clamp(24px, 3vw, 38px);
   margin-top: 38px;
   scroll-margin-top: 94px;
@@ -245,10 +252,8 @@ body.nova-moments-route footer#footer {
   min-width: 0;
 }
 
-.nova-moments-month + .nova-moments-month {
-  margin-top: 48px;
-}
-
+/* 摘录月头部(2026-09-04 对齐参考站 mikejosion/shuoshuo):
+   结构 span(年, 玫瑰小字) + h2(月, 宋体大字) + small(条数, 灰色小字右对齐) */
 .nova-moments-month-head {
   display: grid;
   grid-template-columns: auto auto 1fr;
@@ -289,6 +294,24 @@ body.nova-moments-route footer#footer {
   left: 8px;
   width: 1px;
   background: linear-gradient(180deg, rgba(211, 127, 157, .55), rgba(173, 133, 167, .09));
+}
+
+/* 说说流滚动区(2026-09-04): 只展示前三条卡片, 更多条目区域内滚动;
+   负 margin + 两侧 padding 补偿时间轴节点与卡片阴影外溢, 竖线与节点位置不变;
+   2026-09-04: 隐藏滚动条, 仅保留滚轮/触摸滚动(无可见滚动框) */
+.nova-moments-scroll {
+  margin-left: -37px;
+  padding-left: 37px;
+  margin-right: -32px;
+  padding-right: 32px;
+  padding-bottom: 24px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.nova-moments-scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .nova-moments-card {
@@ -340,10 +363,10 @@ body.nova-moments-route footer#footer {
 }
 
 .nova-moments-card-head time b {
-  color: var(--shuo-secondary);
+  color: var(--shuo-muted);
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: .1em;
+  letter-spacing: .06em;
 }
 
 .nova-moments-card-head time span,
@@ -373,20 +396,7 @@ body.nova-moments-route footer#footer {
   margin-bottom: 0;
 }
 
-.nova-moments-gallery {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 17px;
-  overflow: hidden;
-  border-radius: 14px;
-}
-
-.nova-moments-gallery--1 {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.nova-moments-gallery img,
+/* 说说正文中嵌图片(评论内图片链接) */
 .nova-moments-card-body img {
   display: block;
   width: 100%;
@@ -395,34 +405,20 @@ body.nova-moments-route footer#footer {
   border-radius: 12px;
 }
 
-.nova-moments-gallery:not(.nova-moments-gallery--1) img {
-  height: clamp(150px, 20vw, 250px);
-}
-
-.nova-moments-card-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 16px;
-  margin-top: 17px;
-  color: var(--shuo-muted);
-  font-size: 12px;
-}
-
 .nova-moments-card-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
+  margin-top: 13px; /* 2026-09-04: 参考样式, 标签与正文之间留出间隙 */
 }
 
-.nova-moments-card-tags span,
-.nova-moments-tags span {
-  padding: 5px 10px;
-  border: 1px solid rgba(214, 169, 188, .12);
-  border-radius: 999px;
-  background: rgba(190, 118, 146, .08);
-  color: var(--shuo-secondary);
-  font-size: 11px;
+.nova-moments-card-tags span {
+  color: var(--shuo-muted);
+  font-size: 12px;
+  letter-spacing: .05em;
 }
+
+/* 简约标签(2026-09-03): 纯文字「心情 · 平静」, 无胶囊边框背景 */
 
 .nova-moments-like {
   display: inline-flex;
@@ -461,74 +457,58 @@ body.nova-moments-route footer#footer {
   gap: 18px;
 }
 
+/* 归档栏已移除; mood 卡不再 flex:1 拉伸(2026-09-04) */
 .nova-moments-side-card {
-  padding: 23px 24px;
+  padding: 21px 22px;
   border-radius: 18px;
 }
 
 .nova-moments-side-card h2 {
-  margin: 7px 0 19px;
+  margin: 6px 0 14px;
   color: var(--shuo-text);
   font: 500 19px/1.3 "Noto Serif SC", serif;
 }
 
-.nova-moments-mood strong,
-.nova-moments-mood time {
+/* 最近状态收藏列表(v2): 多条按点击顺序向下排列(最新点击的在最上), 每条 日期(上)+正文(下), 分隔细线;
+   超过七条时 max-height 由 JS 精确设为前七条高度, 其余滚动查看(2026-09-04);
+   滚动条隐藏, 仅保留滚轮/触摸滚动 */
+.nova-moments-mood-list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.nova-moments-mood-list::-webkit-scrollbar {
+  display: none;
+}
+
+.nova-moments-mood-item {
+  padding: 9px 0 12px;
+  border-top: 1px solid rgba(231, 205, 218, .10);
+}
+
+.nova-moments-mood-item:first-child {
+  padding-top: 2px;
+  border-top: 0;
+}
+
+.nova-moments-mood-item time {
   display: block;
-}
-
-.nova-moments-mood strong {
-  color: var(--shuo-secondary);
-  font-size: 14px;
-}
-
-.nova-moments-mood time {
-  margin-top: 5px;
+  margin: 0 0 3px;
   color: var(--shuo-rose-soft);
   font-size: 11px;
   letter-spacing: .08em;
 }
 
-.nova-moments-mood > p:last-child {
-  margin: 15px 0 0;
+.nova-moments-mood-item strong {
+  display: block;
   color: var(--shuo-secondary);
-  font-size: 13px;
-  line-height: 1.75;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.7;
   overflow-wrap: anywhere;
-}
-
-.nova-moments-archive nav {
-  display: grid;
-  gap: 5px;
-}
-
-.nova-moments-archive-link {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 11px;
-  border-radius: 9px;
-  color: var(--shuo-secondary);
-  font-size: 13px;
-  transition: color .2s ease, background .2s ease, transform .2s ease;
-}
-
-.nova-moments-archive-link:hover {
-  color: var(--shuo-text);
-  background: rgba(196, 110, 144, .09);
-  transform: translateX(3px);
-}
-
-.nova-moments-archive-link b {
-  color: var(--shuo-rose-soft);
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.nova-moments-tags > div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
 }
 
 .nova-moments-continuation {
@@ -583,20 +563,6 @@ body.nova-moments-route footer#footer {
 
 .nova-moments-comments .comment-head {
   display: none;
-}
-
-.nova-moments-empty {
-  padding: 64px 28px;
-  border: 1px dashed var(--shuo-border);
-  border-radius: 18px;
-  text-align: center;
-  color: var(--shuo-secondary);
-}
-
-.nova-moments-empty span {
-  color: var(--shuo-rose-soft);
-  font-size: 11px;
-  letter-spacing: .2em;
 }
 
 @media (min-width: 1081px) and (min-height: 760px) {
@@ -670,15 +636,6 @@ html[data-theme="light"] body.nova-moments-route footer#footer {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .nova-moments-overview > div:nth-child(3) {
-    border-left: 0;
-    border-top: 1px solid rgba(231, 205, 218, .09);
-  }
-
-  .nova-moments-overview > div:nth-child(4) {
-    border-top: 1px solid rgba(231, 205, 218, .09);
-  }
-
   .nova-moments-layout {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -687,10 +644,6 @@ html[data-theme="light"] body.nova-moments-route footer#footer {
     position: static;
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .nova-moments-tags {
-    grid-column: 1 / -1;
   }
 }
 
@@ -754,21 +707,8 @@ html[data-theme="light"] body.nova-moments-route footer#footer {
     font-size: 15px;
   }
 
-  .nova-moments-gallery {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .nova-moments-gallery:not(.nova-moments-gallery--1) img {
-    height: auto;
-    max-height: 420px;
-  }
-
   .nova-moments-sidebar {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .nova-moments-tags {
-    grid-column: auto;
   }
 
   .nova-moments-continuation {

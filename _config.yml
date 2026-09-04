@@ -1,4 +1,4 @@
-﻿# Hexo Configuration
+# Hexo Configuration
 # Reconstructed from the Marlin static build (mikejosion.github.io).
 # Placeholders: title / author / description / url / deploy repo will be
 # replaced with your own identity later.
@@ -14,7 +14,7 @@ timezone: Asia/Shanghai
 
 # URL
 url: https://marlincn.github.io/
-version: 20260831-p37
+version: 20260831-p44
 permalink: posts/:title/
 permalink_defaults:
 pretty_urls:

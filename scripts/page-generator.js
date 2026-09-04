@@ -34,7 +34,7 @@ const PAGES = [
     headerCls: 'not-home-page nova-moments-nav-header',
     mainCls: 'nova-moments-shell',
     showExtra: RIGHTSIDE_COMMENT,
-    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/moments-page.js?v=' + VERSION + '"></script>'
+    pageScripts: WALINE_COMMENT + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/moments-page.js?v=' + VERSION + '"></script>' + '\n' + '<script defer="" data-pjax="" src="/rose-galaxy/js/moments-feed.js?v=' + VERSION + '"></script>'
   },
   {
     name: 'about',
