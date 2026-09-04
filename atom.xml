@@ -75,18 +75,6 @@
     <author>
       <name>Marlin</name>
     </author>
-    <category term="诗词" scheme="https://marlincn.github.io/articles/%E8%AF%97%E8%AF%8D/"/>
-    <id>https://marlincn.github.io/posts/西江月·春色三分过二/</id>
-    <link href="https://marlincn.github.io/posts/西江月·春色三分过二/"/>
-    <published>2026-08-29T00:00:00.000Z</published>
-    <summary>原文 春色三分过二，相思一半成风。此情长似月当空，夜夜西窗不梦。 花影参差帘押，漏声迢递纱笼。柔肠结尽几千重，犹被残更擒纵。 译文 暮春光景已然大半消逝，满腔相思大半化作飘忽长风。</summary>
-    <title>西江月·春色三分过二</title>
-    <updated>2026-08-29T00:00:00.000Z</updated>
-  </entry>
-  <entry>
-    <author>
-      <name>Marlin</name>
-    </author>
     <category term="赋文" scheme="https://marlincn.github.io/articles/%E8%B5%8B%E6%96%87/"/>
     <id>https://marlincn.github.io/posts/洛神赋/</id>
     <link href="https://marlincn.github.io/posts/洛神赋/"/>
@@ -99,12 +87,24 @@
     <author>
       <name>Marlin</name>
     </author>
+    <category term="诗词" scheme="https://marlincn.github.io/articles/%E8%AF%97%E8%AF%8D/"/>
+    <id>https://marlincn.github.io/posts/西江月·春色三分过二/</id>
+    <link href="https://marlincn.github.io/posts/西江月·春色三分过二/"/>
+    <published>2026-08-29T00:00:00.000Z</published>
+    <summary>原文 春色三分过二，相思一半成风。此情长似月当空，夜夜西窗不梦。 花影参差帘押，漏声迢递纱笼。柔肠结尽几千重，犹被残更擒纵。 译文 暮春光景已然大半消逝，满腔相思大半化作飘忽长风。</summary>
+    <title>西江月·春色三分过二</title>
+    <updated>2026-08-29T00:00:00.000Z</updated>
+  </entry>
+  <entry>
+    <author>
+      <name>Marlin</name>
+    </author>
     <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://marlincn.github.io/posts/Markdown 语法速查表/</id>
-    <link href="https://marlincn.github.io/posts/Markdown 语法速查表/"/>
+    <id>https://marlincn.github.io/posts/Markdown 入门指南/</id>
+    <link href="https://marlincn.github.io/posts/Markdown 入门指南/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>Markdown 语法参考手册 / 速查表。 总览 此 Markdown 语法速查表提供了所有 Markdown 语法元素的快速参考。但是此速查表无法涵盖所有极限用法，因此，如果您</summary>
-    <title>Markdown 语法速查表</title>
+    <summary>Markdown 概述、工作原理以及用途。 Markdown 是什么？ Markdown 是一种轻量级的标记语言，可用于在纯文本文档中添加格式化元素。Markdown 由 John</summary>
+    <title>Markdown 入门指南</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
@@ -112,11 +112,11 @@
       <name>Marlin</name>
     </author>
     <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://marlincn.github.io/posts/Markdown 基本语法/</id>
-    <link href="https://marlincn.github.io/posts/Markdown 基本语法/"/>
+    <id>https://marlincn.github.io/posts/Markdown 实用语法/</id>
+    <link href="https://marlincn.github.io/posts/Markdown 实用语法/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>John Gruber 的 Markdown 设计文档中列出的所有 Markdown 元素。 总览 几乎所有 Markdown 应用程序都支持 John Gruber 原始设计文档</summary>
-    <title>Markdown 基本语法</title>
+    <summary>本文以Typora作演示书写页面，不能完成的操作切换到源代码模式界面进行（打开\关闭源代码界面： ctrl + / ），在这个界面，你可以一窥端倪 一、段落和字体格式 格式 书写界</summary>
+    <title>Markdown 实用语法</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
@@ -148,11 +148,11 @@
       <name>Marlin</name>
     </author>
     <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://marlincn.github.io/posts/Markdown 实用语法/</id>
-    <link href="https://marlincn.github.io/posts/Markdown 实用语法/"/>
+    <id>https://marlincn.github.io/posts/Markdown 语法速查表/</id>
+    <link href="https://marlincn.github.io/posts/Markdown 语法速查表/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>本文以Typora作演示书写页面，不能完成的操作切换到源代码模式界面进行（打开\关闭源代码界面： ctrl + / ），在这个界面，你可以一窥端倪 一、段落和字体格式 格式 书写界</summary>
-    <title>Markdown 实用语法</title>
+    <summary>Markdown 语法参考手册 / 速查表。 总览 此 Markdown 语法速查表提供了所有 Markdown 语法元素的快速参考。但是此速查表无法涵盖所有极限用法，因此，如果您</summary>
+    <title>Markdown 语法速查表</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
@@ -160,11 +160,11 @@
       <name>Marlin</name>
     </author>
     <category term="Markdown语法" scheme="https://marlincn.github.io/articles/Markdown%E8%AF%AD%E6%B3%95/"/>
-    <id>https://marlincn.github.io/posts/Markdown 入门指南/</id>
-    <link href="https://marlincn.github.io/posts/Markdown 入门指南/"/>
+    <id>https://marlincn.github.io/posts/Markdown 基本语法/</id>
+    <link href="https://marlincn.github.io/posts/Markdown 基本语法/"/>
     <published>2026-08-17T00:00:00.000Z</published>
-    <summary>Markdown 概述、工作原理以及用途。 Markdown 是什么？ Markdown 是一种轻量级的标记语言，可用于在纯文本文档中添加格式化元素。Markdown 由 John</summary>
-    <title>Markdown 入门指南</title>
+    <summary>John Gruber 的 Markdown 设计文档中列出的所有 Markdown 元素。 总览 几乎所有 Markdown 应用程序都支持 John Gruber 原始设计文档</summary>
+    <title>Markdown 基本语法</title>
     <updated>2026-08-17T00:00:00.000Z</updated>
   </entry>
   <entry>
