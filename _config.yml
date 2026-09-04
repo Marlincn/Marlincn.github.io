@@ -14,7 +14,7 @@ timezone: Asia/Shanghai
 
 # URL
 url: https://marlincn.github.io/
-version: 20260831-p45
+version: 20260831-p46
 permalink: posts/:title/
 permalink_defaults:
 pretty_urls:

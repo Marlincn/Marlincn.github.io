@@ -2,7 +2,7 @@ extends ./base.pug
 
 block headOpts
   - page.bodyClass = 'nova-tag-route nova-projects-route'
-  - page.headOpts = { title: '工程 | Marlin', siteTitle: '工程', description: '单片机与建模的动手实录：从开源复刻到课程设计。', ogUrl: siteUrl + '/projects/', pageType: 'page', extraHead: (page.ldjson || '') + '<link rel="preload" as="image" href="/img/hero/projects-hero.webp">' }
+  - page.headOpts = { title: '工程 | Marlin', siteTitle: '工程', description: '单片机与建模的动手实录：从开源复刻到课程设计。', ogUrl: siteUrl + '/projects/', pageType: 'page', extraHead: (page.ldjson || '') + '<link rel="preload" as="image" href="/img/hero/projects-hero.webp" fetchpriority="high" type="image/webp">' }
 
 block content
   != page.shellTop

@@ -3,7 +3,7 @@ extends ./base.pug
 block headOpts
   - page.bodyClass = 'nova-project-detail-route'
   - var detailUrl = encodeURI(siteUrl + '/projects/' + page.projectId + '/')
-  - page.headOpts = { title: '工程: ' + page.title + ' | Marlin', siteTitle: '工程: ' + page.title, description: page.description, ogUrl: detailUrl, canonical: detailUrl, ogTitle: page.title, pageType: 'page', extraHead: '<link rel="preload" as="image" href="/img/hero/projects-detail-hero.webp">' }
+  - page.headOpts = { title: '工程: ' + page.title + ' | Marlin', siteTitle: '工程: ' + page.title, description: page.description, ogUrl: detailUrl, canonical: detailUrl, ogTitle: page.title, pageType: 'page', extraHead: '<link rel="preload" as="image" href="/img/hero/projects-detail-hero.webp" fetchpriority="high" type="image/webp">' }
 
 block content
   //- 公共壳(P1): sidebar/body-wrap/header/nav 由生成器按 shellTop 拼装, post-info 页级
