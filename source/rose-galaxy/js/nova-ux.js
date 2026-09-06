@@ -235,12 +235,16 @@
     document.body.classList.remove(...ROUTE_CLASSES)
     // PJAX 切页: 显示全屏 loading, 避免新页 CSS 未就绪时裸渲染
     showNavLoading()
+    // R1-B (2026-09-05, v20260831-p47): 切换期间冻结 CSS 过渡, 消除页面重挂首帧过渡伪影(玫瑰色蒙版)
+    document.documentElement.classList.add('nova-no-transitions')
   }
 
   function finishNavigation() {
     // 等新页页级 CSS 全部就绪后再退场(超时 2s 兜底), 退场动画期间样式完成应用
     waitForPageStyles(2000).then(() => {
       requestAnimationFrame(() => finishInitialLoading())
+      // R1-B: 新页就绪后短暂保持冻结, 再解锁恢复日常过渡动画
+      window.setTimeout(() => document.documentElement.classList.remove('nova-no-transitions'), 250)
     })
   }
 

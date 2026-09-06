@@ -66,7 +66,10 @@ block content
             div.nova-project-detail-actions
               if page.link
                 a.nova-project-detail-btn(href=page.link target='_blank' rel='noopener')
-                  i.fab.fa-github.fa-fw
+                  if page.linkIcon === 'kurtips'
+                    img.nova-project-detail-link-icon(src='/img/projects/kurtips-fox.png' alt='' aria-hidden='true' style='width:1.15em;height:1.15em;flex:none')
+                  else
+                    i.fab.fa-github.fa-fw
                   span= page.linkLabel || 'GitHub'
               if page.link2
                 a.nova-project-detail-btn(href=page.link2 target='_blank' rel='noopener')

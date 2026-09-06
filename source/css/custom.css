@@ -1830,3 +1830,12 @@ html[data-theme="light"] body:not(.nova-home-active) footer#footer {
    仅在出现态(.nav-fixed.nav-visible)归位 top:0 并清除 translate3d 残留;
    隐藏态(仅 .nav-fixed)的 top:-60 保持不变, 不破坏向下滚动隐藏行为。 */
 #page-header.nav-fixed.nav-visible #nav { top: 0 !important; transform: none !important; }
+
+/* ===== R1-B 导航瞬间冻结过渡(2026-09-05, v20260831-p47) =====
+   根因: 页面重挂(PJAX)时全屏层 CSS transition 首帧过渡伪影,
+   观感为"玫瑰色蒙版由下而上收起"(实测 E3: 全局禁 transition 后消失)。
+   本方案: 仅 PJAX 切换期间(html.nova-no-transitions)冻结过渡,
+   完成后约 250ms 解锁 —— 日常浏览的悬停/主题渐变等全部保留。 */
+html.nova-no-transitions *,
+html.nova-no-transitions *::before,
+html.nova-no-transitions *::after { transition: none !important; }

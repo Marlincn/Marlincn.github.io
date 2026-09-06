@@ -138,14 +138,14 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 
 - **页脚横幅**：`custom.css` 中 `html[data-theme=dark|light] body:not(.nova-home-active) footer#footer`(玫瑰横幅 archive-bg.webp，深 `#080c17`/浅 `#d5d4de` 底)；首页为自定义 `.nova-footer` 排除在外；页级 css 中**不要再定义 footer 背景**(曾因覆盖导致横幅消失/矛盾,已收敛)
 - **#page-header 层叠（R6 标注）**：涉及 7 个文件(custom 19 处 / index 58 处 / 页级 19 处)——改 header 前需全局检索 `#page-header`；大部分为分层覆盖设计(主题底→全站覆盖→页级 hero)，勿简单增加规则，考虑现有层叠
-- **版本号约定**：所有 css/js 引用带 `?v=<日期>-<标签>`(当前 `20260831-p46`, 线上 GitHub Pages 同步)。**引用文件内容变更时必须 bump**——`_config.yml` 的 `version:` 是单源(生成器/动态模板自动),yml 与 html 片段中的字面量需手动同步(全站约 17 处)。(曾出现旧路径图片 404/样式回退)
+- **版本号约定**：所有 css/js 引用带 `?v=<日期>-<标签>`(当前 `20260831-p47`, 线上 GitHub Pages 同步)。**引用文件内容变更时必须 bump**——`_config.yml` 的 `version:` 是单源(生成器/动态模板自动),yml 与 html 片段中的字面量需手动同步(全站约 17 处)。(曾出现旧路径图片 404/样式回退)
 
 ---
 
 ## 构建与部署
 
 **仓库分支**:`main`(源码) / `public`(Pages 产物) / `waline`(Waline 后端)；
-本地: `web\SourceCode`(main 工作区) + `web\Marlin-web-demo2`(演示站, node_modules junction, 4007)。
+本地: `web\SourceCode`(main 工作区) + `web\Marlin-web-demo-B`(演示站, node_modules junction, 4008, 方案 B 验证站; 4007 演示站已于 2026-09-05 删除)。
 
 ```bash
 npm run build     # hexo generate && node scripts/minify.js(esbuild 压缩全部 JS)
@@ -154,7 +154,7 @@ npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 
 **发布流程（演示站 → 线上）**：
 
-1. **演示站**（当前工作副本为 `web\Marlin-web-demo2`, 克隆自 SourceCode + node_modules junction; 改动验证完 **robocopy 整站同步回 SourceCode**(排除 node_modules/.git/public/.deploy_git/db.json) → `hexo clean && hexo generate` 回归）完成改动
+1. **演示站**（当前工作副本为 `web\Marlin-web-demo-B`, 克隆自 SourceCode + node_modules junction, 4008; 改动验证完 **robocopy 整站同步回 SourceCode**(排除 node_modules/.git/public/.deploy_git/db.json) → `hexo clean && hexo generate` 回归）完成改动
 2. **用户验收 + 明确批准**后：
    - SourceCode 下 `hexo clean && hexo generate`（先停任何 server；clean 后残留空目录手动删一次；generate 偶发 minify ENOENT, 重跑一次即完成压缩）
    - `git add -A && commit`(简化信息) → `git push origin main`（main 存档）
@@ -209,6 +209,8 @@ npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 - **换 B 站收藏夹源**：改 `source/rose-galaxy/js/lib/site-config.js` 的 `NOVA_SITE.bili` → bump `utils.js?` 无需，但 **bump site-config.js 引用处版本号**(yml inject) 防缓存。
 - **换页脚横幅图**：替换 `source/img/hero/archive-bg.webp`(保持文件名)；改色 → `custom.css` 两套规则；**勿在页级 css 加 footer 背景**。
 - **换页面 hero 背景**：页面级 css(`{page}-page.css`)中对应 `#page-header`/`.nova-hero-bg` 规则 → 图片放 `img/hero/` → bump 该 css 版本号。
+- **PJAX 过渡伪影(R1-B, 2026-09-05)**：切换页面瞬间的整屏"玫瑰色蒙版"是页面重挂时全屏层 CSS transition 首帧过渡造成的(非展示层/浏览器问题)。机制 = `custom.css` 的 `html.nova-no-transitions *` 冻结规则 + `nova-ux.js` `beginNavigation`/`finishNavigation` 加/移除该 html 类(切换 250ms 后解锁)。**勿删这两处**;若优化过渡,需同时保留机制,否则伪影复发。
+- **工程按钮图标(linkIcon)**：`projects-data.js` 工程条目可选 `linkIcon` 字段(如 `'kurtips'`),`projects-generator.js` 两层映射已透传,`project-detail.pug` 按字段渲染对应图标(`source/img/projects/kurtips-fox.png` 为 KurTips 官方标识,官方无 SVG 资源);无该字段的工程保持 GitHub 图标。
 - **更新工程(日期同步)**：替换/新增 `source/assets/projects/<工程名>/` 下资源 → 工程页"最近更新"与首页 LATEST SIGNAL 自动更新为目录内最新文件 mtime(无需改代码);无文件时回退 `projects-data.js` 的 `date`(仅年份)。
 - **版本号升级**：改 `_config.yml` 的 `version:` 一行(权威源, pug/生成器引用自动生效) → 全站搜索 `?v=` 确认 `_config.butterfly.yml`(10 处) 与 html 片段(parts-common/footer、page-scripts 等) 的字面量同步手动改(这些无插值能力)。
 - **发说说(瞬间页)**：管理员在瞬间页评论区留言即说说——「评论即说说」由 `moments-feed.js` 渲染(说说流仅在页面加载/PJAX 时拉取,**无自动重拉/轮询**);评论区管理员评论在**本次会话内保持可见可管理(如删除),刷新后自动隐藏**(一次性扫描,非持续观察);右侧「最近状态」收藏为本地 localStorage(`nova-moments-mood-v2`):点心形增删、最新置顶、7 条内完整展示超出滚动、服务端已删除说的收藏自动清除(prune 对账)。
@@ -221,6 +223,7 @@ npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 | 症状 | 常见原因 → 处理 |
 | --- | --- |
 | 页面元素/样式缺失、图片 404 | 浏览器缓存旧引用 → Ctrl+F5；仍存在则检查版本号是否已 bump |
+| 切页瞬间整屏"玫瑰色蒙版"一闪（由下而上收起） | 页面重挂时 CSS transition 首帧伪影(R1-B 已修复) → 检查 `custom.css` 的 `html.nova-no-transitions` 规则与 `nova-ux.js` 的加/移除钩子是否完好;曾被误判为展示层/浏览器问题,勿再排查显示/硬件链路 |
 | 首页 hero 塌陷、白区 | 曾因 LATEST/闭合链双份(P1b 提取遗留)——检查 `home-parts/top.html` 占位 `<!--NOVA-LATEST-->` 与 `mid.html` 无旧闭合链；产物中 `nova-latest-signal`/`nova-scroll-hint` 应各 1 处 |
 | 生成器不输出(xml/索引缺失) | `scripts/` 加载失败(hexo is not defined / not a function) → 检查共享模块是否顶层用了 hexo；`ERROR Script load failed` 必先看 |
 | 文件被"还原" | `scripts/` 混入一次性工具 → 移到 `py-tools/archive/`；从 git(SourceCode) 恢复 |

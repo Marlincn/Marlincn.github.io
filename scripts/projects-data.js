@@ -125,6 +125,7 @@ module.exports = [
     tags: ['Blender5.2', '建模材质', '渲染合成', '动画'],
     link: 'https://kurtwei.com/blender-beginner-tutorial-free-course/',
     linkLabel: '课程地址',
+    linkIcon: 'kurtips',
     link2: '',
     link2Label: '',
     cover: '/img/projects/kurtips-fox.webp',
