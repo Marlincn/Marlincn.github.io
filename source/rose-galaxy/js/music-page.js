@@ -15,9 +15,12 @@
   // B5 单源(2026-09-02): 视觉图列表改为运行时从音乐页卡片 DOM 收集(data-src),
   // 与 music.html 卡片 img 单一来源, 换图只改模板
   // C7/C10 2026-09-02: 共享工具从 NOVA_UTILS 解构(原局部 songName/songArtist/formatTime 包装已收敛)
+  // 阶段4 批次N · 4.4: normalizeIndex 与 errText 也收敛到 NOVA_UTILS(原为本文件私有/内联)
   const formatTime = window.NOVA_UTILS.formatTime;
   const songName = window.NOVA_UTILS.songName;
   const songArtist = window.NOVA_UTILS.songArtist;
+  const normalizeIndex = window.NOVA_UTILS.normalizeIndex;
+  const errText = window.NOVA_UTILS.errText;
 
   const visualImages = Array.from(document.querySelectorAll(".nova-music-card img"))
     .map(img => img.dataset.src || "")
@@ -104,17 +107,33 @@
       cards: [...root.querySelectorAll(".nova-music-card")],
     };
 
+    /* P1 修复(2026-09-11): 模板若缺某个 class, els.x 为 null, 后面的 textContent /
+       setAttribute / querySelector 会抛异常; 而 player.emit 的 catch 曾把它整个吞掉 ——
+       结果是"UI 永久不更新且控制台毫无线索"。这里把缺失的元素替换为哑对象,
+       使 UI 更新流程不会因单点空引用而整体中断(dummy 的写入全部无副作用)。 */
+    const dummy = {
+      textContent: '', value: '', hidden: false, src: '', alt: '', width: 0, height: 0,
+      style: {}, dataset: {}, disabled: false, checked: false,
+      classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
+      setAttribute() {}, removeAttribute() {}, getAttribute: () => null, hasAttribute: () => false,
+      addEventListener() {}, removeEventListener() {},
+      querySelector: () => null, querySelectorAll: () => [],
+      appendChild() {}, removeChild() {}, remove() {}, focus() {}, blur() {}
+    };
+    Object.keys(els).forEach(k => { if (!els[k]) els[k] = dummy; });
+
     const listeners = [];
+    /* 歌单请求竞态控制(P0 修复 2026-09-11): 见 loadPlaylist / destroyMusicPage 注释 */
+    let playlistAbort = null;
+    let playlistTimer = 0;
     const on = (target, type, handler, options) => {
       target?.addEventListener(type, handler, options);
       listeners.push(() => target?.removeEventListener(type, handler, options));
     };
 
+    /* 封面兜底: cover -> pic -> 卡片图。visualImages 是本模块运行时从 DOM 收集的,
+       故此处保留本地包装(不抽到 NOVA_UTILS); 其中的 normalizeIndex 已收敛到 NOVA_UTILS。 */
     const songCover = (song, index) => song?.cover || song?.pic || visualImages[normalizeIndex(index, visualImages.length)];
-
-    function normalizeIndex(index, length) {
-      return length ? ((index % length) + length) % length : 0;
-    }
 
     function showLoadingState() {
       els.title.textContent = "歌单载入中";
@@ -224,7 +243,17 @@
 
     function loadPlaylist() {
       showLoadingState();
-      fetch(BILI_PROXY + "/api/playlist?uid=" + BILI_UID + "&folder=" + encodeURIComponent(BILI_FOLDER))
+      /* 竞态与泄漏控制(P0 修复 2026-09-11):
+         pjax:send 会先 destroy() 清空 listeners, 但上一轮的 fetch 仍会 resolve 并继续执行
+         bindMusicControls() —— 新监会被注册进已清空的数组, 永不注销(永久泄漏)。
+         故给 fetch 挂 AbortController: 新请求取消旧请求 / destroy 时主动 abort
+         (使 .then 不再执行) / 15s 超时防弱网永久挂起。 */
+      if (playlistAbort) playlistAbort.abort();
+      const ac = new AbortController();
+      playlistAbort = ac;
+      clearTimeout(playlistTimer);
+      playlistTimer = setTimeout(() => ac.abort(), 15000);
+      fetch(BILI_PROXY + "/api/playlist?uid=" + BILI_UID + "&folder=" + encodeURIComponent(BILI_FOLDER), { signal: ac.signal })
         .then(resp => resp.json())
         .then(j => {
           if (j.error) throw new Error(j.error);
@@ -255,12 +284,20 @@
           syncMiniToggle();
         })
         .catch(e => {
-          showLoadFailure("收藏夹加载失败", String(e?.message || e).slice(0, 90));
+          if (e?.name === "AbortError") return; // 主动取消或超时: 已离开音乐页 / 已发起新请求
+          showLoadFailure("收藏夹加载失败", errText(e));
           console.error("Nova music: playlist failed.", e);
+        })
+        .finally(() => {
+          clearTimeout(playlistTimer);
+          if (playlistAbort === ac) playlistAbort = null;
         });
     }
 
     function destroyMusicPage() {
+      // 取消在飞的歌单请求: 确保 .then 不再向已清空的 listeners 注册监听(防永久泄漏)
+      if (playlistAbort) { playlistAbort.abort(); playlistAbort = null; }
+      clearTimeout(playlistTimer);
       listeners.splice(0).forEach(remove => remove());
     }
 
@@ -327,16 +364,25 @@
     window.__novaMusicController = null;
   }
 
-  window.__novaMusicBootstrap = {
-    init: initMusicPage,
-    destroy: leaveMusicPage,
-  };
-
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initMusicPage, { once: true });
+  /* 幂等引导(P0 修复 2026-09-11):
+     本脚本带 data-pjax, PJAX 导航会重新执行整个 IIFE。原先 pjax:send / pjax:complete
+     在顶层无条件注册 —— 每进一次音乐页就多一对监听器, N 次后每次 pjax:complete 会调用
+     N 次 initMusicPage(其内部虽有 root 比较守卫, 复杂度仍是 O(N))。
+     故: 监听注册只在首次执行时进行一次; 后续重执行仅调用一次 initMusicPage。 */
+  if (window.__novaMusicBoot) {
+    window.__novaMusicBootstrap.init();
   } else {
-    initMusicPage();
+    window.__novaMusicBoot = true;
+    window.__novaMusicBootstrap = {
+      init: initMusicPage,
+      destroy: leaveMusicPage,
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", initMusicPage, { once: true });
+    } else {
+      initMusicPage();
+    }
+    document.addEventListener("pjax:send", leaveMusicPage);
+    document.addEventListener("pjax:complete", initMusicPage);
   }
-  document.addEventListener("pjax:send", leaveMusicPage);
-  document.addEventListener("pjax:complete", initMusicPage);
 })();

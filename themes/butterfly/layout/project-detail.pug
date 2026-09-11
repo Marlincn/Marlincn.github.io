@@ -17,12 +17,12 @@ block content
           span.post-meta-date
             i.far.fa-calendar-alt.fa-fw.post-meta-icon
             span.post-meta-label= '发表于'
-            time= page.date
+            time(datetime=page.date)= page.date
             if page.updated
               span.post-meta-separator |
               i.fas.fa-history.fa-fw.post-meta-icon
               span.post-meta-label= '更新于'
-              time= page.updated
+              time(datetime=page.updated)= page.updated
       div.meta-secondline
         //- 浏览量 + 评论数: 与文章页一致(busuanzi + waline-comment-count)
         span.post-meta-separator
@@ -41,7 +41,7 @@ block content
   | </header>
   main#content-inner
       //- 内联 grid 布局: 两栏(左主区 + 340px 右栏)不依赖外部 CSS 时序, 首帧不堆叠
-      div.nova-project-detail(style='display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:48px;align-items:start;width:min(1400px,calc(100% - 64px));margin:46px auto 60px;max-width:1400px;')
+      div.nova-project-detail(style='display:grid;grid-template-columns:var(--cols,minmax(0,1fr) 340px);gap:var(--gap,48px);align-items:start;width:var(--w,min(1400px,calc(100% - 64px)));margin:var(--m,46px auto 60px);max-width:1400px;')
         section.nova-project-detail-main
           //- 白色卡片: 演示图 + 介绍文本包裹在一起(参照文章三级页正文卡片)
           div.nova-project-detail-panel
@@ -76,7 +76,7 @@ block content
                   i.fas.fa-puzzle-piece.fa-fw
                   span= page.link2Label || '更多信息'
               if !page.link && !page.link2
-                span.nova-project-detail-btn.nova-project-detail-btn--placeholder 链接整理中
+                span.nova-project-detail-btn.nova-project-detail-btn--placeholder 链接待补
             if page.downloads && page.downloads.length
               h2.nova-project-detail-dl-title
                 i.fas.fa-download.fa-fw(aria-hidden='true')

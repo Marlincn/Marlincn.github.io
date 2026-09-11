@@ -1,8 +1,8 @@
 (() => {
   'use strict'
 
-  if (window.__novaMomentsBootstrap) {
-    window.__novaMomentsBootstrap.init()
+  if (window.__novaMomentsBoot) {
+    window.__novaMomentsBoot.init()
     return
   }
 
@@ -51,7 +51,7 @@
     bindLikeButtons(page)
   }
 
-  window.__novaMomentsBootstrap = { init: initialiseMomentsPage, bindLikeButtons }
+  window.__novaMomentsBoot = { init: initialiseMomentsPage, bindLikeButtons }
   document.addEventListener('DOMContentLoaded', initialiseMomentsPage, { once: true })
   document.addEventListener('pjax:complete', initialiseMomentsPage)
   if (document.readyState !== 'loading') initialiseMomentsPage()

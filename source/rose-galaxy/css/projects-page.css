@@ -170,7 +170,7 @@ body.nova-tag-route main.nova-projects-overview {
 
 .nova-project-card:hover .nova-project-action {
   gap: 10px;
-  color: #df86a3;
+  color: var(--nova-rose-hover);
 }
 
 .nova-project-card:hover .nova-project-action-arrow {
@@ -202,9 +202,11 @@ html[data-theme="light"] .nova-project-cover {
 }
 
 @media (max-width: 1024px) {
+  /* 阶段4 批次M · 4.6: 改为传参 --cols, 不再用 !important 对抗模板内联。
+     模板内联只引用 var(--cols,3)(带 fallback) 且自身不设 --cols,
+     因此这里的声明可直接生效 —— 既保留首帧就有正确列数(防铺满), 又无需 !important。 */
   .nova-projects-grid {
-    /* !important 覆盖模板内联 grid(首帧防铺满) */
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    --cols: 2;
   }
 }
 
@@ -218,8 +220,8 @@ html[data-theme="light"] .nova-project-cover {
 
 @media (max-width: 640px) {
   .nova-projects-grid {
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: 20px !important;
+    --cols: 1;
+    --gap: 20px;
   }
 }
 

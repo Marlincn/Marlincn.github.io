@@ -1,8 +1,8 @@
 (() => {
   'use strict'
 
-  if (window.__novaUxReady) return
-  window.__novaUxReady = true
+  if (window.__novaUxBoot) return
+  window.__novaUxBoot = true
 
   const INITIAL_MIN_DURATION = 50
   const INITIAL_MAX_DURATION = 2000
@@ -18,15 +18,12 @@
   const ROUTE_CLASSES = [
     'nova-home-active',
     'nova-music-route',
-    'nova-category-route',
     'nova-tag-route',
     'nova-tags-route',
     'nova-projects-route',
     'nova-project-detail-route',
-    'nova-template-route',
     'nova-moments-route',
     'nova-about-route',
-    'nova-gallery-route'
   ]
   let initialFinishTimer = 0
   let initialFallbackTimer = 0
@@ -200,7 +197,7 @@
     // 只在"从网站首次进入"时显示 loading(本次会话第一次);
     // 之后站内 PJAX 回首页不再弹。用 sessionStorage 记录本次会话已显示。
     let alreadyShown = false
-    try { alreadyShown = sessionStorage.getItem('__novaLoadingShown') === '1' } catch (_) {}
+    try { alreadyShown = readStoredKey(LOADING_SHOWN_KEY, LOADING_SHOWN_KEY_LEGACY) === '1' } catch (_) {}
     if (alreadyShown) {
       // 非首次:清理可能残留的 loading,直接放行
       const stale = document.querySelector('[data-nova-loading]')
@@ -208,7 +205,7 @@
       document.body.classList.remove('nova-loading-active')
       return
     }
-    try { sessionStorage.setItem('__novaLoadingShown', '1') } catch (_) {}
+    try { sessionStorage.setItem(LOADING_SHOWN_KEY, '1') } catch (_) {}
 
     const loader = getLoader()
     loader.classList.remove('is-leaving')
@@ -411,16 +408,12 @@
     const routeMarkers = [
       ['[data-nova-home]', ['nova-home-active']],
       ['.nova-music-page', ['nova-music-route']],
-      ['main.nova-category-content', ['nova-category-route']],
       ['main.nova-tags-overview', ['nova-tag-route', 'nova-tags-route']],
       ['main.nova-projects-overview', ['nova-tag-route', 'nova-projects-route']],
       ['main.nova-tag-content:not(.nova-tags-overview)', ['nova-tag-route']],
       ['.nova-project-detail', ['nova-project-detail-route']],
-      ['.nova-project-detail', ['nova-project-detail-route']],
-      ['.nova-template-page', ['nova-template-route']],
       ['.nova-moments-page', ['nova-moments-route']],
       ['.nova-about-page', ['nova-about-route']],
-      ['[data-gallery-root]', ['nova-gallery-route']]
     ]
     const match = routeMarkers.find(([selector]) => document.querySelector(selector))
     if (match) document.body.classList.add(...match[1])
@@ -485,11 +478,31 @@
   /* 会话级主题偏好(2026-08-18):手动切换写入 sessionStorage,
      会话内(含 PJAX 导航)全局生效;关闭浏览器/新标签自动清空,
      重新打开只按时间制,不读任何持久记忆。 */
-  const THEME_SESSION_KEY = 'marlin-theme-session'
+  /* 存储键统一(阶段4 批次N · 4.5): 全站会话键统一为 nova- 前缀。
+     本文件在 inject.bottom(无 defer), 会早于 inject.head 的 defer 脚本(含 lib/utils.js)
+     执行, 故不能依赖 NOVA_UTILS —— 这里内联同款迁移辅助。函数声明会提升,
+     因此上方(第 200 行附近的 __novaLoadingShown)使用处也能直接调用。
+     语义: 新键优先; 只有旧键时把值迁到新键并删除旧键再返回 —— 不依赖执行顺序, 不丢数据。 */
+  function readStoredKey(newKey, legacyKey) {
+    try {
+      const v = sessionStorage.getItem(newKey)
+      if (v !== null) return v
+      const old = sessionStorage.getItem(legacyKey)
+      if (old !== null) {
+        try { sessionStorage.setItem(newKey, old); sessionStorage.removeItem(legacyKey) } catch (_) {}
+        return old
+      }
+    } catch (_) {}
+    return null
+  }
+  const THEME_SESSION_KEY = 'nova-theme-session'
+  const THEME_SESSION_KEY_LEGACY = 'marlin-theme-session'
+  const LOADING_SHOWN_KEY = 'nova-loading-shown'
+  const LOADING_SHOWN_KEY_LEGACY = '__novaLoadingShown'
 
   const getSessionTheme = () => {
     try {
-      const value = window.sessionStorage.getItem(THEME_SESSION_KEY)
+      const value = readStoredKey(THEME_SESSION_KEY, THEME_SESSION_KEY_LEGACY)
       return value === 'dark' || value === 'light' ? value : null
     } catch (e) {
       return null

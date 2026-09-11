@@ -1,7 +1,7 @@
 (() => {
   'use strict'
 
-  if (!window.__novaTagReader) {
+  if (!window.__novaTagBoot) {
     const reader = {
       observer: null,
       page: null,
@@ -72,10 +72,10 @@
       }
     }
 
-    window.__novaTagReader = reader
+    window.__novaTagBoot = reader
     document.addEventListener('pjax:send', () => reader.destroy())
     document.addEventListener('pjax:complete', () => reader.init())
   }
 
-  window.__novaTagReader.init()
+  window.__novaTagBoot.init()
 })()

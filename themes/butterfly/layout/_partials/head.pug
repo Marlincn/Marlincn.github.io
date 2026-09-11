@@ -43,10 +43,13 @@ mixin head(opts)
     link(rel='icon' type='image/png' href='/img/brand/favicon-small.png')
     if opts.canonical
       link(rel='canonical' href=opts.canonical)
-    link(rel='preconnect' href='//cdn.jsdelivr.net')
     link(rel='preconnect' href='//busuanzi.ibruce.info')
     link(rel='stylesheet' href='/css/index.css?v=5.7.0')
-    link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.3.1/css/all.min.css')
+    //- 阶段5 · P0: FontAwesome 由 jsDelivr CDN 改为同源自托管(实测 CDN 单请求 7.3s, 与 FCP 差 77ms,
+    //- 即首屏由它单点决定; 本地资源在同源、无额外 DNS/TLS)。资源: source/rose-galaxy/vendor/fontawesome/
+    //- infinitegrid 同样本地化(实测本站无 recent-post-items/masonry 容器, 该库实际不触发加载;
+    //- 保留 GLOBAL_CONFIG.infinitegrid.js 以免 main.js 取值时报错)。
+    link(rel='stylesheet' href='/rose-galaxy/vendor/fontawesome/css/all.min.css?v=7.3.1')
     script.
       (() => {
 
@@ -201,7 +204,7 @@ mixin head(opts)
         lightbox: 'medium_zoom',
         Snackbar: undefined,
         infinitegrid: {
-          js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+          js: '/rose-galaxy/vendor/infinitegrid/infinitegrid.min.js?v=4.13.0',
           buttonText: '加载更多'
         },
         isPhotoFigcaption: false,
@@ -223,5 +226,4 @@ mixin head(opts)
     != (theme.inject && theme.inject.head ? theme.inject.head.join('') : '')
     //- 页级 CSS(A 方案 2026-09-03): 已全量全局注入(butterfly.yml inject.head, 见上),
     //- 此处不再输出 extraCss——各 pug headOpts.extraCss 值为废弃配置(保留无影响)。
-    != '' || ''
     != opts.extraHead || ''

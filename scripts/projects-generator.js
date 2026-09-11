@@ -9,18 +9,13 @@ const path = require('path')
 const { composeShellTop, buildFooter } = require('./parts-common')
 const { fmtDate } = require('./lib/date')
 const { projectUpdated } = require('./lib/project-date')
+const { toMs, byKeys } = require('./lib/sort')
 
 const projects = require('./projects-data')
 const INTRO_BLOCKS = require('./projects-intro')   // 工程介绍文案(自包含, 见 projects-intro.js)
 
 const projectParts = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'project-parts')
 const readProjectTop = fs.readFileSync(path.join(projectParts, 'top.html'), 'utf8')
-
-// 工程二级页样式: 读入后内联进 <head> <style>, 首帧同步生效(不依赖外部 CSS 时序),
-// 修复"第一次进入背景框/侧边栏框/按钮框未加载"的时序 bug
-const PROJECT_DETAIL_CSS = fs.readFileSync(
-  path.join(__dirname, '..', 'source', 'rose-galaxy', 'css', 'project-detail-page.css'), 'utf8'
-)
 
 const { SITE } = require('./site-config')
 
@@ -51,7 +46,7 @@ function dlHref(p) {
 
 function projectLdjson() {
   const url = encodeURI(SITE + '/projects/')
-  return '<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","@id":"' + url + '#webpage","name":"\u5de5\u7a0b","url":"' + url + '","description":"\u5982\u679c\u6211\u770b\u5f97\u66f4\u8fdc\uff0c\u90a3\u662f\u56e0\u4e3a\u6211\u7ad9\u5728\u5de8\u4eba\u7684\u80a9\u818a\u4e0a\u3002","inLanguage":"zh-CN","isPartOf":{"@type":"WebSite","@id":"' + SITE + '/#website","url":"' + SITE + '/","name":"Marlin"}}</script>'
+  return '<script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","@id":"' + url + '#webpage","name":"\u5de5\u7a0b","url":"' + url + '","description":"\u5355\u7247\u673a\u4e0e\u5efa\u6a21\u7684\u52a8\u624b\u5b9e\u5f55\uff1a\u4ece\u5f00\u6e90\u590d\u523b\u5230\u8bfe\u7a0b\u8bbe\u8ba1\u3002","inLanguage":"zh-CN","isPartOf":{"@type":"WebSite","@id":"' + SITE + '/#website","url":"' + SITE + '/","name":"Marlin"}}</script>'
 }
 
 hexo.extend.generator.register('nova-projects', function () {
@@ -96,9 +91,12 @@ const uniqueTags = new Set()
 
   const rawPv = loadRawPv()
   const pvOfP = pp => rawPv['/projects/' + pp.id + '/'] || 0
-  const updMs = pp => new Date(projectUpdated(pp) || 0).getTime()
-  const byPvUpd = (a, b) => (pvOfP(b) - pvOfP(a)) || (updMs(b) - updMs(a)) || a.title.localeCompare(b.title, 'zh')
-  const byUpd = (a, b) => (updMs(b) - updMs(a)) || a.title.localeCompare(b.title, 'zh')
+  /* 阶段4 批次N · 4.4: 比较器收敛到 scripts/lib/sort.js(与 home-generator 共用同一实现)。
+     原先 updMs 直接用 new Date(...).getTime(), 缺 isNaN 保护 —— projectUpdated 一旦返回
+     非法值就会产生 NaN, 使 Array.sort 结果不确定; 现统一走 toMs(非法值回退 0)。 */
+  const updMs = pp => toMs(projectUpdated(pp))
+  const byPvUpd = byKeys([[r => pvOfP(r), 'desc'], [r => updMs(r), 'desc']])
+  const byUpd = byKeys([[r => updMs(r), 'desc']])
   const hasPv = prepared.some(pp => pvOfP(pp) > 0)
   const topProject = prepared.slice().sort(byPvUpd)[0]
   const latestProject = prepared.slice().sort(byUpd)[0]
@@ -154,9 +152,9 @@ const uniqueTags = new Set()
         category: p.category,
         categoryKey: p.categoryKey,
         subtitle: p.subtitle,
-        // 发表于: 有 date 用原值, 否则本时刻; 更新于: 一律本时刻(工程持续更新中)
+        // 发表于: 有 date 用原值, 否则本时刻; 更新于: 单源 projectUpdated(显式 updated → 资产 mtime → date)
         date: p.date || TODAY,
-        updated: TODAY,
+        updated: projectUpdated(p),
         description: p.description,
         tags: p.tags,
         demoCover: '/img/projects/demo-' + p.id + '.webp',
@@ -173,7 +171,6 @@ const uniqueTags = new Set()
         projectCount: prepared.length,
         categoryCount: CATEGORIES.length,
         tagCount: uniqueTags.size,
-        detailCss: PROJECT_DETAIL_CSS,
         shellTop: detailShellTop,
         shellBottom: shellBottom
       }

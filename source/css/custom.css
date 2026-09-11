@@ -8,7 +8,7 @@
 
      1. 全局调色板与工具     Nova visual authority(palette) / .sr-only / :root 变量
      2. 通用页面覆盖          Homepage / Category+tag indexes / About / Moments /
-                              Template atlas / Gallery / Music / Article+Note
+                              Music / Article+Note
      3. 首屏 Loading          全站首次加载层(会话记忆)
      4. 搜索对话框            Native-feeling midnight search dialog
      5. 文章详情              Article detail — Night Rose(正文/排版/工具/评论)
@@ -41,6 +41,9 @@
      --nova-rose = hex 别名; --nova-rose-rgb 供 rgb(var(--nova-rose-rgb) / <alpha>) 使用 */
   --nova-rose: #ce718f;
   --nova-rose-rgb: 206 113 143;
+  /* 玫瑰 hover 态(阶段4 批次L · 4.3 令牌化): 原为 4 个页级 CSS 中的 6 处硬编码 #df86a3。
+     实测这些规则全部位于深色上下文(浅色区无覆盖), 深浅共用同一值, 故只需单值。 */
+  --nova-rose-hover: #df86a3;
 
   /* 字体栈(C11 单源, 2026-09-02): 衬线/无衬线官方栈, 各页面 CSS 引用 */
   --font-serif: "Cormorant Garamond","Playfair Display",Georgia,serif;
@@ -68,15 +71,6 @@
   --nova-home-line: rgba(226, 218, 226, .09);
 
   /* Category and tag indexes. */
-  --nova-category-page-bg: #080e1a;
-  --nova-category-page-bg-soft: #0b1424;
-  --nova-category-card-bg: rgba(12, 18, 34, .76);
-  --nova-category-text-primary: #f1edf2;
-  --nova-category-text-secondary: rgba(224, 219, 227, .76);
-  --nova-category-text-muted: rgba(194, 188, 202, .64);
-  --nova-category-text-faint: rgba(174, 168, 183, .52);
-  --nova-category-accent: var(--nova-rose);
-  --nova-category-border: rgba(229, 198, 213, .11);
   --nova-tag-bg: #080e1a;
   --nova-tag-bg-soft: #0a1322;
   --nova-tag-card: rgba(11, 18, 34, .78);
@@ -110,25 +104,6 @@
   --shuo-muted: rgba(210, 199, 208, .52);
   --shuo-rose: #c77894;
   --shuo-rose-soft: #d9a6b8;
-
-  /* Template atlas. */
-  --atlas-bg: #080e1a;
-  --atlas-panel: rgba(12, 20, 38, .78);
-  --atlas-panel-soft: rgba(20, 28, 49, .68);
-  --atlas-border: rgba(219, 178, 198, .14);
-  --atlas-text: #f1edf2;
-  --atlas-secondary: rgba(225, 219, 228, .75);
-  --atlas-muted: rgba(195, 187, 201, .57);
-  --atlas-rose: #cd7190;
-
-  /* Gallery. */
-  --nova-gallery-bg: #08101d;
-  --nova-gallery-bg-deep: #060c16;
-  --nova-gallery-text: #eee9e6;
-  --nova-gallery-muted: rgba(220, 213, 211, .62);
-  --nova-gallery-faint: rgba(205, 198, 198, .42);
-  --nova-gallery-rose: #d1849d;
-  --nova-gallery-line: rgba(215, 204, 207, .1);
 
   /* Music. */
   --nova-music-page-bg: #080c17;
@@ -194,15 +169,6 @@ html[data-theme="light"] {
   --nova-home-cool: #6f91aa;
   --nova-home-line: rgba(55, 48, 67, .1);
 
-  --nova-category-page-bg: #eeebf1;
-  --nova-category-page-bg-soft: #e7e5ec;
-  --nova-category-card-bg: rgba(255, 253, 255, .76);
-  --nova-category-text-primary: #302c36;
-  --nova-category-text-secondary: #655f6b;
-  --nova-category-text-muted: #87818d;
-  --nova-category-text-faint: #a19aa6;
-  --nova-category-accent: #bd607d;
-  --nova-category-border: rgba(75, 62, 83, .1);
   --nova-tag-bg: #eeebf1;
   --nova-tag-bg-soft: #e7e5ec;
   --nova-tag-card: rgba(255, 253, 255, .78);
@@ -234,23 +200,6 @@ html[data-theme="light"] {
   --shuo-muted: rgba(72, 59, 74, .52);
   --shuo-rose: #a55370;
   --shuo-rose-soft: #95546d;
-
-  --atlas-bg: #e9e7ed;
-  --atlas-panel: rgba(251, 249, 251, .78);
-  --atlas-panel-soft: rgba(242, 238, 244, .76);
-  --atlas-border: rgba(88, 69, 91, .14);
-  --atlas-text: #36313a;
-  --atlas-secondary: rgba(55, 48, 59, .72);
-  --atlas-muted: rgba(72, 63, 76, .53);
-  --atlas-rose: #b35978;
-
-  --nova-gallery-bg: #e7e4e3;
-  --nova-gallery-bg-deep: #d9d5d5;
-  --nova-gallery-text: #3d3739;
-  --nova-gallery-muted: rgba(67, 58, 61, .64);
-  --nova-gallery-faint: rgba(79, 68, 72, .45);
-  --nova-gallery-rose: #a65f76;
-  --nova-gallery-line: rgba(95, 77, 82, .13);
 
   --nova-music-page-bg: #f0edf3;
   --nova-music-section-bg: #ebeaf0;
@@ -294,11 +243,11 @@ html[data-theme="light"] {
   --post-shadow-soft: 0 5px 16px rgba(47, 40, 48, .05);
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) #waline-wrap {
+:is(.nova-music-comments, .nova-moments-comments) #waline-wrap {
   color: var(--nova-comment-text);
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-panel {
+:is(.nova-music-comments, .nova-moments-comments) .wl-panel {
   border: 1px solid var(--nova-comment-border) !important;
   border-radius: var(--nova-radius-control) !important;
   background: var(--nova-comment-panel) !important;
@@ -306,39 +255,39 @@ html[data-theme="light"] {
   transition: border-color 190ms ease, box-shadow 190ms ease, background-color 190ms ease;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-header,
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-editor {
+:is(.nova-music-comments, .nova-moments-comments) .wl-header,
+:is(.nova-music-comments, .nova-moments-comments) .wl-editor {
   border-color: var(--nova-comment-border) !important;
   background: transparent !important;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) :is(input, textarea) {
+:is(.nova-music-comments, .nova-moments-comments) :is(input, textarea) {
   color: var(--nova-comment-text) !important;
   background: var(--nova-comment-field) !important;
   transition: background-color 190ms ease, color 190ms ease;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-panel:focus-within {
+:is(.nova-music-comments, .nova-moments-comments) .wl-panel:focus-within {
   border-color: var(--nova-focus) !important;
   box-shadow: 0 0 0 3px var(--nova-focus-ring) !important;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) :is(input, textarea):focus {
+:is(.nova-music-comments, .nova-moments-comments) :is(input, textarea):focus {
   outline: 0 !important;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-btn.primary {
+:is(.nova-music-comments, .nova-moments-comments) .wl-btn.primary {
   border-color: var(--nova-comment-accent) !important;
   color: #fff !important;
   background: var(--nova-comment-accent) !important;
   transition: filter 190ms ease, transform 190ms ease, border-color 190ms ease;
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) .wl-btn.primary:hover {
+:is(.nova-music-comments, .nova-moments-comments) .wl-btn.primary:hover {
   filter: brightness(1.07);
 }
 
-:is(.nova-music-comments, body.nova-gallery-route .nova-gallery-comments, .nova-moments-comments) :is(button, a, input, textarea, select):focus-visible {
+:is(.nova-music-comments, .nova-moments-comments) :is(button, a, input, textarea, select):focus-visible {
   outline: 2px solid var(--nova-focus) !important;
   outline-offset: 2px;
 }
@@ -926,7 +875,7 @@ html[data-theme="light"] #local-search .local-search-hit-item:hover {
 #body-wrap.post #aside-content .sticky_layout {
   position: static;
 }
-@media(min-width:1101px) and (min-height:820px) {
+@media(min-width:1100px) and (min-height:820px) {
   #body-wrap.post #aside-content .sticky_layout {
     position: sticky;
     top: 88px;
@@ -1361,7 +1310,7 @@ html[data-theme="light"] #body-wrap.post #pagination .pagination-related {
   line-height: inherit;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   #nav #menus {
     display: flex;
     height: 100%;
@@ -1411,7 +1360,7 @@ html[data-theme="light"] #body-wrap.post #pagination .pagination-related {
   font-size: 14px !important;
 }
 
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   #nav .menus_items .menus_item_child {
     box-sizing: border-box;
     top: 100%;
@@ -1451,7 +1400,7 @@ html[data-theme="light"] #body-wrap.post #pagination .pagination-related {
 }
 
 /* Navigation dark theme */
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   html[data-theme="dark"] #nav .menus_item_child {
     border: 1px solid rgba(185, 128, 153, .24);
     background: linear-gradient(145deg, rgba(16, 22, 35, .97), rgba(25, 22, 33, .97));
@@ -1471,7 +1420,7 @@ html[data-theme="light"] #body-wrap.post #pagination .pagination-related {
 }
 
 /* Navigation light theme */
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   html[data-theme="light"] #nav .menus_item_child {
     border: 1px solid rgba(207, 183, 195, .50);
     background: linear-gradient(145deg, rgba(255, 252, 253, .98), rgba(247, 241, 245, .97));
@@ -1490,27 +1439,19 @@ html[data-theme="light"] #body-wrap.post #pagination .pagination-related {
   }
 }
 
-@media (min-width: 769px) {
-  body.nova-template-route #nav .menus_item_child a[href="/templates/"],
-  body.nova-moments-route #nav .menus_item_child a[href="/moments/"],
-  body.nova-gallery-route #nav .menus_item_child a[href="/Gallery/"] {
+@media (min-width: 768px) {
+  body.nova-moments-route #nav .menus_item_child a[href="/moments/"] {
     color: rgba(234, 155, 186, .98);
     background: rgba(194, 122, 151, .13);
   }
 
-  html[data-theme="light"] body.nova-template-route #nav .menus_item_child a[href="/templates/"],
-  html[data-theme="light"] body.nova-moments-route #nav .menus_item_child a[href="/moments/"],
-  html[data-theme="light"] body.nova-gallery-route #nav .menus_item_child a[href="/Gallery/"] {
+  html[data-theme="light"] body.nova-moments-route #nav .menus_item_child a[href="/moments/"] {
     color: rgba(174, 82, 121, .98);
     background: rgba(205, 142, 168, .15);
   }
 }
 
 /* Non-home Butterfly rightside controls; JS adds this class only inside #rightside. */
-body:not(.nova-home-active) #home-theme-toggle {
-  display:none!important;
-}
-
 body:not(.nova-home-active) #rightside .marlin-rightside-button {
   display:flex;
   align-items:center;

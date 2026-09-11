@@ -80,14 +80,25 @@ async function main() {
   const lastRaw = cache.lastRaw || {}
   const lastDisplay = cache.lastDisplay || {}
   let ok = 0; let fail = 0; let manual = 0
+  let consecutiveFail = 0
+  /* 阶段3 批次K: 本脚本已挂到 npm prebuild, 必须对网络故障"快速失败"。
+     fetchPv 的超时是 8s, 若遇到网络黑洞, 21 个页面串行等待会到 ~168s, 让每次构建卡死。
+     故连续 FAIL_ABORT 条失败即判定网络不可用, 提前结束并保留旧缓存。 */
+  const FAIL_ABORT = 3
   for (const it of entries()) {
     const v = await fetchPv(it.key)
     if (v === null) {
       fail++
+      consecutiveFail++
       console.log('  [skip] ' + it.label + ' (接口失败, 保留旧值 ' + (pv[it.key] ?? '无') + ')')
+      if (consecutiveFail >= FAIL_ABORT) {
+        console.warn('[fetch-views] 连续 ' + FAIL_ABORT + ' 条失败 → 判定网络不可用, 提前结束本轮抓取')
+        break
+      }
       await new Promise(r => setTimeout(r, 250))
       continue
     }
+    consecutiveFail = 0
     // 手动修改检测: 当前 pv 与上次写入的显示值不一致 => 用户改过, 差值并入 shift
     const prevDisplay = lastDisplay[it.key]
     const current = pv[it.key]
@@ -104,11 +115,24 @@ async function main() {
     ok++
     await new Promise(r => setTimeout(r, 250))   // 温和节流
   }
-  fs.writeFileSync(CACHE_FILE, JSON.stringify({ fetchedAt: Date.now(), pv, shift, lastRaw, lastDisplay }, null, 2), 'utf8')
-  console.log('[fetch-views] 完成: ok=' + ok + ' fail=' + fail + ' 手动偏移=' + manual + ' -> ' + CACHE_FILE)
+  /* 全部失败时不刷新 fetchedAt: 保留旧时间戳, 让下一次构建立刻重试
+     (否则 24h TTL 会把"一次网络抖动"变成"一整天不再抓取") */
+  const allFailed = ok === 0 && fail > 0
+  const stamp = allFailed ? (cache.fetchedAt || 0) : Date.now()
+  fs.writeFileSync(CACHE_FILE, JSON.stringify({ fetchedAt: stamp, pv, shift, lastRaw, lastDisplay }, null, 2), 'utf8')
+  if (allFailed) {
+    console.warn('[fetch-views] 本轮 ' + fail + ' 条全部失败, 保留旧缓存与时间戳(下次构建会重试)')
+  } else {
+    console.log('[fetch-views] 完成: ok=' + ok + ' fail=' + fail + ' 手动偏移=' + manual + ' -> ' + CACHE_FILE)
+  }
 }
 
 /* hexo 递归加载 scripts/ 全部文件: 被 hexo 加载时不执行抓取(仅手动 node 运行) */
 if (typeof hexo === 'undefined' || !hexo) {
-  main().catch(e => { console.error('[fetch-views] FAILED: ' + e.message); process.exit(1) })
+  /* 阶段3 批次K: 本脚本已挂到 npm prebuild, 抓取失败【不应阻断构建】——
+     浏览量只是排序的次要 tie-break, 用旧缓存继续构建远比"整站构建失败"合理。
+     失败原因打印为警告, 退出码保持 0(minify 那种会导致产物损坏的失败才该非零退出)。 */
+  main().catch(e => {
+    console.warn('[fetch-views] 抓取异常, 使用旧缓存继续构建: ' + e.message)
+  })
 }

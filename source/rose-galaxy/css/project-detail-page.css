@@ -511,8 +511,8 @@ html[data-theme="light"] .nova-project-detail-panel {
   outline: none;
 }
 
-/* 大屏 sticky(同文章二级页): ≥1101px 宽且 ≥850px 高时吸顶, 内部滚动 */
-@media (min-width: 1101px) and (min-height: 850px) {
+/* 大屏 sticky(同文章二级页): ≥1100px 宽且 ≥850px 高时吸顶, 内部滚动 */
+@media (min-width: 1100px) and (min-height: 850px) {
   .nova-project-detail-aside {
     position: sticky;
     top: 88px;
@@ -630,27 +630,27 @@ html[data-theme="light"] .nova-project-detail-dl-files li {
 /* ---- 响应式 ---- */
 @media (max-width: 1180px) {
   .nova-project-detail {
-    width: calc(100% - 40px) !important;
+    --w: calc(100% - 40px);
   }
 }
 
 @media (max-width: 1024px) {
+  /* 阶段4 批次M · 4.6: 改传参 --cols/--gap, 不再用 !important 对抗模板内联
+     (模板内联只引用 var(--cols, ...)/var(--gap, ...) 且自身不设这两个变量)。
+     另: 原 .nova-project-detail-aside { order: 2 } 已删除 —— 父容器是 grid,
+     order 只影响自动放置顺序; 而 aside 在 DOM 中本就位于 main 之后
+     (project-detail.pug 第 112 行 vs 第 45 行), 单列堆叠时自然落在下方, 该声明无实际作用。 */
   .nova-project-detail {
-    /* !important 覆盖模板内联 grid(首帧防铺满): 内联样式优先级高于 media 规则 */
-    grid-template-columns: minmax(0, 1fr) !important;
-    gap: 30px !important;
-  }
-
-  .nova-project-detail-aside {
-    order: 2;
+    --cols: minmax(0, 1fr);
+    --gap: 30px;
   }
 }
 
 @media (max-width: 768px) {
   .nova-project-detail {
-    width: calc(100% - 28px) !important;
-    margin: 28px auto 44px !important;
-    gap: 22px !important;
+    --w: calc(100% - 28px);
+    --m: 28px auto 44px;
+    --gap: 22px;
   }
 
   .nova-project-detail-actions {

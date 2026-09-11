@@ -9,6 +9,21 @@ const THEME_SCRIPT = `<script>
     var hour = new Date().getHours()
     var dark = hour >= 18 || hour < 7
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
+    /* 阶段5 · P0-B: 首页 hero 大图按当前主题预加载。
+       day/night 是两张按主题二选一的背景图(CSS 引用), 原先要等 CSS 下载+解析后浏览器才发现,
+       实测 startTime 被推到 8443ms。这里在 head 阶段就确定主题并 preload 对应那张, 让它与
+       CSS/HTML 并行下载。
+       注意: 本脚本注入在 <head>, 此时 document.body 尚不存在, 故用 URL 路径判定首页。 */
+    var p = location.pathname
+    if (p === '/' || p === '/index.html') {
+      var l = document.createElement('link')
+      l.rel = 'preload'
+      l.as = 'image'
+      l.type = 'image/webp'
+      l.fetchPriority = 'high'
+      l.href = dark ? '/img/hero/night.webp' : '/img/hero/day.webp'
+      document.head.appendChild(l)
+    }
   } catch (e) {}
 })()
 </script>`

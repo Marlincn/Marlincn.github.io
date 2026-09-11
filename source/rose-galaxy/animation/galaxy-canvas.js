@@ -63,21 +63,8 @@
     return window.innerWidth < 768 || coarsePointerQuery.matches;
   }
 
-  function displayColor(particle) {
-    /* 浅色粒子层已移除: 恒用深色粒子自身颜色 */
-    return particle.color;
-  }
-
-  function shouldDrawParticle() {
-    return true;
-  }
-
   function isMusicSection(el) {
     return Boolean(el.closest(".no-galaxy-section, [data-galaxy='off']"));
-  }
-
-  function softStep(t) {
-    return t * t * (3 - 2 * t);
   }
 
   class RoseGalaxyScene {
@@ -91,8 +78,6 @@
       this.dpr = 1;
       this.visible = true;
       this.particles = [];
-      this.microParticles = [];
-      this.clusters = [];
       this.textRects = [];
       this.idleTimer = 0;
       this.lastTime = performance.now();
@@ -130,14 +115,42 @@
       this.host.removeEventListener("pointermove", this.onPointerMove);
       this.host.removeEventListener("pointerleave", this.onPointerLeave);
       this.ctx.clearRect(0, 0, this.width, this.height);
+      this._glowSprites = null;
     }
 
-    motionScale() {
-      return 1;
+    /* 阶段5 · 5.2 sprite 缓存: 光晕原先是每帧每粒子 createRadialGradient(实测 103 次/帧,
+       每次 3 个 addColorStop → 313 次/帧)。改为按颜色分桶预渲染一次 256×256 的分桶纹理,
+       绘制时用 globalAlpha 承载逐帧变化的 alpha + drawImage 缩放承载逐粒子变化的 radius。
+       因为径向渐变的 stop 位置比例固定、半径为线性缩放, 缩放绘制与原渐变逐点等价:
+         原 stop0  = color @ alpha*0.68*(haze?0.62:1)   ≤ alpha*0.68
+         sprite 烘焙 alpha=1 → color @ 0.68, 绘制 globalAlpha = alpha*(haze?0.62:1)
+         → 等效 alpha 通道 = alpha*0.68*(haze?0.62:1)   ✅ 精确一致(stop 1/0.22 同理)
+       纹理用整块 canvas(而非 ctx.createPattern), 以便 drawImage 缩放目标矩形。 */
+    glowSprite(colorIndex) {
+      if (!this._glowSprites) this._glowSprites = new Array(DARK_GLOW_COLORS.length);
+      const cached = this._glowSprites[colorIndex];
+      if (cached) return cached;
+      const color = DARK_GLOW_COLORS[colorIndex % DARK_GLOW_COLORS.length];
+      const SIZE = 256;
+      const cv = document.createElement("canvas");
+      cv.width = SIZE;
+      cv.height = SIZE;
+      const g = cv.getContext("2d");
+      const r = SIZE / 2;
+      const grad = g.createRadialGradient(r, r, 0, r, r, r);
+      grad.addColorStop(0, rgba(color, 0.68));
+      grad.addColorStop(0.22, rgba(color, 0.2));
+      grad.addColorStop(1, rgba(color, 0));
+      g.fillStyle = grad;
+      g.fillRect(0, 0, SIZE, SIZE);
+      this._glowSprites[colorIndex] = cv;
+      return cv;
     }
 
     resize() {
       const rect = this.host.getBoundingClientRect();
+      const oldWidth = this.width;
+      const oldHeight = this.height;
       this.width = Math.max(1, Math.round(rect.width));
       this.height = Math.max(1, Math.round(rect.height));
       this.dpr = Math.min(window.devicePixelRatio || 1, isMobile() ? 1.5 : 2);
@@ -149,21 +162,23 @@
       this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
 
       this.updateTextRects();
-      this.buildParticles();
-      window.__novaParticleTheme = document.documentElement.dataset.theme;
+      /* 阶段5 · 5.3: 已有粒子按比例缩放(视觉连续), 仅首次创建时才随机生成。
+         原先每次 resize 都 buildParticles() → 位置/大小全部重随, 拖动窗口时整片跳变。 */
+      if (this.particles.length) this.scaleParticles(oldWidth, oldHeight);
+      else this.buildParticles();
       this.draw(performance.now(), false);
     }
 
     updateTextRects() {
       const hostRect = this.host.getBoundingClientRect();
-      const selectors = [".hero-copy", ".nova-current-note", ".showcase-text", ".showcase-visual", ".footer-content"];
+      const selectors = [".hero-copy"];
 
       this.textRects = selectors
         .flatMap((selector) => Array.from(this.host.querySelectorAll(selector)))
         .map((el) => {
           const r = el.getBoundingClientRect();
-          const padX = this.mode === "hero" ? 42 : 28;
-          const padY = this.mode === "hero" ? 30 : 22;
+          const padX = 42;
+          const padY = 30;
           return {
             left: r.left - hostRect.left - padX,
             top: r.top - hostRect.top - padY,
@@ -176,69 +191,18 @@
     textFactor(x, y) {
       for (const r of this.textRects) {
         if (x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) {
-          if (this.mode === "hero") return 0.14;
-          return 0.62;
+          return 0.14;
         }
       }
       return 1;
     }
 
-    createClusters() {
-      const w = this.width;
-      const h = this.height;
-
-      if (this.mode === "hero") {
-        this.clusters = [
-          { x: w * random(0.56, 0.70), y: h * random(0.15, 0.34), rx: w * random(0.12, 0.19), ry: h * random(0.10, 0.18), weight: 0.33 },
-          { x: w * random(0.70, 0.90), y: h * random(0.43, 0.72), rx: w * random(0.14, 0.23), ry: h * random(0.12, 0.20), weight: 0.37 },
-          { x: w * random(0.13, 0.34), y: h * random(0.15, 0.42), rx: w * random(0.11, 0.20), ry: h * random(0.10, 0.18), weight: 0.30 },
-        ];
-        return;
-      }
-
-      if (this.mode === "footer") {
-        this.clusters = [
-          { x: w * random(0.15, 0.35), y: h * random(0.25, 0.70), rx: w * random(0.16, 0.28), ry: h * random(0.18, 0.30), weight: 0.50 },
-          { x: w * random(0.64, 0.86), y: h * random(0.25, 0.70), rx: w * random(0.16, 0.28), ry: h * random(0.18, 0.30), weight: 0.50 },
-        ];
-        return;
-      }
-
-      this.clusters = [
-        { x: w * random(0.15, 0.36), y: h * random(0.22, 0.60), rx: w * random(0.15, 0.25), ry: h * random(0.14, 0.28), weight: 0.32 },
-        { x: w * random(0.58, 0.84), y: h * random(0.18, 0.50), rx: w * random(0.15, 0.25), ry: h * random(0.14, 0.28), weight: 0.35 },
-        { x: w * random(0.42, 0.78), y: h * random(0.54, 0.84), rx: w * random(0.14, 0.24), ry: h * random(0.14, 0.27), weight: 0.33 },
-      ];
-    }
-
-    pickCluster() {
-      const total = this.clusters.reduce((sum, c) => sum + c.weight, 0);
-      let cursor = Math.random() * total;
-      for (let i = 0; i < this.clusters.length; i += 1) {
-        cursor -= this.clusters[i].weight;
-        if (cursor <= 0) return { cluster: this.clusters[i], id: i };
-      }
-      return { cluster: this.clusters[0], id: 0 };
-    }
-
     particleTotal() {
-      if (isMobile()) {
-        if (this.mode === "hero") return Math.round(random(55, 65));
-        if (this.mode === "footer") return Math.round(random(20, 28));
-        return Math.round(random(20, 32));
-      }
-      if (this.mode === "hero") return Math.round(random(95, 115));
-      if (this.mode === "footer") return Math.round(random(55, 65));
-      return Math.round(random(55, 75));
+      if (isMobile()) return Math.round(random(55, 65));
+      return Math.round(random(95, 115));
     }
 
-    microTotal() {
-      if (this.mode === "hero") return 0;
-      if (isMobile()) return Math.round(random(10, 18));
-      return Math.round(random(25, 35));
-    }
-
-    pickHeroPosition(initial) {
+    pickHeroPosition() {
       const roll = Math.random();
       if (roll < 0.43) {
         return { x: random(this.width * 0.42, this.width * 0.98), y: random(this.height * 0.07, this.height * 0.42) };
@@ -257,14 +221,12 @@
       const kindRoll = Math.random();
       /* 深色动画(浅色粒子层已移除): 尘埃/雾气/花瓣混合 */
       const kind = kindRoll < 0.07 ? "petal" : (kindRoll < 0.24 ? "haze" : "dust");
-      const isStar = Math.random() < 0.3;
-      const position = this.pickHeroPosition(true);
+      const position = this.pickHeroPosition();
       const x = position.x;
       const y = position.y;
 
       return {
         kind,
-        isStar,
         baseX: x,
         baseY: y,
         x,
@@ -272,8 +234,6 @@
         prevX: x,
         prevY: y,
         depth,
-        petalShape: 0,
-        petalHue: 0,
         vr: 0,
         size: (kind === "petal" ? random(3.8, 5.7) : (kind === "haze" ? random(2.2, 3.9) : random(1.1, 2.3))) * depth,
         alpha: (kind === "petal" ? random(0.28, 0.46) : (kind === "haze" ? random(0.24, 0.42) : random(0.42, 0.76))),
@@ -283,10 +243,8 @@
         swaySpeed: random(0.00019, 0.00046),
         breeze: random(-0.006, 0.009),
         twinkle: random(0.00125, 0.0034),
-        lifeSpeed: 0,
         halo: kind === "haze" ? random(10, 17) : random(6, 10),
         colorIndex: index % DARK_GLOW_COLORS.length,
-        themeSeed: Math.random(),
         linkable: kind !== "petal" && Math.random() < 0.5,
         linkSeed: Math.random(),
         focus: 0,
@@ -295,145 +253,45 @@
       };
     }
 
-    createParticle(index, total) {
-      if (this.mode === "hero") return this.createHeroParticle(index, total);
-
-      const clustered = Math.random() < (this.mode === "hero" ? 0.84 : 0.80);
-      let baseX;
-      let baseY;
-      let clusterId = -1;
-
-      if (clustered) {
-        const picked = this.pickCluster();
-        const c = picked.cluster;
-        clusterId = picked.id;
-        const angle = random(0, Math.PI * 2);
-        const radius = Math.pow(Math.random(), 0.60);
-        baseX = c.x + Math.cos(angle) * c.rx * radius * random(0.74, 1.20) + random(-28, 28);
-        baseY = c.y + Math.sin(angle) * c.ry * radius * random(0.74, 1.20) + random(-24, 24);
-      } else {
-        baseX = random(this.width * 0.04, this.width * 0.97);
-        baseY = random(this.height * 0.07, this.height * 0.92);
-      }
-
-      baseX = clamp(baseX, 14, this.width - 14);
-      baseY = clamp(baseY, 14, this.height - 14);
-
-      const keyStar = Math.random() > 0.86;
-      const color = STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)];
-      const phase = (index / total) * Math.PI * 2 + random(-Math.PI, Math.PI);
-
-      return {
-        baseX,
-        baseY,
-        x: baseX + random(-26, 26),
-        y: baseY + random(-22, 22),
-        prevX: baseX,
-        prevY: baseY,
-        vx: random(-0.18, 0.18),
-        vy: random(-0.18, 0.18),
-        size: keyStar ? random(2.46, 3.49) : random(1.31, 2.34),
-        color,
-        themeSeed: Math.random(),
-        alpha: random(0.60, 0.93) * color.a * (color.r > 245 && color.g > 240 ? 0.85 : 1),
-        phase,
-        speed: random(0.00175, 0.00335),
-        driftX: random(24, 46),
-        driftY: random(18, 38),
-        orbit: random(8, 22),
-        orbitSpeed: random(0.00072, 0.00165),
-        flowSpeed: random(0.00038, 0.00076),
-        clusterId,
-        linkSeed: Math.random(),
-        maxAttract: random(36, 54),
-        focus: 0,
-        lastInfluenced: false,
-        scatterX: 0,
-        scatterY: 0,
-        scatterStart: -1,
-        scatterDuration: random(720, 1320),
-        scatterPower: 0,
-      };
-    }
-
-    createMicroParticle() {
-      const color = STAR_COLORS[Math.floor(Math.random() * STAR_COLORS.length)];
-      return {
-        x: random(0, this.width),
-        y: random(0, this.height),
-        vx: random(-0.020, 0.038),
-        vy: random(-0.032, 0.022),
-        size: random(0.62, 1.27),
-        alpha: random(0.20, 0.48) * (color.r > 245 && color.g > 240 ? 0.85 : 1),
-        color,
-        themeSeed: Math.random(),
-        phase: random(0, Math.PI * 2),
-        twinkle: random(0.0022, 0.0052),
-      };
-    }
-
     buildParticles() {
-      this.createClusters();
       const count = this.particleTotal();
-      this.particles = Array.from({ length: count }, (_, i) => this.createParticle(i, count));
-      this.microParticles = Array.from({ length: this.microTotal() }, () => this.createMicroParticle());
+      this.particles = Array.from({ length: count }, (_, i) => this.createHeroParticle(i, count));
     }
 
-    driftTarget(p, time) {
-      const motion = this.motionScale();
-      const clusterWave = p.clusterId >= 0 ? p.clusterId + 1 : 0.55;
-
-      const mainX = Math.sin(time * p.speed + p.phase) * p.driftX * motion;
-      const mainY = Math.cos(time * p.speed * 0.82 + p.phase * 1.37) * p.driftY * motion;
-      const orbitX = Math.cos(time * p.orbitSpeed + p.phase * 2.1) * p.orbit * motion;
-      const orbitY = Math.sin(time * p.orbitSpeed * 1.22 + p.phase * 1.66) * p.orbit * 0.78 * motion;
-
-      /* Slow group flow makes the whole galaxy breathe without becoming a rigid grid. */
-      const flowX = Math.sin(time * p.flowSpeed + clusterWave * 1.85) * (this.mode === "hero" ? 10 : 7) * motion;
-      const flowY = Math.cos(time * p.flowSpeed * 0.84 + clusterWave * 2.24) * (this.mode === "hero" ? 8 : 6) * motion;
-
-      return {
-        x: p.baseX + mainX + orbitX + flowX,
-        y: p.baseY + mainY + orbitY + flowY,
-      };
-    }
-
-    scatterOffset(p, time) {
-      if (p.scatterStart < 0 || p.scatterPower <= 0) return { x: 0, y: 0 };
-      const progress = (time - p.scatterStart) / p.scatterDuration;
-      if (progress >= 1) {
-        p.scatterStart = -1;
-        p.scatterPower = 0;
-        p.scatterX = 0;
-        p.scatterY = 0;
-        return { x: 0, y: 0 };
-      }
-
-      const expand = Math.sin(softStep(clamp(progress, 0, 1)) * Math.PI * 0.86);
-      const decay = Math.pow(1 - progress, 1.12);
-      const amount = expand * decay;
-      return { x: p.scatterX * amount, y: p.scatterY * amount };
-    }
-
-    updateMicroParticles(time, dt) {
-      const motion = this.motionScale();
-      for (const p of this.microParticles) {
-        p.x += p.vx * dt * motion;
-        p.y += p.vy * dt * motion;
-
-        /* A tiny wave stops the micro-particles from looking like falling snow. */
-        p.x += Math.sin(time * 0.0011 + p.phase) * 0.018 * dt * motion;
-        p.y += Math.cos(time * 0.0009 + p.phase) * 0.012 * dt * motion;
-
-        if (p.x < -10) p.x = this.width + 10;
-        if (p.x > this.width + 10) p.x = -10;
-        if (p.y < -10) p.y = this.height + 10;
-        if (p.y > this.height + 10) p.y = -10;
+    /* 阶段5 · 5.3: 视口变化时不再重建粒子。
+       原先 resize() 直接调 buildParticles() —— 位置/大小/halo/相位全部重随, 拖窗口或
+       移动端地址栏收缩都会让整片粒子跳变重排。现改为按新旧宽高比缩放已有粒子:
+         - 位置/摆动幅度/吸附位移按比例缩放(横向用 sx, 纵向用 sy)
+         - size/halo/竖速用几何均值 s(夹在 [0.8,1.25]), 避免极端宽高比下光晕失比例
+         - 相位/颜色/种类/闪烁速度保持不变 → 视觉连续
+       横向比例推导: pickHeroPosition 把 x 约束在 [0.08W, 0.98W](跨度 0.90W),
+       以 0.08W 为原点按跨度比缩放, 可让所有点的相对位置精确保持。 */
+    scaleParticles(oldW, oldH) {
+      if (!this.particles.length) return;
+      if (oldW < 1 || oldH < 1) return;
+      const sx = this.width / oldW;
+      const sy = this.height / oldH;
+      const s = Math.min(1.25, Math.max(0.8, Math.sqrt(sx * sy)));
+      const x0o = 0.08 * oldW, y0o = 0.07 * oldH;
+      const x0n = 0.08 * this.width, y0n = 0.07 * this.height;
+      for (const p of this.particles) {
+        p.x = x0n + (p.x - x0o) * sx;
+        p.y = y0n + (p.y - y0o) * sy;
+        p.baseX = x0n + (p.baseX - x0o) * sx;
+        p.baseY = y0n + (p.baseY - y0o) * sy;
+        p.prevX = p.x;
+        p.prevY = p.y;
+        p.attractX *= sx;
+        p.attractY *= sy;
+        p.sway *= sx;
+        p.size *= s;
+        p.halo *= s;
+        p.verticalSpeed *= s;
       }
     }
 
     resetHeroParticle(p) {
-      const position = this.pickHeroPosition(false);
+      const position = this.pickHeroPosition();
       p.baseX = position.x;
       p.baseY = position.y;
       p.x = p.baseX;
@@ -451,10 +309,8 @@
       p.prevX = p.x;
       p.prevY = p.y;
       const verticalSpeed = p.verticalSpeed;
-      const windWave = 1;
-      const fallWave = 1;
-      p.baseY += verticalSpeed * dt * this.motionScale() * themeMotion * fallWave;
-      p.baseX += p.breeze * dt * this.motionScale() * themeMotion * windWave;
+      p.baseY += verticalSpeed * dt * themeMotion;
+      p.baseX += p.breeze * dt * themeMotion;
 
       const naturalX = p.baseX + Math.sin(time * p.swaySpeed + p.phase) * p.sway * themeMotion;
       const naturalY = p.baseY + Math.cos(time * p.swaySpeed * 0.72 + p.phase) * p.sway * 0.16 * themeMotion;
@@ -490,67 +346,6 @@
       if (p.baseX > this.width + 50) p.baseX = -30;
     }
 
-    updateParticle(p, time, dt) {
-      if (p.kind === "dust" || p.kind === "haze" || p.kind === "petal") {
-        this.updateHeroParticle(p, time, dt);
-        return;
-      }
-
-      const natural = this.driftTarget(p, time);
-      let targetX = natural.x;
-      let targetY = natural.y;
-
-      p.prevX = p.x;
-      p.prevY = p.y;
-      p.focus *= 0.90;
-      p.lastInfluenced = false;
-
-      const canAttract = this.mouse.active && this.mouse.inside && finePointerQuery.matches && !isMobile();
-
-      if (canAttract) {
-        const dx = this.mouse.x - natural.x;
-        const dy = this.mouse.y - natural.y;
-        const dist = Math.hypot(dx, dy) || 1;
-        const radius = this.mode === "hero" ? 250 : 235;
-
-        if (dist < radius) {
-          const influence = Math.pow(1 - dist / radius, 1.12);
-          const pull = p.maxAttract * influence;
-          targetX += (dx / dist) * pull;
-          targetY += (dy / dist) * pull;
-          p.focus = Math.max(p.focus, influence);
-          p.lastInfluenced = true;
-        }
-      } else {
-        const scatter = this.scatterOffset(p, time);
-        targetX += scatter.x;
-        targetY += scatter.y;
-        if (p.scatterPower > 0) {
-          p.focus = Math.max(p.focus, Math.min(0.64, p.scatterPower / 30));
-        }
-      }
-
-      /* This is the core visible-motion fix.
-         A stronger easing plus higher drift target means stars move even without mouse input. */
-      p.vx += (targetX - p.x) * 0.092;
-      p.vy += (targetY - p.y) * 0.092;
-      p.vx *= 0.68;
-      p.vy *= 0.68;
-      p.x += p.vx;
-      p.y += p.vy;
-
-      const ox = p.x - natural.x;
-      const oy = p.y - natural.y;
-      const offset = Math.hypot(ox, oy);
-      const maxOffset = 92;
-      if (offset > maxOffset) {
-        p.x = natural.x + (ox / offset) * maxOffset;
-        p.y = natural.y + (oy / offset) * maxOffset;
-        p.vx *= 0.35;
-        p.vy *= 0.35;
-      }
-    }
-
     triggerScatter() {
       if (!finePointerQuery.matches || isMobile()) return;
 
@@ -578,193 +373,9 @@
       }
     }
 
-    drawNebula(time) {
-      const ctx = this.ctx;
-      ctx.save();
-      ctx.globalCompositeOperation = "screen";
-      for (let i = 0; i < this.clusters.length; i += 1) {
-        const c = this.clusters[i];
-        const wobbleX = Math.sin(time * 0.00042 + i * 2.1) * 12 * this.motionScale();
-        const wobbleY = Math.cos(time * 0.00036 + i * 1.8) * 9 * this.motionScale();
-        const cx = c.x + wobbleX;
-        const cy = c.y + wobbleY;
-        const radius = Math.max(c.rx, c.ry) * (this.mode === "hero" ? 1.42 : 1.32);
-        const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-        g.addColorStop(0, "rgba(196, 62, 92, 0.044)");
-        g.addColorStop(0.38, "rgba(150, 44, 68, 0.020)");
-        g.addColorStop(0.78, "rgba(115, 36, 58, 0.007)");
-        g.addColorStop(1, "rgba(115, 36, 58, 0)");
-        ctx.fillStyle = g;
-        ctx.fillRect(0, 0, this.width, this.height);
-      }
-      ctx.restore();
-    }
-
-    drawMicroParticles(time) {
-      const ctx = this.ctx;
-      ctx.save();
-      ctx.globalCompositeOperation = "screen";
-      for (const p of this.microParticles) {
-        if (!shouldDrawParticle(this, p)) continue;
-        const pulse = 0.72 + Math.sin(time * p.twinkle + p.phase) * 0.28;
-        const factor = this.textFactor(p.x, p.y);
-        const alpha = clamp(p.alpha * pulse * factor, 0.05, 0.46);
-        ctx.fillStyle = rgba(displayColor(p), alpha);
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-    }
-
-    drawTrails() {
-      const ctx = this.ctx;
-      ctx.save();
-      ctx.globalCompositeOperation = "screen";
-      ctx.lineCap = "round";
-
-      for (const p of this.particles) {
-        if (!shouldDrawParticle(this, p)) continue;
-        const dx = p.x - p.prevX;
-        const dy = p.y - p.prevY;
-        const speed = Math.hypot(dx, dy);
-        if (speed < 0.06) continue;
-
-        const angle = Math.atan2(dy, dx);
-        const tail = clamp(speed * 18, 2.5, p.focus > 0.15 ? 10 : 7.5);
-        const sx = p.x - Math.cos(angle) * tail;
-        const sy = p.y - Math.sin(angle) * tail;
-        const factor = this.textFactor(p.x, p.y);
-        const alpha = clamp((0.040 + speed * 0.075 + p.focus * 0.11) * factor, 0.020, 0.18);
-
-        const g = ctx.createLinearGradient(sx, sy, p.x, p.y);
-        g.addColorStop(0, rgba(p.color, 0));
-        g.addColorStop(1, rgba(displayColor(p), alpha));
-        ctx.strokeStyle = g;
-        ctx.lineWidth = clamp(p.size * 0.40, 0.55, 1.18);
-        ctx.beginPath();
-        ctx.moveTo(sx, sy);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-      }
-      ctx.restore();
-    }
-
-    drawLinks(time) {
-      const ctx = this.ctx;
-      const baseThreshold = isMobile() ? 82 : (this.mode === "hero" ? 105 : 104);
-      const mouseRadius = this.mode === "hero" ? 250 : 235;
-      const mouseRadiusSq = mouseRadius * mouseRadius;
-      const mouseActive = this.mouse.active && this.mouse.inside;
-      const maxThreshold = baseThreshold + 34;
-      const linkCount = new Array(this.particles.length).fill(0);
-
-      ctx.save();
-      ctx.globalCompositeOperation = "screen";
-      ctx.lineCap = "round";
-      ctx.lineWidth = isMobile() ? 0.64 : 0.82;
-
-      for (let i = 0; i < this.particles.length; i += 1) {
-        const a = this.particles[i];
-        if (!shouldDrawParticle(this, a)) continue;
-
-        for (let j = i + 1; j < this.particles.length; j += 1) {
-          const b = this.particles[j];
-          if (!shouldDrawParticle(this, b)) continue;
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          if (Math.abs(dx) > maxThreshold || Math.abs(dy) > maxThreshold) continue;
-          const distSq = dx * dx + dy * dy;
-          if (distSq > maxThreshold * maxThreshold) continue;
-
-          const mouseDxA = a.x - this.mouse.x;
-          const mouseDyA = a.y - this.mouse.y;
-          const mouseDxB = b.x - this.mouse.x;
-          const mouseDyB = b.y - this.mouse.y;
-          const nearASq = mouseDxA * mouseDxA + mouseDyA * mouseDyA;
-          const nearBSq = mouseDxB * mouseDxB + mouseDyB * mouseDyB;
-          const nearestMouseSq = Math.min(nearASq, nearBSq);
-          const nearMouse = mouseActive && nearestMouseSq < mouseRadiusSq;
-          const threshold = nearMouse ? baseThreshold + 34 : baseThreshold;
-
-          if (Math.abs(dx) > threshold || Math.abs(dy) > threshold) continue;
-          if (distSq > threshold * threshold) continue;
-          if (this.mode === "hero" && (a.y < 88 || b.y < 88)) continue;
-          if (this.mode === "hero" && !nearMouse && a.x < this.width * 0.43 && b.x < this.width * 0.43) continue;
-
-          const sameCluster = a.clusterId >= 0 && a.clusterId === b.clusterId;
-          const seedGap = Math.abs(a.linkSeed - b.linkSeed);
-          if (!nearMouse) {
-            if (!sameCluster && seedGap > 0.24) continue;
-            if (sameCluster && seedGap > 0.58) continue;
-          }
-
-          const maxLinks = nearMouse ? 3 : 1;
-          if (linkCount[i] >= maxLinks || linkCount[j] >= maxLinks) continue;
-
-          const dist = Math.sqrt(distSq);
-          const distanceAlpha = Math.pow(1 - dist / threshold, 1.18);
-          const mouseBoost = nearMouse
-            ? Math.pow(1 - Math.sqrt(nearestMouseSq) / mouseRadius, 0.92)
-            : 0;
-          const breathe = 0.72 + Math.sin(time * 0.0022 + a.phase + b.phase) * 0.28;
-          let alpha = (0.028 + distanceAlpha * 0.08 + mouseBoost * 0.12) * breathe;
-          alpha = clamp(alpha, nearMouse ? 0.058 : 0.020, nearMouse ? 0.20 : 0.10);
-          alpha *= Math.min(this.textFactor(a.x, a.y), this.textFactor(b.x, b.y));
-          if (alpha < 0.020) continue;
-
-          const color = LINK_COLORS[(a.clusterId + b.clusterId + 8) % LINK_COLORS.length];
-          ctx.strokeStyle = rgba(color, alpha);
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
-          ctx.stroke();
-
-          linkCount[i] += 1;
-          linkCount[j] += 1;
-        }
-      }
-      ctx.restore();
-    }
-
-    drawStars(time) {
-      const ctx = this.ctx;
-      ctx.save();
-      ctx.globalCompositeOperation = "screen";
-
-      for (const p of this.particles) {
-        if (!shouldDrawParticle(this, p)) continue;
-        const pulse = 0.72 + Math.sin(time * 0.0042 + p.phase) * 0.34 + Math.sin(time * 0.0018 + p.phase * 2.6) * 0.12;
-        const factor = this.textFactor(p.x, p.y);
-        const alpha = clamp((p.alpha * pulse + p.focus * 0.34) * factor, 0.22, 0.94);
-        const radius = p.size * (1 + p.focus * 0.40 + Math.max(0, pulse - 1) * 0.13);
-        const color = displayColor(p);
-
-        const glowRadius = radius * (p.focus > 0.18 ? 8 : 5.4);
-        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowRadius);
-        g.addColorStop(0, rgba(color, alpha * 0.30));
-        g.addColorStop(0.36, rgba(color, alpha * 0.105));
-        g.addColorStop(1, rgba(color, 0));
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, glowRadius, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.fillStyle = rgba(color, alpha);
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-        ctx.fill();
-      }
-      ctx.restore();
-    }
-
-    heroParticleVisible() {
-      return true;
-    }
-
     drawHeroConstellation(time) {
       const ctx = this.ctx;
-      const candidates = this.particles.filter((p) => p.linkable && this.heroParticleVisible(p));
+      const candidates = this.particles.filter((p) => p.linkable);
       const linkCount = new Map();
       const mouseActive = this.mouse.active && this.mouse.inside && finePointerQuery.matches;
 
@@ -824,7 +435,6 @@
       ctx.globalCompositeOperation = "screen";
 
       for (const p of this.particles) {
-        if (!this.heroParticleVisible(p)) continue;
         const factor = this.textFactor(p.x, p.y);
         const color = DARK_GLOW_COLORS[p.colorIndex % DARK_GLOW_COLORS.length];
         const wave = 0.5 + Math.sin(time * p.twinkle + p.phase) * 0.5;
@@ -855,20 +465,27 @@
         }
 
         const radius = p.size * p.halo;
-        const halo = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, radius);
         const hazeScale = p.kind === "haze" ? 0.62 : 1;
-        halo.addColorStop(0, rgba(color, alpha * 0.68 * hazeScale));
-        halo.addColorStop(0.22, rgba(color, alpha * 0.2 * hazeScale));
-        halo.addColorStop(1, rgba(color, 0));
-        ctx.fillStyle = halo;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
-        ctx.fill();
+        const sprite = this.glowSprite(p.colorIndex);
+        /* 光晕: sprite 缩放绘制取代 createRadialGradient(见 glowSprite 注释的等价性推导) */
+        ctx.globalAlpha = alpha * hazeScale;
+        ctx.drawImage(sprite, p.x - radius, p.y - radius, radius * 2, radius * 2);
+        ctx.globalAlpha = 1;
 
-        ctx.fillStyle = rgba(color, alpha * (p.kind === "haze" ? 0.26 : 0.86));
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * (p.kind === "haze" ? 0.34 : 0.52), 0, Math.PI * 2);
-        ctx.fill();
+        if (p.kind === "haze") {
+          /* 雾团小球: 取自同一张 sprite 的中心区(半径 0.34*size = 光晕半径的 0.02,
+             sprite 中该处 alpha 恰为 0.68) → globalAlpha 补 1.3 使 0.68*1.3≈0.884≈原 0.86 */
+          const hr = p.size * 0.34;
+          ctx.globalAlpha = clamp(alpha * hazeScale * 1.3, 0, 1);
+          ctx.drawImage(sprite, p.x - hr, p.y - hr, hr * 2, hr * 2);
+          ctx.globalAlpha = 1;
+        } else {
+          /* 实心小球: 纯色填充无渐变可缓存, 保留 arc+fill(成本极低) */
+          ctx.fillStyle = rgba(color, alpha * 0.86);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * 0.52, 0, Math.PI * 2);
+          ctx.fill();
+        }
 
         if (p.linkable && wave > 0.87) {
           const ray = p.size * (1.8 + wave * 1.5);
@@ -890,8 +507,7 @@
       const dt = clamp(rawDt, 12, 34);
       this.lastTime = time;
 
-      this.updateMicroParticles(time, dt);
-      for (const p of this.particles) this.updateParticle(p, time, dt);
+      for (const p of this.particles) this.updateHeroParticle(p, time, dt);
     }
 
     draw(time, shouldUpdate) {
@@ -899,16 +515,8 @@
       if (shouldUpdate) this.update(time);
 
       ctx.clearRect(0, 0, this.width, this.height);
-      if (this.mode === "hero") {
-        this.drawHeroConstellation(time);
-        this.drawHeroParticles(time);
-        return;
-      }
-      this.drawNebula(time);
-      this.drawMicroParticles(time);
-      this.drawTrails();
-      this.drawLinks(time);
-      this.drawStars(time);
+      this.drawHeroConstellation(time);
+      this.drawHeroParticles(time);
     }
 
     pointerToHost(event) {
@@ -945,21 +553,6 @@
     if (hero && heroCanvas && !isMusicSection(hero)) {
       scenes.push(new RoseGalaxyScene(hero, heroCanvas, "hero"));
     }
-
-    const hosts = Array.from(document.querySelectorAll(".showcase-section, .melody-page, .footer-section"))
-      .filter((host) => !isMusicSection(host));
-
-    for (const host of hosts) {
-      let canvas = host.querySelector(":scope > .section-galaxy-canvas");
-      if (!canvas) {
-        canvas = document.createElement("canvas");
-        canvas.className = "section-galaxy-canvas";
-        canvas.setAttribute("aria-hidden", "true");
-        host.insertBefore(canvas, host.firstChild);
-      }
-      const mode = host.classList.contains("footer-section") ? "footer" : "section";
-      scenes.push(new RoseGalaxyScene(host, canvas, mode));
-    }
   }
 
   function loop(time) {
@@ -987,21 +580,6 @@
     }, 120);
   }
 
-  function restart() {
-    if (reducedMotionQuery.matches) {
-      destroy();
-      return;
-    }
-    window.cancelAnimationFrame(rafId);
-    rafId = 0;
-    lastFrameTime = 0;
-    window.__novaRoseGalaxy.rafId = 0;
-    if (!scenes.length) return;
-    for (const scene of scenes) scene.resize();
-    rafId = window.requestAnimationFrame(loop);
-    window.__novaRoseGalaxy.rafId = rafId;
-  }
-
   function handleVisibility() {
     if (!reducedMotionQuery.matches && !document.hidden && !rafId && scenes.length) {
       lastFrameTime = 0;
@@ -1017,6 +595,10 @@
     resizeTimer = 0;
     lastFrameTime = 0;
     scenes.splice(0).forEach((scene) => scene.destroy());
+    /* P1 修复(2026-09-11): 原先从不 disconnect —— observer 会一直持有已被 PJAX 移除的
+       hero 元素引用, 且下次 init 因旧对象存在而不再观察新 hero。 */
+    window.__novaHeroRO?.disconnect();
+    window.__novaHeroRO = null;
     window.__novaRoseGalaxy.running = false;
     window.__novaRoseGalaxy.rafId = 0;
   }
@@ -1040,7 +622,12 @@
     /* 布局延迟: hero 初始可能未布局(尺寸 0), 粒子会挤在 0 尺寸画布。
        ResizeObserver 在 hero 尺寸就绪时自动重建粒子。 */
     const heroEl = document.getElementById("hero");
-    if (heroEl && !window.__novaHeroRO) {
+    if (heroEl) {
+      /* P1 修复(2026-09-11): 原先写的是 `if (heroEl && !window.__novaHeroRO)`, 于是第二次
+         PJAX 进入首页时该对象已存在 —— 新的 #hero 永远不会被观察, 上面承诺的
+         "0 尺寸自动重建粒子"随之失效。改为每次都重建 observer 并观察当前 hero;
+         旧的先 disconnect, 避免持有已移除元素的引用。 */
+      window.__novaHeroRO?.disconnect();
       window.__novaHeroRO = new ResizeObserver(() => resizeAll());
       window.__novaHeroRO.observe(heroEl);
     }
@@ -1052,11 +639,10 @@
 
   const syncTheme = () => {
     if (!window.document?.documentElement) return;
-    const theme = document.documentElement.dataset.theme;
-    /* 主题切换后重建粒子(与页面背景/蒙版等 CSS 状态保持同步) */
-    if (window.__novaParticleTheme && window.__novaParticleTheme !== theme) {
-      for (const scene of scenes) scene.resize();
-    }
+    /* P1 修复(2026-09-11): 原先主题变化时先 for (scene) scene.resize(), 紧接着
+       init() 又走一遍 —— 粒子位置随机跳变两次; 而粒子颜色取自固定的 DARK_GLOW_COLORS,
+       本就与主题无关, 这次重建纯属浪费。现在只走 init(): 深浅态由 CSS 负责, 粒子无需重建。
+       (阶段5 · 5.3 后 resize() 本身也不再重随粒子, 只按比例缩放, 此处保持只走 init。) */
     init();
   };
 

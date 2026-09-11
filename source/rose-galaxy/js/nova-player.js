@@ -16,9 +16,9 @@
   const BILI_PROXY = window.NOVA_SITE.bili.proxy;
   const BILI_UID = window.NOVA_SITE.bili.uid;
   const BILI_FOLDER = window.NOVA_SITE.bili.folder;
-  const STORAGE_KEY = "novaPlayerState";
+  const STORAGE_KEY = "nova-player-state";
   // 音乐页悬浮窗开关(会话级, 默认关闭): 开启后迷你条在音乐页/其他页都显示
-  const MINI_ENABLED_KEY = "novaMiniEnabled";
+  const MINI_ENABLED_KEY = "nova-mini-enabled";
 
   // 跨 PJAX 脚本重跑持久: audio/进度/歌单放全局 core(pjax 同文档切换保留)
   const state = (window.__novaPlayerCore || (window.__novaPlayerCore = {
@@ -33,7 +33,7 @@
   // ---- sessionStorage 记忆(会话级): { songIndex, songs } (songs 仅元信息, 含 bvid/name/artist/cover) ----
   function loadMemory() {
     try {
-      const raw = sessionStorage.getItem(STORAGE_KEY);
+      const raw = window.NOVA_UTILS.readStoredKey(STORAGE_KEY, "novaPlayerState", sessionStorage);
       if (!raw) return null;
       const j = JSON.parse(raw);
       if (!Number.isInteger(j.songIndex) || j.songIndex < 0) return null;
@@ -53,7 +53,7 @@
           bvid: s.bvid,
           name: s?.name || s?.title || "",
           artist: s?.artist || s?.author || "",
-          cover: s?.cover || s?.pic || "",
+          cover: window.NOVA_UTILS.coverOf(s),
         })),
       }));
     } catch (_) {}
@@ -97,7 +97,10 @@
     const url = URL.createObjectURL(blob);
     const old = audio.src;
     audio.src = url;
-    if (old) setTimeout(() => URL.revokeObjectURL(old), 60_000);
+    /* P1 修复(2026-09-11): 原先延迟 60s 才 revoke 上一个 blob URL, 连续切歌会堆积数十 MB
+       (每个音频 blob 数 MB)。改为切换时立即释放上一个 —— 它已不再是 audio.src,
+       浏览器不再需要它; 当前 url 留待下一次切换(或页面销毁)时释放。 */
+    if (old && old.startsWith("blob:")) URL.revokeObjectURL(old);
   }
 
   function ensureAudio() {
@@ -127,7 +130,13 @@
   const listeners = new Set();
   function emit(type, payload) {
     listeners.forEach(fn => {
-      try { fn(type, payload || currentSnapshot()); } catch (_) {}
+      try {
+        fn(type, payload || currentSnapshot());
+      } catch (e) {
+        /* P1 修复(2026-09-11): 原先 catch (_) {} 完全吞掉订阅者异常 ——
+           模板缺某个 class 时 UI 会永久不更新, 控制台却没有任何线索。 */
+        console.warn('[nova-player] subscriber failed on "' + type + '"', e);
+      }
     });
   }
   function currentSnapshot() {
@@ -162,7 +171,7 @@
     state.loadAbort?.abort();
     const ac = new AbortController();
     state.loadAbort = ac;
-    state.currentIndex = ((index % state.songs.length) + state.songs.length) % state.songs.length;
+    state.currentIndex = window.NOVA_UTILS.normalizeIndex(index, state.songs.length);
     state.loading = true;
     emit("loadstart");
     const song = state.songs[state.currentIndex];
@@ -178,7 +187,7 @@
       }
     } catch (e) {
       if (ac.signal.aborted) return;
-      emit("load-error", { message: String(e?.message || e).slice(0, 90) });
+      emit("load-error", { message: window.NOVA_UTILS.errText(e) });
     } finally {
       if (state.loadAbort === ac) {
         state.loadAbort = null;
@@ -280,7 +289,7 @@
         root.removeEventListener("pointermove", move);
         root.removeEventListener("pointerup", up);
         root.classList.remove("is-dragging");
-        try { sessionStorage.setItem("novaMiniPos", JSON.stringify({ x: root.style.left, y: root.style.top })); } catch (_) {}
+        try { sessionStorage.setItem("nova-mini-pos", JSON.stringify({ x: root.style.left, y: root.style.top })); } catch (_) {}
       };
       root.addEventListener("pointermove", move);
       root.addEventListener("pointerup", up);
@@ -297,7 +306,7 @@
     if (!root.dataset.posLoaded) {
       root.dataset.posLoaded = "1";
       let pos = null;
-      try { pos = JSON.parse(sessionStorage.getItem("novaMiniPos") || "null"); } catch (_) {}
+      try { pos = JSON.parse(window.NOVA_UTILS.readStoredKey("nova-mini-pos", "novaMiniPos", sessionStorage) || "null"); } catch (_) {}
       const p = pos || defaultMiniPos();
       root.style.left = p.x; root.style.top = p.y;
     }
@@ -309,7 +318,7 @@
   }
 
   function miniEnabled() {
-    try { return sessionStorage.getItem(MINI_ENABLED_KEY) === "1"; } catch (_) { return false; }
+    try { return window.NOVA_UTILS.readStoredKey(MINI_ENABLED_KEY, "novaMiniEnabled", sessionStorage) === "1"; } catch (_) { return false; }
   }
 
   function setMiniEnabled(on) {
@@ -338,7 +347,7 @@
     const cover = miniRoot.querySelector(".nova-mini-cover");
     if (song) {
       title.textContent = window.NOVA_UTILS.songName(song);
-      const coverUrl = song?.cover || song?.pic || "";
+      const coverUrl = window.NOVA_UTILS.coverOf(song);
       if (coverUrl && cover.src !== coverUrl) cover.src = coverUrl;
       else if (!coverUrl) cover.removeAttribute("src");
     }

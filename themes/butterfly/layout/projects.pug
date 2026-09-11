@@ -18,7 +18,7 @@ block content
       h2 工程列表
       p 按卡片浏览全部工程实践记录。
     //- 内联 grid: 3 列卡片布局不依赖外部 CSS 时序(首帧不单列堆叠)
-    div.nova-projects-grid(style='display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 26px;')
+    div.nova-projects-grid(style='display:grid;grid-template-columns:repeat(var(--cols,3),minmax(0,1fr));gap:var(--gap,28px 26px);')
       each p, i in page.projects
         article.nova-project-card
           a.nova-project-cover(href=p.detailHref aria-label='查看 ' + p.title + ' 的工程详情')
@@ -31,10 +31,13 @@ block content
             div.nova-project-desc
               //- 三行截断; 不足三行时占位行沉底填充(卡片等高)
               p= p.description
-              span.nova-project-desc-placeholder(aria-hidden='true') 项目介绍陆续整理中…
+              //- 阶段5 · 文案: 仅在描述确实为空时才渲染兜底行(此前对所有卡片无条件输出"陆续整理中",
+              //- 虽被 .nova-project-desc 的 overflow 裁掉不显示, 但会写进 HTML 被爬虫读到)
+              if !p.description
+                span.nova-project-desc-placeholder(aria-hidden='true') 造物笔记，持续补完。
             div.nova-project-meta
               if p.date
-                time= p.date
+                time(datetime=p.date)= p.date
               else
                 span.nova-project-meta-live 持续更新中
               span.nova-project-meta-sep(aria-hidden='true') ·

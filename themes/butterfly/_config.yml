@@ -53,7 +53,7 @@ social:
 # Image Settings
 # --------------------------------------
 
-favicon: /img/favicon.png
+favicon: /img/brand/favicon-small.png
 
 avatar:
   img: /img/butterfly-icon.png
@@ -106,8 +106,8 @@ cover:
 
 # Replace Broken Images
 error_img:
-  flink: /img/friend_404.gif
-  post_page: /img/404.jpg
+  flink: /img/misc/friend_404.gif
+  post_page: /img/misc/404.jpg
 
 # A simple 404 page
 error_404:

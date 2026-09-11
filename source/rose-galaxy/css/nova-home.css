@@ -4,16 +4,14 @@
 .nova-home-active #web_bg{display:none}.nova-home-active #page-header.full_page{position:absolute;inset:0 0 auto;z-index:10000;height:0;min-height:0;background:none!important}
 .nova-hero-mist{position:absolute;inset:0;z-index:2;background:radial-gradient(circle at 78% 58%,rgba(179,34,79,.16),transparent 27%),radial-gradient(circle at 54% 12%,rgba(94,119,142,.16),transparent 22%);animation:novaMist 14s ease-in-out infinite alternate}
 .hero-galaxy-canvas{position:absolute!important;inset:0;z-index:3!important;width:100%;height:100%;pointer-events:none!important;opacity:.58}
-.nova-hero-copy{position:absolute;left:max(7vw,30px);top:48%;transform:translateY(-50%);max-width:620px}
 .nova-kicker{margin:0 0 12px;color:var(--rose);font-size:.7rem;font-weight:700;letter-spacing:.24em}
 .nova-actions{display:flex;gap:12px;margin-top:32px}
-.nova-actions a:first-child{background:linear-gradient(135deg,rgba(172,50,83,.84),rgba(92,112,132,.82))}.nova-actions a:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.36)}.nova-latest-signal span{color:var(--rose);letter-spacing:.14em}.nova-latest-signal strong{overflow:hidden;color:#d8dbe4;font-weight:400;text-overflow:ellipsis;white-space:nowrap}.nova-latest-signal time{color:#8f96a5}.nova-bloom-message{position:absolute;z-index:6;left:50%;bottom:11%;opacity:0;color:#e7bac8;font:italic .78rem Georgia;transform:translateX(-50%);transition:opacity .5s}.nova-bloom-message.show{opacity:.68}
-.nova-petal{position:fixed;z-index:20000;width:9px;height:15px;border-radius:80% 10% 70% 20%;background:#b93257;pointer-events:none;animation:novaPetal 1.5s ease-out forwards}
+.nova-actions a:first-child{background:linear-gradient(135deg,rgba(172,50,83,.84),rgba(92,112,132,.82))}.nova-actions a:hover{transform:translateY(-3px);border-color:rgba(255,255,255,.36)}.nova-latest-signal span{color:var(--rose);letter-spacing:.14em}.nova-latest-signal strong{overflow:hidden;color:#d8dbe4;font-weight:400;text-overflow:ellipsis;white-space:nowrap}.nova-latest-signal time{color:#8f96a5}
 .nova-observatory>section{width:min(1180px,100%);margin:0 auto 72px}.nova-section-heading h2,.nova-fragments h2{margin:0 0 18px;color:var(--text-main);font:600 clamp(1.5rem,3vw,2.15rem)/1.1 Georgia,serif}
 .nova-section-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:22px}.nova-section-heading p{margin:0 0 5px;color:var(--text-secondary);font-size:.63rem;letter-spacing:.18em}.nova-section-heading h2{margin:0}.nova-section-heading>a{color:var(--text-secondary);font-size:.72rem}.nova-note-card--lead{grid-row:1/3}.nova-note-card .post_cover{position:absolute;inset:0;width:100%!important;height:100%!important;margin:0!important}.nova-note-card .post_cover::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,6,13,.96),rgba(4,6,13,.08) 75%)}.nova-note-card .post_cover a,.nova-note-card .post_cover img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .55s}.nova-note-card:hover .post_cover img{transform:scale(1.035)}.nova-note-card .recent-post-info{position:absolute!important;z-index:2;inset:auto 0 0;padding:46px 24px 14px!important;color:#fff;background:none!important}.nova-year-lines a{display:flex;align-items:center;gap:10px;flex:1;color:var(--text-secondary);font-size:.57rem}.nova-year-lines i{height:1px;flex:1;background:var(--line)}
 .nova-fragment-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.nova-fragment>div{position:relative;z-index:2}.nova-fragment small{color:#e4b2c2;font-size:.58rem;letter-spacing:.16em}.nova-fragment span{color:#d18aa0;font-size:.7rem}.nova-fragment--music img{position:absolute;inset:0;z-index:0;width:100%;height:100%;object-fit:cover;object-position:center;transform:none;filter:saturate(.72) brightness(.8)}.nova-footer::before{content:"";position:absolute;top:-1px;left:8%;right:8%;height:1px;background:linear-gradient(90deg,transparent,var(--rose),var(--steel),transparent)}.nova-footer>div{display:grid;grid-template-columns:auto auto;gap:0 9px}.nova-footer>div b{grid-row:1/3;color:var(--rose)}
 .nova-reveal{opacity:0;transform:translateY(18px);transition:.7s ease}.nova-reveal.is-visible{opacity:1;transform:none}
-@keyframes novaMist{to{transform:translate3d(1.5%,-1%,0);opacity:.75}}@keyframes novaPetal{to{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}}
+@keyframes novaMist{to{transform:translate3d(1.5%,-1%,0);opacity:.75}}
 
 /* Midnight Rose palette and base layout */
 .nova-particle-layer{position:absolute;inset:0;z-index:2;display:block;overflow:hidden;pointer-events:none}
@@ -962,8 +960,17 @@ html[data-theme="dark"] #rightside .marlin-rightside-button:hover {
   border-color:rgba(193,123,151,.42);
 }
 
+/* 主题切换按钮 #home-theme-toggle 的显示完全由【首页 + rightside 精简模式 + 视口宽度】
+   这一个状态判据决定(阶段4 批次M · 4.2 收敛, 2026-09-11):
+     - 默认隐藏(非首页/首页非精简模式都不显示);
+     - 仅当 body.nova-home-active 且 #rightside.is-home-minimal 时显示(桌面/平板);
+     - 移动端(≤767px)一律隐藏。
+   原实现由 4 条规则靠 specificity 与 !important 互相压制(custom.css 一条 + 本文件三条),
+   其中 custom.css 那条纯属冗余(本文件既有默认隐藏, 又有首页条件), 且是否可见还间接依赖
+   "is-home-minimal 只在首页被添加"这个隐含前提 —— 改顺序或加一个类就会静默失效。
+   上游 index.css 完全不认识该元素(已核验 0 处), 无外部竞争, 故无需 !important。 */
 #home-theme-toggle {
-  display:none!important;
+  display: none;
 }
 
 #rightside.is-home-minimal {
@@ -980,8 +987,8 @@ html[data-theme="dark"] #rightside .marlin-rightside-button:hover {
   display:none!important;
 }
 
-#rightside.is-home-minimal #home-theme-toggle {
-  display:flex!important;
+body.nova-home-active #rightside.is-home-minimal #home-theme-toggle {
+  display: flex;
 }
 
 #rightside.is-home-minimal:not(.rightside-show) #go-up {
@@ -1442,8 +1449,8 @@ html[data-theme="light"] body.nova-home-active .nova-hero .nova-actions a:last-c
 }
 
 @media(max-width:767px) {
-  #rightside.is-home-minimal #home-theme-toggle {
-    display:none!important;
+  body.nova-home-active #rightside.is-home-minimal #home-theme-toggle {
+    display: none;
   }
 
   #rightside.is-home-minimal:not(.rightside-show) {

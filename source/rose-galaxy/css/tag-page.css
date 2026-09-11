@@ -1,4 +1,4 @@
-﻿body.nova-tag-route{color:var(--nova-tag-text);background:var(--nova-tag-bg)}
+body.nova-tag-route{color:var(--nova-tag-text);background:var(--nova-tag-bg)}
 body.nova-tag-route #body-wrap{overflow:clip;background:radial-gradient(circle at 80% 8%,rgba(193,91,134,.07),transparent 30%),radial-gradient(circle at 16% 28%,rgba(103,125,145,.05),transparent 34%),linear-gradient(180deg,#091324 0%,#080f1c 52%,#070c17 100%)}
 body.nova-tag-route #page-header.nova-tag-hero{position:relative;height:clamp(370px,40vh,440px);overflow:hidden;background-position:center 48%!important;background-size:cover!important;background-repeat:no-repeat!important}
 body.nova-tag-route #page-header.nova-tag-hero::before{content:"";position:absolute;z-index:0;inset:0;background:linear-gradient(90deg,rgba(7,12,25,.42),rgba(7,12,25,.08) 62%,rgba(7,12,25,.2)),linear-gradient(180deg,rgba(5,10,22,.12),transparent 58%,rgba(8,14,27,.56))}
@@ -43,7 +43,7 @@ body.nova-tag-route main.nova-tag-content::before{content:"";position:absolute;z
 .nova-tag-post-content p{display:block;overflow:hidden;margin:10px 0 0;color:var(--nova-tag-secondary);font-size:13px;line-height:1.75;text-overflow:ellipsis;white-space:nowrap}
 .nova-tag-post-action{display:inline-flex;align-items:center;align-self:flex-start;gap:6px;margin-top:auto;padding-top:10px;color:var(--nova-tag-accent);font-size:12px;transition:gap .22s ease,color .22s ease}
 .nova-tag-post-action span{display:inline-block}
-.nova-tag-post-card:hover .nova-tag-post-action{gap:10px;color:#df86a3}
+.nova-tag-post-card:hover .nova-tag-post-action{gap:10px;color:var(--nova-rose-hover)}
 .nova-tag-pagination{margin-top:24px}.nova-tag-pagination #pagination{margin:0}.nova-tag-pagination .pagination{display:flex;justify-content:center;gap:8px}
 .nova-tag-pagination .page-number,.nova-tag-pagination .extend{display:grid;width:36px;height:36px;margin:0;place-items:center;border:1px solid var(--nova-tag-line);border-radius:11px;color:var(--nova-tag-secondary);background:rgba(255,255,255,.035)}
 .nova-tag-pagination .current{color:#fff;background:var(--nova-tag-accent)}
@@ -191,7 +191,7 @@ html[data-theme="light"] .nova-tag-post-card.is-current-note {
   box-shadow: 0 13px 30px rgba(67, 48, 66, .1);
 }
 
-@media (min-width:1101px) and (min-height:850px) {
+@media (min-width:1100px) and (min-height:850px) {
   .nova-tag-sidebar {
     position: sticky;
     top: 88px;

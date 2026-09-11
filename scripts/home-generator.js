@@ -17,6 +17,7 @@ const path = require('path')
 const { composeShellTop, buildFooter, RIGHTSIDE_ASIDE } = require('./parts-common')
 const { fmtDate } = require('./lib/date')
 const { projectUpdated } = require('./lib/project-date')
+const { toMs, byKeys } = require('./lib/sort')
 const projectsData = require('./projects-data')
 
 const partsDir = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'home-parts')
@@ -33,12 +34,10 @@ function loadViewMap() {
   } catch (e) { return {} }
 }
 
-// —— 统一时间/排序工具(确定性 tie-break 链, 避免"同时更新许多"时乱跳) ——
-const toMs = s => { const d = new Date(s); return isNaN(d.getTime()) ? 0 : d.getTime() }
-const byUpdatedPvTitle = (a, b) =>
-  toMs(b.updatedAt) - toMs(a.updatedAt) || (b.pv - a.pv) || a.title.localeCompare(b.title, 'zh')
-const byPvUpdatedTitle = (a, b) =>
-  (b.pv - a.pv) || toMs(b.updatedAt) - toMs(a.updatedAt) || a.title.localeCompare(b.title, 'zh')
+// —— 统一时间/排序工具(阶段4 批次N · 4.4: 实现已收敛到 scripts/lib/sort.js,
+//    原先与 projects-generator.js 各有一份几乎逐字相同的拷贝) ——
+const byUpdatedPvTitle = byKeys([[r => toMs(r.updatedAt), 'desc'], [r => r.pv, 'desc']])
+const byPvUpdatedTitle = byKeys([[r => r.pv, 'desc'], [r => toMs(r.updatedAt), 'desc']])
 
 // —— 文章封面按标签归类(与旧版规则一致) ——
 function coverFor(post) {
@@ -55,7 +54,7 @@ function latestSignal(entry) {
   const dateLabel = String(entry.updatedAt || '').slice(0, 10)
   return '<a class="nova-latest-signal" href="' + encodeURI(entry.url) + '" aria-label="最近提交：' +
     entry.title + '，' + dateLabel + '"><span>LATEST SIGNAL</span><strong><em class="nova-signal-kind">[' + kind + ']</em>' +
-    entry.title + '</strong><time>' + dateLabel + '</time></a>'
+    entry.title + '</strong><time datetime="' + dateLabel + '">' + dateLabel + '</time></a>'
 }
 
 // —— 精选工程卡(1 lead + 2 side, 结构/样式沿用旧精选记录卡) ——

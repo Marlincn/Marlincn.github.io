@@ -13,7 +13,6 @@
 
 const fs = require('fs')
 const path = require('path')
-const { VERSION } = require('./site-config')
 
 const cmnDir = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'parts-common')
 const read = f => fs.readFileSync(path.join(cmnDir, f), 'utf8')

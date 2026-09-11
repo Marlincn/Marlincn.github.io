@@ -1,8 +1,8 @@
 (() => {
   'use strict'
 
-  if (window.__novaHomeBootstrap) {
-    window.__novaHomeBootstrap.init()
+  if (window.__novaHomeBoot) {
+    window.__novaHomeBoot.init()
     return
   }
 
@@ -91,7 +91,7 @@
   if (subtitle && hour < 5) subtitle.textContent = '还没有睡的人，也许都在构建些什么。'
   }
 
-  window.__novaHomeBootstrap = { init, destroy }
+  window.__novaHomeBoot = { init, destroy }
   document.addEventListener('pjax:send', destroy)
   document.addEventListener('pjax:complete', init)
   if (document.readyState === 'loading') {

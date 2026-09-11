@@ -114,17 +114,24 @@
     renderMoods()
   }
 
-  /* 滚动区高度 = 前 MOOD_VISIBLE 条的实际高度: 最近状态只展示 7 条, 更多滚动查看 */
+  /* 滚动区高度 = 前 N 条的实际高度(阶段4 批次N · 4.4 合并同构实现):
+     原先 fitMoodList 与 fitStreamScroll 是同一套逻辑的两份拷贝(只有选择器/阈值/下限不同),
+     改一处必须记得同步另一处。现统一为: 清空 maxHeight → 量第 N 条的 bottom 与容器 top
+     之差 → 取与下限的较大值。两个调用点的行为与原先逐字等价。 */
+  function fitByNthItem(containerSel, itemSel, visibleCount, minHeight) {
+    const box = document.querySelector(containerSel)
+    if (!box) return
+    box.style.maxHeight = ''
+    const items = box.querySelectorAll(itemSel)
+    if (items.length <= visibleCount) return
+    const base = box.getBoundingClientRect()
+    const nth = items[visibleCount - 1].getBoundingClientRect()
+    box.style.maxHeight = Math.max(nth.bottom - base.top, minHeight) + 'px'
+  }
+
+  /* 最近状态只展示 MOOD_VISIBLE 条, 更多滚动查看 */
   function fitMoodList() {
-    const list = document.querySelector('.nova-moments-mood-list')
-    if (!list) return
-    list.style.maxHeight = ''
-    const items = list.querySelectorAll('.nova-moments-mood-item')
-    if (items.length <= MOOD_VISIBLE) return
-    const lr = list.getBoundingClientRect()
-    const r2 = items[MOOD_VISIBLE - 1].getBoundingClientRect()
-    const h = r2.bottom - lr.top
-    list.style.maxHeight = Math.max(h, 80) + 'px'
+    fitByNthItem('.nova-moments-mood-list', '.nova-moments-mood-item', MOOD_VISIBLE, 80)
   }
 
   function renderMoods() {
@@ -193,17 +200,9 @@
     }
   }
 
-  /* 说说流滚动区: 只展示前 STREAM_VISIBLE 条卡片, 更多条目在区域内滚动查看(隐藏滚动条) */
+  /* 说说流: 只展示前 STREAM_VISIBLE 条卡片, 更多条目在区域内滚动查看(隐藏滚动条) */
   function fitStreamScroll() {
-    const scroll = document.querySelector('.nova-moments-scroll')
-    if (!scroll) return
-    scroll.style.maxHeight = ''
-    const cards = scroll.querySelectorAll('.nova-moments-card')
-    if (cards.length <= STREAM_VISIBLE) return
-    const base = scroll.getBoundingClientRect()
-    const last = cards[STREAM_VISIBLE - 1].getBoundingClientRect()
-    const h = last.bottom - base.top
-    scroll.style.maxHeight = Math.max(h, 140) + 'px'
+    fitByNthItem('.nova-moments-scroll', '.nova-moments-card', STREAM_VISIBLE, 140)
   }
 
   function render(items) {
@@ -244,7 +243,7 @@
     }
 
     // 绑定点赞(复用 moments-page.js 的绑定, 支持动态卡片)
-    const boot = window.__novaMomentsBootstrap
+    const boot = window.__novaMomentsBoot
     if (boot && boot.bindLikeButtons) boot.bindLikeButtons(stream)
 
     // 收藏校准: 已被管理员删除(不在说说流)的收藏条目不再显示
@@ -325,20 +324,33 @@
   }
 
   function init() {
-    if (!document.querySelector('.nova-moments-page')) return
+    const page = document.querySelector('.nova-moments-page')
+    if (!page || page.dataset.ready === 'true') return
+    page.dataset.ready = 'true'
     migrateMood()
     renderMoods() // 恢复收藏列表(含空态「待选入...」)
     loadFeed()
     hideOwnerWalineComments() // 评论区渲染变化时隐藏管理员评论(仅隐藏, 不重拉说说流)
   }
 
-  // 视口变化时重算滚动区高度(条目宽度变化 → 高度变化)
-  window.addEventListener('resize', () => { fitMoodList(); fitStreamScroll() })
-
-  // 导出: onLikeToggle 供点赞联动; addMood/removeMood/renderMoods 为 DevTools 自测/调试入口
-  window.__novaMomentsFeed = { onLikeToggle, addMood, removeMood, renderMoods }
-
-  document.addEventListener('DOMContentLoaded', init, { once: true })
-  document.addEventListener('pjax:complete', init)
-  if (document.readyState !== 'loading') init()
+  /* 幂等引导(P0 修复 2026-09-11, 照 moments-page.js 模式):
+     本脚本带 data-pjax, PJAX 导航会重新执行整个 IIFE。若无条件 addEventListener,
+     监听器会随"进出说说页"的次数线性累积; 而 init 原无幂等标记, 于是 pjax:complete
+     一次触发会并发调用多次 loadFeed → fetchAllComments(每次最多 20 页 × 100 条 HTTP),
+     请求成倍放大。故:
+       - 监听注册只在首次执行时进行一次;
+       - 后续重执行仅调用一次 init, 由 init 内的 dataset.ready 标记保证幂等;
+       - resize 监同一并移入守卫(原先每次重执行都会新增一个)。 */
+  if (window.__novaMomentsFeedBoot) {
+    window.__novaMomentsFeedBoot.init()
+  } else {
+    // 导出: onLikeToggle 供点赞联动; addMood/removeMood/renderMoods 为 DevTools 自测/调试入口
+    window.__novaMomentsFeed = { onLikeToggle, addMood, removeMood, renderMoods }
+    window.__novaMomentsFeedBoot = { init }
+    // 视口变化时重算滚动区高度(条目宽度变化 → 高度变化)
+    window.addEventListener('resize', () => { fitMoodList(); fitStreamScroll() })
+    document.addEventListener('DOMContentLoaded', init, { once: true })
+    document.addEventListener('pjax:complete', init)
+    if (document.readyState !== 'loading') init()
+  }
 })()

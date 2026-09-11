@@ -1,0 +1,16 @@
+{
+  "publicFiles": 127,
+  "postDirs": 15,
+  "sourcePosts": 15,
+  "searchXml": 149662,
+  "sitemapXml": 3256,
+  "atomXml": 10927,
+  "latestSignal": "[文章] 绘世 Stable Diffusion @ 2026-09-03",
+  "featuredProjects": [
+    "led-matrix",
+    "drone",
+    "line-car"
+  ],
+  "note": "阶段3 批次J 建立; 新增文章/工程或有意改版后, 用 npm run verify -- --update-baseline 刷新",
+  "updatedAt": "2026-09-11"
+}

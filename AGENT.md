@@ -3,12 +3,44 @@
 > 本文件主要面向 **AI/Agent 维护者**:架构事实、改动纪律、部署流程、工程坑。
 > 操作者必须遵守,避免误触误删;人类用户看 `README.md` 与演示站交互即可。
 > 线上发布仍须用户逐次明确批准;GitHub 提交注释用**英文简洁**风格。
-> 历史分期台账(STRUCTURE-REFACTOR.md)原在本地 `Desktop\data\`,已于 2026-09-03 归档下架(不入 git)。
+
+---
+
+## 开工先读这一节
+
+**工作位置**(2026-09-11 实测,勿沿用旧称):
+
+| 目录 | 角色 | 能否修改 |
+| --- | --- | --- |
+| `C:\Users\mabin\Desktop\web\main` | **原站**(完整克隆, 远端 marlincn.github.io 的 main) | ❌ **一个字都不要动**;同步回它须用户明确批准 |
+| `C:\Users\mabin\Desktop\web\demo` | **演示站**,所有改造在这里做 | ✅ 改这里 |
+
+**本地预览**:`cd demo` → `.\node_modules\.bin\hexo.cmd server -p 4007` → <http://127.0.0.1:4007/>
+(4007 是演示站端口;`hexo server` 是**动态渲染**,直接读 `source/`,改完刷新即见)
+
+**改完必跑的三道护栏**:
+
+```bash
+npm run build                  # hexo generate → minify → 冒烟(10 项, 失败即非零退出)
+npm test                       # 68 项单元测试
+npm run verify -- --strict     # 18 项(结构断言 + 基线比对)
+```
+
+**关键判据**:`public/` **127** 文件 · `posts/` **15** 目录 · `search.xml` **149,662** · `sitemap.xml` **3,256** · `atom.xml` **10,927** · 首页 LATEST SIGNAL `[文章] 绘世 Stable Diffusion @ 2026-09-03` · 精选工程顺序 `led-matrix → drone → line-car`
+
+> ⚠️ 判据只看**字节数/条目数/排序首项**,**不要用文件哈希** —— hexo 生成器输出不确定,两次全量生成哈希不同但字节数相同。
+
+**三个最容易踩的纪律**(详见 Hexo 工程坑):
+
+1. 改 `scripts/*.js`、`_config*.yml`、**模板 `.pug`** 后 **必须重启 server**,否则预览用内存旧版本
+2. 改模板后 `npm run build` **不会重生成所有页面**(增量缓存),要 `hexo generate --force`
+3. 编辑文件前**先停 server**(Windows 文件锁会报 `ReplaceFileW EIO`)
 
 ---
 
 ## 目录
 
+- [开工先读这一节](#开工先读这一节)
 - [Agent 操作守则(零容忍项)](#agent-操作守则零容忍项-违反误触)
 - [架构总览](#架构总览)
 - [目录职责详解](#目录职责详解)
@@ -62,11 +94,15 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 | `projects-generator.js` | 工程页：列表 + 详情(下载链接由 `SITE + encodeURI(url)` 生成)；更新日期统一走 `lib/project-date.js` |
 | `lib/project-date.js` | 工程更新日期**唯一实现**(A1)：显式 `updated` → 资产目录内最新文件 mtime → 目录 mtime → `date` 兜底；列表/首页 LATEST SIGNAL 共用 |
 | `projects-data.js` / `projects-intro.js` | 工程数据(5 个工程)/ 详情介绍文案(自包含) |
-| `lib/fetch-views.js` | **浏览量抓取器(部署前手动运行)**：busuanzi API 带 Referer 查询各页真实 page_pv → 写 `views-cache.json`；24h 缓存、单条失败跳过、手动修改自动保留偏移 |
-| `views-cache.json` | 浏览量缓存：`pv`(显示值=排序用) / `shift`(人工偏移) / `lastRaw`·`lastDisplay`(脚本维护)。**手动改只动 `pv` 段**，详见 `views-cache.md` |
-| `inject-theme.js` | 文章页首帧主题注入(hexo injector head_begin) |
+| `lib/fetch-views.js` | **浏览量抓取器(部署前手动运行)**：busuanzi API 带 Referer 查询各页真实 page_pv → 写 `data/views-cache.json`；24h 缓存、单条失败跳过、手动修改自动保留偏移 |
+| `data/views-cache.json` | 浏览量缓存(**在 `data/`, 不在 `scripts/`**)：`pv`(显示值=排序用) / `shift`(人工偏移) / `lastRaw`·`lastDisplay`(脚本维护)。**手动改只动 `pv` 段**，详见 `data/views-cache.md` |
+| `inject-theme.js` | 首帧主题注入(injector head_begin, 各页) + **首页 hero 大图按主题 preload**(night/day, P0 2026-09-11) |
 | `lib/date.js` | `fmtDate`(支持 moment 对象与 Date) |
-| `minify.js` | 构建后 JS 压缩(esbuild，`npm run build` 自动跑) |
+| `lib/feeds.js` | `search.xml`/`sitemap.xml`/`atom.xml` 三件套生成器 + `stripMd`/`summaryOf`/`escXml`/`htmlToText`/`postUrl`(阶段4 4.8 从 `nova-tags.js` 拆出) |
+| `lib/sort.js` | `toMs` + `byKeys` 排序工具(阶段4 N) |
+| `copyright-fields.js` | 文章 footer matter `author`/`url` → 主题版权卡字段映射 |
+
+> **构建/验证脚本不在 `scripts/`**：`tools/minify.js`(JS 压缩)、`tools/smoke.js`(冒烟/结构断言/基线比对)。原因见 Hexo 坑②——`scripts/` 下的 js 会被 hexo 全部执行。
 
 #### 首页 P5 数据流(生成时全重算, 均无需维护)
 
@@ -93,20 +129,43 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 - `assets/projects/<工程名>/`：下载文件(与页面路由 `projects/` 隔离,避免命名空间冲突)
 - `css/index.css`：**上游 Butterfly 副本，勿改**；`css/custom.css`：全站覆盖唯一去处
 
-### `py-tools/`（外部工具，hexo 不加载）
+### `tools/`（构建与验证工具，hexo 不加载）
 
-- `tools/`：构建/验证常用(convert_* 图片转换、audit_imgs、check_pages_text、find_orphans、self_check、verify_*)
-- `archive/`：一次性/历史补丁(patch_*、fix_*、pure_parts、extract_parts、slice_*、rename_refs 等)
+- `minify.js`：构建后 JS 压缩(esbuild)，`npm run build` 自动跑
+- `smoke.js`：冒烟检查 / 结构断言 / 基线比对；也是 `npm run verify [-- --strict]` 的实现
+
+> 一次性/历史补丁脚本放 `scripts/` **会污染源文件**（hexo 执行该目录全部 js，见 Hexo 坑②）。本项目当前的 `tools/` 只有上面两个文件；历史上那些 `convert_*`/`patch_*`/`slice_*` 脚本已随 `py-tools/` 目录一并移除，**不要再往 `tools/` 或 `scripts/` 放一次性脚本**。
 
 ### `data/`（运行时数据，非 hexo 源）
 
 - `music-playlist.json`：歌单缓存(构建期由 `lib/music-playlist.js` 抓取回写, 失败兜底)
 - `refresh-music-playlist.js`：手动刷新歌单缓存(离线预取/调试)
-- `views-cache.json` / `views-cache.md`：浏览量缓存 + 维护说明(fetch-views.js 使用)
+- `views-cache.json` / `views-cache.md`：浏览量缓存 + 维护说明(`lib/fetch-views.js` 使用)
+
+### `test/`（测试与基线）
+
+- `*.test.js`：`node:test` 单元测试，**68 项**（`npm test`）
+- `baseline.json`：基线比对基准（`publicFiles` / `postDirs` / 三 xml 字节数 / LATEST SIGNAL / 精选工程顺序）
+  → 有意变更后用 `npm run verify -- --update-baseline` 刷新；**刷新时机必须在删除临时目录之后**，否则基线会残留错误数字
 
 ### `docs/`（仓库文档资源，不随站点发布）
 
 - `preview-dark.png` / `preview-light.png`：README 深浅主题预览图(2026-09-03 由 source 移出并更新为当前首页截图)
+- `主题升级指南.md`：**升级 Butterfly 前必读** —— 55 个定制文件清单(144.7 KB) + 升级 8 步 + 5 个易错点；清单可用 `node _snapshots\theme-inventory.js` 重跑刷新
+
+### `source/rose-galaxy/vendor/`（第三方库本地化，**勿删**）
+
+P0(2026-09-11) 把 4 个外链库改为同源自托管，消除 jsDelivr 依赖。这些文件**在源码里没有 `require`/`import` 引用**，只由 `inject.head` / `footer.html` 以 `<link>`/`<script>` 路径引用 —— **静态扫描会误判为"未使用"**：
+
+| 文件 | 引用位置 |
+| --- | --- |
+| `vendor/fontawesome/css/all.min.css` + `webfonts/*.woff2` | `themes/butterfly/layout/_partials/head.pug` |
+| `vendor/pjax/pjax.min.js` | `themes/butterfly/layout/parts-common/footer.html` |
+| `vendor/medium-zoom/medium-zoom.min.js` | 同上 |
+| `vendor/infinitegrid/infinitegrid.min.js` | `head.pug` 的 `GLOBAL_CONFIG.infinitegrid.js` |
+
+源包以精确版本固定在 `devDependencies`（`@fortawesome/fontawesome-free@7.3.1` / `medium-zoom@1.1.0` / `pjax@0.2.8` / `@egjs/infinitegrid@4.13.0`），仅用于需要**重新生成 vendor 时**；构建本身不依赖它们。
+
 
 ---
 
@@ -138,37 +197,48 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 
 - **页脚横幅**：`custom.css` 中 `html[data-theme=dark|light] body:not(.nova-home-active) footer#footer`(玫瑰横幅 archive-bg.webp，深 `#080c17`/浅 `#d5d4de` 底)；首页为自定义 `.nova-footer` 排除在外；页级 css 中**不要再定义 footer 背景**(曾因覆盖导致横幅消失/矛盾,已收敛)
 - **#page-header 层叠（R6 标注）**：涉及 7 个文件(custom 19 处 / index 58 处 / 页级 19 处)——改 header 前需全局检索 `#page-header`；大部分为分层覆盖设计(主题底→全站覆盖→页级 hero)，勿简单增加规则，考虑现有层叠
-- **版本号约定**：所有 css/js 引用带 `?v=<日期>-<标签>`(当前 `20260831-p47`, 线上 GitHub Pages 同步)。**引用文件内容变更时必须 bump**——`_config.yml` 的 `version:` 是单源(生成器/动态模板自动),yml 与 html 片段中的字面量需手动同步(全站约 17 处)。(曾出现旧路径图片 404/样式回退)
+- **版本号约定**：所有 css/js 引用带 `?v=<日期>-<标签>`(当前 `20260831-p47`, 线上 GitHub Pages 同步)。**引用文件内容变更时必须 bump**——`_config.yml` 的 `version:` 是单源(生成器/动态模板自动),yml 与 html 片段中的字面量需手动同步——**实测共 22 处**(2026-09-11 核实: `_config.butterfly.yml` 的 inject 段 16 处 + `home-parts/page-scripts.html`、`tag-parts/bottom.html`、`parts-common/footer.html` 共 3 处 + 主题版本体系 `?v=5.7.0` 3 处；后者位于 `_partials/head.pug:48`、`parts-common/footer.html:1,424`，跟的是**主题版本号**而非站点 `version:`)。(曾出现旧路径图片 404/样式回退)
+
+  > 附带数据：全仓 `?v=` 引用总量约 25–34 处（含生成器里以 `__VERSION__` 占位、由 `scripts/asset-version.js` 渲染的部分），但**需要手动同步的字面量只有上面 22 处**——其余是自动注入。
 
 ---
 
 ## 构建与部署
 
-**仓库分支**:`main`(源码) / `public`(Pages 产物) / `waline`(Waline 后端)；
-本地: `web\SourceCode`(main 工作区) + `web\Marlin-web-demo-B`(演示站, node_modules junction, 4008, 方案 B 验证站; 4007 演示站已于 2026-09-05 删除)。
+**远端分支**:`main`(源码) / `public`(Pages 产物) / `waline`(Waline 后端)；
+**本地目录**(2026-09-11 实测):`web\main`(原站, 勿动) + `web\demo`(演示站, 端口 **4007**, 所有改造在此完成)。
 
 ```bash
-npm run build     # hexo generate && node scripts/minify.js(esbuild 压缩全部 JS)
-npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
+npm run build     # hexo generate && node tools/minify.js && node tools/smoke.js
+npm run server    # 本地预览(默认 4000; 演示站惯用 -p 4007)
+npm test          # 68 项单元测试
+npm run verify    # 结构断言 10 项; 加 --strict 为 18 项(含基线比对)
 ```
+
+> **`npm run build` 失败即非零退出** —— 2.1 修复(阶段2)后 minify 单文件失败会置非零,冒烟检查失败同样非零。构建返回非零**不要忽略**。
+> 改脚本/配置/**模板**后 preview 必须重启 server(见 Hexo 坑③);改模板后 build 需 `--force`(见坑⑬)。
 
 **发布流程（演示站 → 线上）**：
 
-1. **演示站**（当前工作副本为 `web\Marlin-web-demo-B`, 克隆自 SourceCode + node_modules junction, 4008; 改动验证完 **robocopy 整站同步回 SourceCode**(排除 node_modules/.git/public/.deploy_git/db.json) → `hexo clean && hexo generate` 回归）完成改动
-2. **用户验收 + 明确批准**后：
-   - SourceCode 下 `hexo clean && hexo generate`（先停任何 server；clean 后残留空目录手动删一次；generate 偶发 minify ENOENT, 重跑一次即完成压缩）
-   - `git add -A && commit`(简化信息) → `git push origin main`（main 存档）
-   - `hexo deploy`（推送 **public 分支**, GitHub Pages 使用）
-3. 线上验证：curl 关键路由(首页/moments/articles/posts 示例/projects/sitemap.xml) + 抽查资源版本号
+1. **在 `web\demo` 完成改动并验证**（`npm run build` + `npm test` + `npm run verify -- --strict` 全绿）
+2. **用户验收 + 明确批准**后，同步回原站：
+   ```powershell
+   robocopy C:\Users\mabin\Desktop\web\demo C:\Users\mabin\Desktop\web\main /E `
+     /XD node_modules .git public .deploy_git /XF db.json /R:2 /W:2 /NP
+   ```
+   ⚠️ **robocopy 不删除目标端多余文件** —— demo 里删掉的文件(main 里还在)需手动删。
+3. 在 `main` 下重新构建：`npm run clean` 后 `npm run build`（先停任何 server；clean 后残留空目录手动删）
+4. `git add -A && commit`(英文简洁) → `git push origin main` → `hexo deploy`(推送 **public** 分支)
+5. 线上验证：curl 关键路由(首页 / moments / articles / posts 示例 / projects / sitemap.xml) + 抽查资源版本号
 
 ---
 
 ## 发布审批规则
 
-> 强制规则（2026-08-27 立此存照，详见 `data/STRUCTURE-REFACTOR.md`）：
+> 强制规则（2026-08-27 立此存照；分期台账 STRUCTURE-REFACTOR.md 已归档下架，历史见 `CHANGELOG.md`）：
 
 1. 所有改动先在演示站完成并验证。
-2. **未经用户明确批准，禁止任何提交/推送/部署**（git push / hexo deploy / GitHub Pages / SourceCode）。发布动作必须逐次明确授权。
+2. **未经用户明确批准，禁止任何提交/推送/部署**（git push / hexo deploy / GitHub Pages / `web\main`）。发布动作必须逐次明确授权。
 3. 结构性/行为性决策先询问用户。
 4. 修复完成后只汇报验证结果并请求批准；禁止以"已验证/惯例/之前授权过"为由自行发布。
 5. GitHub 提交注释一律**英文简洁**(如 "Globalize page CSS into inject.head … v20260831-p37")；本地演示站 git 注释可中文。
@@ -180,25 +250,35 @@ npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 >**零容忍项, 违反=误触**
 
 1. **不改** `source/css/index.css`(Butterfly 上游副本, 标注"勿改")与 `themes/butterfly/layout/includes/`(原版布局链:文章详情页依赖;`includes/third-party/pjax.pug`、`additional-js.pug` 为**孤儿文件**, 主题版渲染链在本站不存在, 勿依赖/勿开启 `theme.pjax`)。
-2. **编辑前先停 hexo server**(Windows 文件锁 → edit EIO);改 `scripts/*.js` 或 `_config*.yml` 后必须**重启 server** 再验证。
-3. **页级 CSS 只有一处来源**:`_config.butterfly.yml inject.head`。**勿**恢复 head extraCss / body 内 PAGE_STYLES 双份机制(2026-09-03 A 方案已全局化, 死代码已清)。
-4. **发布三连**:robocopy 同步(注意不删目标多余文件 → 手动清残留)→ `hexo generate`(clean 后如有 minify ENOENT 重跑一次)→ 用户批准后 `push main` + `hexo deploy`。
-5. **SCF 云函数**:响应勿加自定义 `Content-Length`(网关注入双 CT);前端 fetch 按响应体字节判定 base64, 勿再改回 audio 直连(网关注入 `application/json`, 实测不可行)。
+2. **不删 `source/rose-galaxy/vendor/`**(P0 本地化的 4 个第三方库: fontawesome / pjax / medium-zoom / infinitegrid)。它们**在源码里没有任何 `require`/`import`**,只由 `head.pug`/`footer.html` 以路径引用 —— **静态扫描会误判为"未使用资源"**。删了会整站丢图标/丢 PJAX/丢图片缩放。
+3. **编辑前先停 hexo server**(Windows 文件锁 → edit `ReplaceFileW EIO`);改 `scripts/*.js`、`_config*.yml`、**模板 `.pug`/`.html`** 后必须**重启 server** 再验证。
+4. **改模板后必须全量重建**:`npm run build` 走增量缓存,改了 `.pug` 也不会重生成所有页面 → 需 `.\node_modules\.bin\hexo.cmd generate --force`。**判据检查通过 ≠ 目标页已更新**。
+5. **页级 CSS 只有一处来源**:`_config.butterfly.yml inject.head`。**勿**恢复 head extraCss / body 内 PAGE_STYLES 双份机制(2026-09-03 A 方案已全局化, 死代码已清)。
+6. **发布三连**:robocopy 同步(注意不删目标多余文件 → 手动清残留)→ `npm run build` → 用户批准后 `push main` + `hexo deploy`。
+7. **SCF 云函数**:响应勿加自定义 `Content-Length`(网关注入双 CT);前端 fetch 按响应体字节判定 base64, 勿再改回 audio 直连(网关注入 `application/json`, 实测不可行)。
 
 ## Hexo 工程坑
 
 1. **hexo 用 vm 包装加载 scripts/*.js**：`(async function(exports, require, module, __filename, __dirname, hexo){...})`——`hexo` 只作为参数传给**被直接加载的脚本**；**内部 `require` 的模块拿不到 hexo**（写共享模块勿在顶层用 hexo——曾致 "hexo is not defined"/"not a function"）。共享模块要么不依赖 hexo（如 site-config.js 直接读 yml），要么导出工厂由生成器传参——后者同样可能有加载顺序问题，**首选零依赖方案**。
-2. **hexo 会执行 scripts/ 下所有 .js**：一次性工具(顶层立即写文件)放这里会污染源文件——`pure_parts.js`/`extract_parts.js`/`slice_footer.js` 曾把 page-parts 与 footer.html 覆盖回旧版（"双 nav/横幅丢失"的元凶），已迁 `py-tools/archive/`。
-3. **hexo server 不热加载配置/模板/插件**：改 `scripts/`、`_config*.yml`、模板后必须**重启 server**；且 **server 会用内存旧脚本重新生成并覆盖 public**——改动生成器后请**先停 server** 验证，验证完再重启。
+2. **hexo 会执行 scripts/ 下所有 .js**：一次性工具(顶层立即写文件)放这里会污染源文件——`pure_parts.js`/`extract_parts.js`/`slice_footer.js` 曾把 page-parts 与 footer.html 覆盖回旧版（"双 nav/横幅丢失"的元凶），后来连同 `py-tools/` 目录一并移除。
+3. **hexo server 不热加载配置/模板/插件**：改 `scripts/`、`_config*.yml`、**`.pug`/`.html` 模板**后必须**重启 server**；且 **server 会用内存旧脚本/旧模板重新生成并覆盖 public**——改动生成器后请**先停 server** 验证，验证完再重启。
+   ⚠️ 实测(2026-09-11)：改了 `head.pug` 后用 4007 预览，页面**仍请求 CDN**，而 `public/index.html`(generate 产物)已正确 —— 即 **server 用缓存的旧模板渲染**。识别方法：对比"server 返回的 HTML"与"public 里的产物"。
 4. **浏览器缓存**：CSS/JS 版本号未变时，强刷(Ctrl+Shift+R)或隐私窗口验证。
 5. **hexo partial `cache: true` 会缓存旧模板**：改 partial 后不生效，改用 `include` 或删 db.json + `hexo clean`。
 6. **Hexo excerpt 是渲染后的 HTML**：生成摘要须先剥离 HTML 标签，否则残留未闭合标签破坏卡片 DOM。
 7. **hexo generate 不删孤儿文件**：删除文章/页面后需 `hexo clean` 再 generate；偶尔 `2026/`/空目录残留需手动删（server 竞争或 clean 未彻底时）。
 8. **headless 截图陷阱**：虚拟时钟会冻结入场动画、缓存旧 CSS，验证用全新 profile + 像素采样。
 9. **SCF 网关注入**:`Content-Type: application/json` 被强制附加(双头),二进制音频经 **base64 文本**传输;`audio.src` 直连会被浏览器拒播——前端必须 fetch→字节判定→base64 解码→Blob。
-10. **robocopy 不删目标多余文件**:源端删除的文件(图片/文档)不会从 `SourceCode` 消失,需手动删(常见于图标/旧 logo/zip 遗留)。
+10. **robocopy 不删目标多余文件**:源端删除的文件(图片/文档)不会从 `web\main` 消失,需手动删(常见于图标/旧 logo/zip 遗留)。
 11. **主题版 PJAX / additional-js 为孤儿**:自制 `base.pug` 无渲染链,`theme.pjax.enable` 永远不要开(注释已写);要改 PJAX 只改 `parts-common/footer.html`。
-12. **agent 编辑纪律**:删除任何文件前确认「它是上游副本/一次性工具/被其他文件引用」;一次性脚本放 `Desktop\data\_archive-2026-09\`(已归档)或 `py-tools/archive/`,严禁放入 `scripts/`(hexo 会执行脚本目录全部 .js)。
+12. **agent 编辑纪律**:删除任何文件前确认「它是上游副本/一次性工具/被其他文件引用」;一次性脚本严禁放入 `scripts/`(hexo 会执行脚本目录全部 .js)。
+13. **hexo 增量构建:改模板不会重生成所有页面**(2026-09-11 实测):改了 `themes/**/projects.pug` 后 `npm run build` 报 `3 files generated`,`public/projects/index.html` 里**旧内容仍在**。→ 改 `.pug`/`.html` 后必须 `hexo generate --force`;**判据检查通过 ≠ 该页已更新**。
+14. **pug 在 `script.` 块内写 `//-` 不会被当注释**:它会被原样输出到产物 JS 文本里(实测产物出现 `//- 阶段5...`)。模板注释(`//-`、`//`)要写在**脚本块之外**。
+15. **`head_begin` 注入时机 `document.body` 不存在**:`scripts/inject-theme.js` 通过 injector 注入 `<head>`,此时 body 尚未解析 → 用 `document.body.classList.contains(...)` 判页面类型**永远为假**(曾导致首页 hero preload 完全没生效)。该时机请改用 URL 路径判定,如 `location.pathname === '/'`。
+16. **"零影响"测试会被运行时 DOM 欺骗**:静态扫 CSS 规则命中数得 `nova-player.css` = 0/240,据此判定"可删注入"是**错的** —— `.nova-mini-player` 由 `nova-player.js` 的 `buildMiniBar()` **运行时创建**(注释写明"非音乐页常驻"),静态永远看不到。→ 剔除/删除测试必须**触发真实交互**(如点播放)后再测;否则只能证明"当前静态状态无影响"。
+17. **minify 的 ENOENT 是竞态,不是"偶发"**(协调窗口定位,阶段2.1 已修):根因是 `walk()` 先枚举 `public/` 全部文件形成快照,再由 `statSync`/`readFileSync` 逐个读取,而这两个 IO **位于 try 之外**——快照与读取之间文件消失即抛未捕获异常,`main().catch` 直接 `process.exit(1)`,构建红掉。触发者是**并发写同一 `public/`**,最可能是 `hexo server` 与 `hexo generate` 同时运行(所以"重跑一次就好"只是碰运气避开窗口,**不是修复**)。
+    → **阶段 2.1 已实施修复**:那两个 IO 已移入 try;且该文件已从 `scripts/` 移到 `tools/minify.js`。校验方法:读 `tools/minify.js`,`statSync`/`readFileSync` 应在 `try {}` 块内。
+    本站另在**单文件失败非零退出**与**构建后冒烟检查(10 项)**两处加固,`npm run build` 返回非零不可忽略。
 
 ---
 
@@ -226,8 +306,13 @@ npm run server    # 本地预览(改动脚本/配置/模板后须重启!)
 | 切页瞬间整屏"玫瑰色蒙版"一闪（由下而上收起） | 页面重挂时 CSS transition 首帧伪影(R1-B 已修复) → 检查 `custom.css` 的 `html.nova-no-transitions` 规则与 `nova-ux.js` 的加/移除钩子是否完好;曾被误判为展示层/浏览器问题,勿再排查显示/硬件链路 |
 | 首页 hero 塌陷、白区 | 曾因 LATEST/闭合链双份(P1b 提取遗留)——检查 `home-parts/top.html` 占位 `<!--NOVA-LATEST-->` 与 `mid.html` 无旧闭合链；产物中 `nova-latest-signal`/`nova-scroll-hint` 应各 1 处 |
 | 生成器不输出(xml/索引缺失) | `scripts/` 加载失败(hexo is not defined / not a function) → 检查共享模块是否顶层用了 hexo；`ERROR Script load failed` 必先看 |
-| 文件被"还原" | `scripts/` 混入一次性工具 → 移到 `py-tools/archive/`；从 git(SourceCode) 恢复 |
+| 文件被"还原" | `scripts/` 混入一次性工具 → 立即移出；从 git 恢复受影响的文件 |
 | 改动不生效 | hexo server 未重启(内存旧脚本/旧产物) → 停 server→clean→generate→重启 |
+| **改了模板但目标页没变** | hexo 增量构建未重生成该页 → `hexo generate --force`；不要因为冒烟检查通过就以为页面已更新（坑⑬） |
+| **预览用旧模板、产物却正确** | `hexo server` 缓存了 pug 模板 → 重启 server；对比"server 返回 HTML"与"public 产物"可确认（坑③） |
+| **整站图标消失 / PJAX 失效 / 图片不能放大** | `source/rose-galaxy/vendor/` 被当"未使用资源"删了 → 从 git 恢复；这 4 个库只由 `head.pug`/`footer.html` 路径引用，源码里搜不到（操作守则 2） |
+| **首页 hero 预加载没生效** | 检查 `inject-theme.js` 是否又用了 `document.body` 判首页（该注入时机 body 不存在）→ 改用 `location.pathname`（坑⑮） |
+| **产物 HTML 里出现 `//-` 文本** | pug 注释写在了 `script.` 块内 → 移到脚本块外（坑⑭） |
 | footer 横幅异常 | 页级 css 又有 footer 背景规则 → 删；`custom.css` 两套规则(md 主题前缀)是唯一来源 |
 | 评论不见 | Waline 按 path 存储——页面路径变更后旧评论不显示(非 bug)；需迁移在数据层处理 |
 | 新说说发布后左侧流不出现 | 说说流仅在页面加载/PJAX 时拉取(设计如此,无自动重拉)→ 刷新页面即可;评论区管理员评论会话内可见属预期(刷新后隐藏);右侧收藏点心形即实时增删 |

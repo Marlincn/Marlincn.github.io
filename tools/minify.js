@@ -33,10 +33,12 @@ async function main() {
   const files = await walk(publicDir)
   let saved = 0
   let count = 0
+  let failed = 0
   for (const f of files) {
-    const raw = fs.statSync(f).size
-    const src = fs.readFileSync(f, 'utf8')
+    const rel = path.relative(publicDir, f)
     try {
+      const raw = fs.statSync(f).size
+      const src = fs.readFileSync(f, 'utf8')
       const result = await esbuild.transform(src, {
         loader: 'js',
         minify: true,
@@ -47,12 +49,17 @@ async function main() {
       const delta = raw - result.code.length
       saved += delta
       count++
-      console.log(`minify ${path.relative(publicDir, f)}: ${(raw / 1024).toFixed(0)}KB -> ${(result.code.length / 1024).toFixed(0)}KB (-${(delta / 1024).toFixed(0)}KB)`)
+      console.log(`minify ${rel}: ${(raw / 1024).toFixed(0)}KB -> ${(result.code.length / 1024).toFixed(0)}KB (-${(delta / 1024).toFixed(0)}KB)`)
     } catch (e) {
-      console.error(`SKIP ${f}: ${e.message}`)
+      failed++
+      console.error(`FAIL ${rel}: ${e.code || 'ERR'} ${e.message}`)
     }
   }
-  console.log(`\nminified ${count} files, saved ${(saved / 1024).toFixed(0)} KB`)
+  console.log(`\nminified ${count} files, saved ${(saved / 1024).toFixed(0)} KB${failed ? `, FAILED ${failed}` : ''}`)
+  if (failed) {
+    console.error(`[minify] ${failed} 个文件压缩失败(含文件消失竞态), 置非零退出码`)
+    process.exitCode = 1
+  }
 }
 
 main().catch(e => { console.error(e); process.exit(1) })

@@ -164,8 +164,8 @@
 }
 
 .nova-mini-btn.nova-mini-toggle:hover {
-  background: #df86a3;
-  border-color: #df86a3;
+  background: var(--nova-rose-hover);
+  border-color: var(--nova-rose-hover);
 }
 
 .nova-mini-close {
