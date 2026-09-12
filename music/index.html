@@ -717,8 +717,8 @@ const asideStatus = saveToLocal.get('aside-status')
   const loadWaline = (el, path) => {
     if (initFn) initWaline(initFn, el, path)
     else {
-      btf.getCSS('https://cdn.jsdelivr.net/npm/@waline/client@3.15.2/dist/waline.min.css')
-        .then(() => import('https://cdn.jsdelivr.net/npm/@waline/client@3.15.2/dist/waline.min.js'))
+      btf.getCSS('/rose-galaxy/vendor/waline/waline.min.css?v=20260831-p47')
+        .then(() => import('/rose-galaxy/vendor/waline/waline.min.js?v=20260831-p47'))
         .then(({ init }) => {
           initFn = init || Waline.init
           initWaline(initFn, el, path)
