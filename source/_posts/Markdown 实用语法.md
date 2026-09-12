@@ -185,7 +185,7 @@ int main() {
 
 文件>>偏好设置
 
-<img src="C:\Users\mabin\Desktop\miscell\picture\暗香胜雪.png" alt="image-20250630170438267" style="zoom:50%;" />
+<img src="/images/posts/暗香胜雪.webp" alt="image-20250630170438267" style="width: 600px;" />
 
 **演示**
 H~2~O
@@ -198,14 +198,14 @@ X^2^
 | **使用img标签插入图片** | \<img src="本地/网络路径">                    |
 | ----------------------- | --------------------------------------------- |
 | 宽高                    | \<img style="width:xpx; height:ypx"  src="~" > |
-| 比例                    | \<img style="zoom:z%"  src="~" >              |
+| 比例                    | \<img style="width:wp"  src="~" >             |
 
 <center>
-    <img src="C:\Users\mabin\Desktop\miscell\picture\夏末游鳞.png" style="zoom:80%">
+    <img src="/images/posts/夏末游鳞.webp" style="width: 960px">
     <br>
-    <img src="C:\Users\mabin\Desktop\miscell\picture\xuehu.jpg" style="zoom:20%">
+    <img src="/images/posts/xuehu.webp" style="width: 240px">
     <!-- ////////////////// -->
-    <img src="C:\Users\mabin\Desktop\miscell\picture\xuehu.jpg" style="zoom:20%">
+    <img src="/images/posts/xuehu.webp" style="width: 240px">
 </center>
 
 

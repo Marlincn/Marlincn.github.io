@@ -148,6 +148,9 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 - `baseline.json`：基线比对基准（`publicFiles` / `postDirs` / 三 xml 字节数 / LATEST SIGNAL / 精选工程顺序）
   → 有意变更后用 `npm run verify -- --update-baseline` 刷新；**刷新时机必须在删除临时目录之后**，否则基线会残留错误数字
 
+> ⚠️ **在 `demo` 下跑测试会看到 `tests 68 / pass 67 / skipped 1`，这是正常的**：跳过的是 `project-date.test.js` 的「git 最后提交日生效(与 git log 动态对比)」——它用 `hasGit()` 探测当前目录是否为 git 仓库，而 **`demo` 是 robocopy 出来的工作副本、没有 `.git`**（旧版 demo 曾是 git 克隆，所以当时是 68/68）。
+> `main` 是真实 git 仓库，那里 `npm test` 恒为 **68 pass / 0 skipped**；发布前在 `main` 跑一次即可覆盖这一项。**不要为了凑 68/68 而给 demo 建 `.git`**。
+
 ### `docs/`（仓库文档资源，不随站点发布）
 
 - `preview-dark.png` / `preview-light.png`：README 深浅主题预览图(2026-09-03 由 source 移出并更新为当前首页截图)

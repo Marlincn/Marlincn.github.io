@@ -121,7 +121,7 @@ ilustration, painting, paintbrush
 | high angle      | 高角度   | worm's eye view | 仰视     |
 | slightly above  | 微高角度 | selfie          | 自拍     |
 
-<img style="zoom:30%" src="C:\Users\mabin\Downloads\d43a9bd8af7901bed6459b385a3f4038.jpeg">
+<img style="width: 360px" src="/images/posts/xuehu.webp">
 
 
 
@@ -171,7 +171,7 @@ NSFW,mutated hands and fingers,worst quality,low quality,extra limb,missing limb
 
 ### 3.1夏末游鳞
 
-<img src="/images/posts/夏末游鳞.webp" style="zoom: 25%;" />
+<img src="/images/posts/夏末游鳞.webp" style="width: 480px;" />
 
 **正向Tag**
 
@@ -209,7 +209,7 @@ depth of field, cowboy shot, close-up, solo, 1girl, holding sparkler, adjusting 
 
 ### 3.2暗香盛雪
 
-<img src="/images/posts/暗香胜雪.webp" style="zoom: 25%;" />
+<img src="/images/posts/暗香胜雪.webp" style="width: 480px;" />
 
 **正向tag**
 
@@ -237,7 +237,7 @@ masterpiece, best quality, extremely detailed CG unity 8k wallpaper, close up, (
 
 其他数值均为默认
 
-<img src="C:\Users\mabin\Desktop\杂集\图片\暗香胜雪.png" style="zoom: 50%;" />
+<img src="/images/posts/暗香胜雪.webp" style="width: 600px;" />
 
 
 >本文参考于：

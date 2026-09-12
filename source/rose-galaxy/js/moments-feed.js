@@ -325,8 +325,11 @@
 
   function init() {
     const page = document.querySelector('.nova-moments-page')
-    if (!page || page.dataset.ready === 'true') return
-    page.dataset.ready = 'true'
+    /* 幂等标记必须独立: moments-page.js(只管点赞按钮绑定)在同一元素上抢先设置了 data-ready,
+       若这里也读同一个键, 则本脚本的 init 永远判定"已初始化"而直接 return —— 说说流一次都不拉取
+       (2026-09-12 实测: 卡片恒为 0 张、pageSize=100 请求从未发出)。故改用专属键 data-feed-ready。 */
+    if (!page || page.dataset.feedReady === 'true') return
+    page.dataset.feedReady = 'true'
     migrateMood()
     renderMoods() // 恢复收藏列表(含空态「待选入...」)
     loadFeed()

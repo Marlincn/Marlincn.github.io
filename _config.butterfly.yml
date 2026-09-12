@@ -122,3 +122,25 @@ waline:
   serverURL: https://marlincn-github-io.vercel.app
   pageview: false
   option:
+
+# ---- CDN 资源覆盖 (P0 本地化延续) ----
+# 覆盖原因: 站点有 9 个页面走定制 _partials/head.pug(已本地化), 但文章/分类/归档/首页列表
+# 共 5 个 layout 仍走主题原版 includes/head.pug, 后者从 theme.asset.* 取 CDN 地址。
+# 在此覆盖后两条引用即指向同源自托管, 无需改动原版 head 结构(保留其 BlogPosting 结构化数据)。
+# ?v= 版本号由 scripts/asset-version.js 构建时注入。
+CDN:
+  option:
+    waline_css: /rose-galaxy/vendor/waline/waline.min.css
+    waline_js: /rose-galaxy/vendor/waline/waline.min.js
+    fontawesome: /rose-galaxy/vendor/fontawesome/css/all.min.css
+    egjs_infinitegrid: /rose-galaxy/vendor/infinitegrid/infinitegrid.min.js
+    # lightbox: medium_zoom 时由 includes/additional-js.pug:9 取 theme.asset[theme.lightbox]。
+    # 本地 vendor 早已就位, 但此前只有定制 _partials/head.pug 走本地, 原版 head 页面仍取 CDN。
+    medium_zoom: /rose-galaxy/vendor/medium-zoom/medium-zoom.min.js
+    # 文章分享按钮(includes/third-party/share/share-js.pug), 全站 30 个页面在用。
+    sharejs: /rose-galaxy/vendor/sharejs/social-share.min.js
+    sharejs_css: /rose-galaxy/vendor/sharejs/share.min.css
+
+
+
+
