@@ -156,6 +156,23 @@ function structural(m, home, files) {
   // 7. <time> 必须带 datetime 属性(阶段2 2.10a)
   const homeNoDt = (home.match(/<time(?![^>]*datetime=)[^>]*>/g) || []).length
   eq('首页无 datetime 的 <time> 数', homeNoDt, 0)
+
+  // 8. 产物不得从 jsDelivr 直接加载资源(阶段6 本地化不变量)
+  //    背景: 站点有两套 head(定制 _partials / 原版 includes), 全站改动曾只覆盖其中一套,
+  //    导致"文章页仍走 CDN"长期无人察觉。此处把"漏网"变成构建失败。
+  //    只匹配 <script src=..> / <link href=..> 这类**直接加载**; 懒加载字符串
+  //    (theme 里 mermaid 的 btf.getScript('https://cdn.jsdelivr.net/...')) 属已知待办, 不在此断言内。
+  const cdnLoader = []
+  for (const f of htmlFiles) {
+    const txt = readIf(path.join(PUBLIC_DIR, f))
+    const hits = [
+      ...txt.matchAll(/<script[^>]*\ssrc="(https?:\/\/cdn\.jsdelivr\.net\/[^"]*)"/gi),
+      ...txt.matchAll(/<link[^>]*\shref="(https?:\/\/cdn\.jsdelivr\.net\/[^"]*)"/gi)
+    ]
+    if (hits.length) cdnLoader.push(rel(path.join(PUBLIC_DIR, f)) + ' → ' + hits[0][1].slice(0, 72))
+  }
+  eq('产物中 jsDelivr 直接加载数', cdnLoader.length, 0)
+  for (const d of cdnLoader.slice(0, 5)) bad('  ' + d, '应改为站内自托管')
 }
 
 /* ---------- 基线比对(--strict) ---------- */

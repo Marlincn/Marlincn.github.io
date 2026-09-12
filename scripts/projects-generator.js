@@ -1,5 +1,5 @@
 'use strict'
-/* 工程页生成器(P3):输出 /projects/index.html,由 themes/butterfly/layout/projects.pug 渲染。
+/* 工程页生成器(P3):输出 /projects/index.html,由 themes/nova/layout/projects.pug 渲染。
    - 数据源:scripts/projects-data.js(5 个工程,字段来自 deymo-site info.json 与 manifest)
    - 结构仿 nova-tags:hero/底部片段沿用 idx-parts 体系(工程页 top 在 project-parts/top.html)
    - 封面图:source/img/projects/*.webp(sharp 质量 80 转换) */
@@ -14,7 +14,7 @@ const { toMs, byKeys } = require('./lib/sort')
 const projects = require('./projects-data')
 const INTRO_BLOCKS = require('./projects-intro')   // 工程介绍文案(自包含, 见 projects-intro.js)
 
-const projectParts = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'project-parts')
+const projectParts = path.join(__dirname, '..', 'themes', 'nova', 'layout', 'project-parts')
 const readProjectTop = fs.readFileSync(path.join(projectParts, 'top.html'), 'utf8')
 
 const { SITE } = require('./site-config')

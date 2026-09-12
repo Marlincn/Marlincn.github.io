@@ -1,6 +1,6 @@
 'use strict'
 /* 首页生成器(P5 改版, 2026-08-27):
-   输出 index.html,由 themes/butterfly/layout/home.pug 渲染。
+   输出 index.html,由 themes/nova/layout/home.pug 渲染。
    公共壳(loading/sidebar/header/nav)由 composeShellTop 组装;
    页级内容: 顶部 hero(home-parts/top.html, LATEST SIGNAL 动态注入) + 中部骨架(mid.html:
              精选工程 cards + 最新文章 cards, 均由生成器注入占位) + 尾部(bottom.html: 生活碎片)
@@ -20,7 +20,7 @@ const { projectUpdated } = require('./lib/project-date')
 const { toMs, byKeys } = require('./lib/sort')
 const projectsData = require('./projects-data')
 
-const partsDir = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'home-parts')
+const partsDir = path.join(__dirname, '..', 'themes', 'nova', 'layout', 'home-parts')
 const read = f => fs.readFileSync(path.join(partsDir, f), 'utf8')
 
 // 首页专有: 全屏背景动画层(body 直接子元素, loading 与 sidebar 之间)

@@ -137,9 +137,8 @@ CDN:
     # lightbox: medium_zoom 时由 includes/additional-js.pug:9 取 theme.asset[theme.lightbox]。
     # 本地 vendor 早已就位, 但此前只有定制 _partials/head.pug 走本地, 原版 head 页面仍取 CDN。
     medium_zoom: /rose-galaxy/vendor/medium-zoom/medium-zoom.min.js
-    # 文章分享按钮(includes/third-party/share/share-js.pug), 全站 30 个页面在用。
-    sharejs: /rose-galaxy/vendor/sharejs/social-share.min.js
-    sharejs_css: /rose-galaxy/vendor/sharejs/share.min.css
+    # 分享按钮(阶段6 任务B)已改为自实现: 图标用站内 FontAwesome, 二维码用本地 qrcode-generator,
+    # 不再需要 sharejs/sharejs_css 覆盖项(原图标字体在官方包里不存在, 图标从未显示过)。
 
 
 

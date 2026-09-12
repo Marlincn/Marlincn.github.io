@@ -14,7 +14,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const cmnDir = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'parts-common')
+const cmnDir = path.join(__dirname, '..', 'themes', 'nova', 'layout', 'parts-common')
 const read = f => fs.readFileSync(path.join(cmnDir, f), 'utf8')
 
 const LOADING = read('nova-loading.html')
@@ -30,7 +30,7 @@ const RIGHTSIDE_ASIDE = read('rightside-aside.html')
 // page-parts 中的 <!--NOVA-COMMENT-CORE--> 占位符; 标题/文案仍属页内容
 const COMMENT_CORE = read('comment-core.html')
 
-/* 页级 CSS(2026-09-03 A 方案): 已全量全局注入(_config.butterfly.yml inject.head),
+/* 页级 CSS(2026-09-03 A 方案): 已全量全局注入(_config.nova.yml inject.head),
    body 内不再随内容注入——原 PAGE_STYLES/pageCss 机制废弃(直入/PJAX 均零异步窗口) */
 
 // footer 拆段: 主体(含 body-wrap 闭合</div>) / 尾部(rightside+脚本+local-search)

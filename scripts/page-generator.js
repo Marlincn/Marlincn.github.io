@@ -10,7 +10,7 @@ const path = require('path')
 const { composeShell, WALINE_COMMENT, RIGHTSIDE_COMMENT, COMMENT_CORE } = require('./parts-common')
 const { VERSION } = require('./site-config')
 
-const partsDir = path.join(__dirname, '..', 'themes', 'butterfly', 'layout', 'page-parts')
+const partsDir = path.join(__dirname, '..', 'themes', 'nova', 'layout', 'page-parts')
 const readMain = name => fs.readFileSync(path.join(partsDir, name + '.html'), 'utf8')
 
 const PAGES = [

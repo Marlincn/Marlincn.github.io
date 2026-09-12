@@ -83,7 +83,7 @@ skip_render:
   - '**/*.html'
 
 # Extensions
-theme: butterfly
+theme: nova
 
 # Deployment
 deploy:

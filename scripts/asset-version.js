@@ -1,8 +1,8 @@
 'use strict'
 /* 资源版本号单源化(阶段4 批次L · 4.1, 2026-09-11)
    背景: 全站资源 URL 上的 ?v=20260831-p47 原先硬编码在 17 处 ——
-     - _config.butterfly.yml 的 inject 段 13 行(CSS 9 + JS 4)
-     - themes/butterfly/layout/{home-parts/page-scripts.html, parts-common/footer.html, tag-parts/bottom.html} 4 处
+     - _config.nova.yml 的 inject 段 13 行(CSS 9 + JS 4)
+     - themes/nova/layout/{home-parts/page-scripts.html, parts-common/footer.html, tag-parts/bottom.html} 4 处
    问题: yml 配置与静态 html 片段无法做模板插值(pug 的 config.version 覆盖不到),
          每次改版本号都要手工同步 7 个文件, 且无任何校验 —— 漏改不会报错, 只会让
          老访客命中旧缓存(改了 CSS/JS 却拿不到新文件)。
