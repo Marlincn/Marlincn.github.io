@@ -96,7 +96,8 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/nova/layout/*.pug(模板, �
 | `home-generator.js` | 首页：shellTop + hero 段(LATEST 动态注入)+ mid(精选工程/最新文章卡注入)+ 页级 bottom + 公共尾；P5 数据规则见「首页 P5 数据流」 |
 | `page-generator.js` | 静态页：PAGES 配置表(pageClass/headerCls/mainCls/pre/showExtra/pageScripts) |
 | `projects-generator.js` | 工程页：列表 + 详情(下载链接由 `SITE + encodeURI(url)` 生成)；更新日期统一走 `lib/project-date.js` |
-| `lib/project-date.js` | 工程更新日期**唯一实现**(A1)：显式 `updated` → 资产目录内最新文件 mtime → 目录 mtime → `date` 兜底；列表/首页 LATEST SIGNAL 共用 |
+| `lib/project-date.js` | 工程更新日期**唯一实现**(A1)：显式 `updated` → **资产路径的 git 最后提交日** → 目录内最新文件 mtime → 目录 mtime → `date` 兜底；列表/首页 LATEST SIGNAL 共用 |
+| `post-date.js` | 文章更新日期**唯一实现**(2026-09-13)：显式 `updated` → **源文件 git 最后提交日** → mtime → `date` 兜底。用 `after_post_render` 过滤器改写 `post.updated`，于是 head 的 dateModified、首页排序、feed 自动一致。判定链与 `lib/project-date.js` 同构 |
 | `projects-data.js` / `projects-intro.js` | 工程数据(5 个工程)/ 详情介绍文案(自包含) |
 | `lib/fetch-views.js` | **浏览量抓取器(部署前手动运行)**：busuanzi API 带 Referer 查询各页真实 page_pv → 写 `data/views-cache.json`；24h 缓存、单条失败跳过、手动修改自动保留偏移 |
 | `data/views-cache.json` | 浏览量缓存(**在 `data/`, 不在 `scripts/`**)：`pv`(显示值=排序用) / `shift`(人工偏移) / `lastRaw`·`lastDisplay`(脚本维护)。**手动改只动 `pv` 段**，详见 `data/views-cache.md` |
@@ -115,7 +116,9 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/nova/layout/*.pug(模板, �
 - **精选工程** = 工程按 `浏览量降序 → updated → 标题` 取前 3(lead + 2 side,封面=`/img/projects/*.webp`)。
 - **最新文章** = 文章按 `updated → 浏览量 → 标题` 取前 6(2 列 3 行)。
 - **浏览量**：`views-cache.json` 的 `pv` 段(= busuanzi 真实值 + 人工偏移);缺失时兜底 `projects-data.js` 的 `views` 字段(可选)。
-- **文章 updated**：Hexo 原生(无 `updated:` 时=文件 mtime;Marlin-web 本地工作目录 generate,时间真实)。
+- **文章 updated**：由 `scripts/post-date.js` 统一改写(判定链与工程侧同构)：front matter 显式 `updated` → **源文件 git 最后提交日** → mtime → `date` 兜底。文章页 head 的 `dateModified`/`article:modified_time`、首页 LATEST SIGNAL 与"最新文章"排序都读这个值。
+  > ⚠️ **不要再依赖 hexo 的 `updated_option: mtime`** —— 它把"文件最后修改时间"当更新时间，而 mtime 记录的是**文件被复制/检出**的时刻、不是内容改动的时刻。实测(2026-09-13)：`LM-Studio-OpenCode 接入指南` 的 mtime 是 09-13，真实最后提交是 **08-31**(偏晚 13 天)；15 篇文章的 mtime 只聚成 3 个值(被成批复制的特征)；换机器/re-clone/CI 干净检出后全部文章的 mtime 会一起重置，`dateModified` 集体漂到同一天。
+  > 代价与工程侧一致：**改完文章要 commit，日期才会前进**(与"改 → 提交 → 部署"的工作流一致)。无 git 时自动回退 mtime，不抛错。
 - **工程 updated**：`projects-data.js` 的 `updated:` 字段(可选) > **`source/assets/projects/<工程名>/` 目录内最新文件的 mtime(自动记录,robocopy 保留源文件时间故同步不污染)** > `date` 兜底。工程页概览第 4 栏"最近更新"与首页 LATEST SIGNAL 的工程日期统一读此链；**更新工程即上传/替换目录内文件,日期自动取最新文件 mtime,零人工**。
 - **概览统计条数据**：文章索引(/articles/)四栏 = TOPICS 主题总数 / ARTICLES 文章总数 / TOP TOPIC(最多文章主题+名称) / LATEST UPDATE(最新文章日期+标题)，数值由 `nova-tags.js` 注入；工程页(/projects/)四栏 = PROJECTS 项目总数 / TAGS 技术标签 / TOP PROJECT(真实 pv 最高的工程，pv 数字+工程名) / LATEST UPDATE(更新日期+工程名)，由 `projects-generator.js` 计算(真实 pv 取 `views-cache.json` 的 `lastRaw` 段；全部为 0 时第 3 栏兜底显示最新更新工程)。
 - **卡片注入**：mid.html 的 `<!--NOVA-FEATURED-->`/`<!--NOVA-RECENT-->` 与 top.html 的 `<!--NOVA-LATEST-->` 占位由生成器 `split().join()` 替换;卡片 HTML 拼装在 `home-generator.js` 的 `featuredCardsHtml`/`recentCardsHtml`/`latestSignal`。
@@ -188,6 +191,7 @@ P0(2026-09-11) 把外链库改为同源自托管，消除 jsDelivr 依赖。这�
 | 前端运行时 | `source/rose-galaxy/js/lib/site-config.js` | `window.NOVA_SITE.bili`(云函数代理/UID/收藏夹) | 换 B 站源只改这里；加载顺序:yml inject.head 位于 nova-player.js 之前(defer 保序) |
 | 前端工具 | `source/rose-galaxy/js/lib/utils.js` | `window.NOVA_UTILS.formatTime / songName / songArtist` | 播放器/音乐页共用(C7/C10 收敛) |
 | 日期工具 | `scripts/lib/date.js` | `fmtDate` | |
+| 文章更新时间 | `scripts/post-date.js` | 改写 `post.updated`(git 提交日优先) | 改文章日期只用 front matter `updated:`；**勿依赖 `_config.yml` 的 `updated_option: mtime`** |
 | 设计令牌 | `source/css/custom.css :root` | `--nova-rose`/`--nova-rose-rgb`(玫瑰 A2)、`--font-serif`/`--font-sans`(字体 C11) | 全站色值/字体引用变量, 改主题色/字体只改这里 |
 | 主题配置 | `_config.nova.yml` | 导航菜单/搜索/注入(共享件+播放器)/aside/waline | inject.head 顺序=文档顺序（原 `_config.butterfly.yml`）|
 | 站点配置 | `_config.yml` | url / permalink:`posts/:title/` / tag_dir:`articles` | |

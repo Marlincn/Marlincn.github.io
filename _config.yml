@@ -73,6 +73,9 @@ meta_generator: true
 # Date / Time format
 date_format: YYYY-MM-DD
 time_format: HH:mm:ss
+# 文章"更新时间"的判定由 scripts/post-date.js 接管(判定链: front matter updated
+# → 源文件 git 最后提交日 → mtime → date)。这里的 mtime 只是它拿不到 git 时的兜底,
+# 保留 hexo 默认值即可 —— 不要指望它本身能给出正确日期(检出会刷新 mtime)。
 updated_option: mtime
 
 # Pagination
