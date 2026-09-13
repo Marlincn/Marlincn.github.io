@@ -20,6 +20,8 @@
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-09-13 | **产物排序稳定化**：`feeds.js` 的 3 处排序（search.xml / sitemap.xml / atom.xml）只有 `b.date - a.date` 一个键，而 **15 篇文章里有 8 篇 date 完全相同**（`2026-08-17 00:00:00` 同批入库）—— 并列时比较器返回 0，`Array.sort` 对相等元素不保证顺序，于是**每次构建同一批条目换序，产物 diff 上千行却毫无实际改动**（实测 search.xml 单次 ±1063 行），无法审阅发布内容。补 `postUrl()` 路径升序兜底（站内唯一、不随构建变化）。连跑两次 `npm run build` 三 xml 逐字节相同；首页侧一直有兜底（`lib/sort.js` 的 `byKeys` 末尾 `byTitle`），本次补的是同一问题的另一半 | `scripts/lib/feeds.js` |
+| 2026-09-13 | **版本号 p47→p48**：本轮改了 5 个被引用的 css/js 却未 bump，老访客会在 `max-age=600` 窗口内拿到旧 CSS 配新 HTML（本轮恰好是 hero 海报变量化，混搭会出问题）。核实后确认版本号已是**单源机制**：全站 29 处引用均为 `?v=__VERSION__` 占位符，由 `asset-version.js` 渲染时替换 → **只需改 `_config.yml` 一行**，实测全站 462 处引用一次生效，产物中无任何硬编码站点版本号（AGENT.md 原先"需手动同步 22 处"的说法已随之更正） | `_config.yml`、`scripts/asset-version.js`(注释) |
 | 2026-09-13 | **首页 hero 海报改单图加载**：原先 `day.webp` 写在 `.nova-hero-bg::after`（`opacity:0` 的交叉淡入层）里，浏览器**解析 CSS 就会请求它**，深色模式下白下载 271 KB。改为 `--nova-hero-bg` 变量按主题二选一（未生效的变量值不触发请求），另一张由 `nova-ux.js initHeroThemeSwap` 在切主题时按需加载并写进 `::after` —— 省 271 KB 且保留 0.55s 交叉淡入（实测首屏 hero 海报 2 张→1 张） | `source/rose-galaxy/{css/nova-home.css,js/nova-ux.js}` |
 | 2026-09-13 | **字重归一化**：`font-weight` 的 520/540/550/560/650 共 11 处改为标准档（650→600、其余→500）。中文字体只有 400/500/600/700 档，非标准值会被吸附，导致**同一行里英文能插值出 520 而中文吸到 500**、中英粗细不一致（实测墨量比差 5.3%）；改后两侧落在同档 | `source/css/custom.css`、`source/rose-galaxy/css/{about-page,moments-page}.css` |
 | 2026-09-11 | **阶段 5 加载优化**：① 5.2 粒子发光改离屏 sprite 缓存 —— 每帧 `createRadialGradient` 93→0 次、`arc` −60%、JS 堆增长 −61%（帧率不变，瓶颈在像素填充）；② 5.3 视口变化改为**按比例缩放**已有粒子，不再重建（消除拖动窗口时的整片跳变）；③ 5.1 页级 CSS 按需注入**取消** —— 实测真实传输口径只省约 2.6%，且需改 PJAX 引入裸渲染风险 | `source/rose-galaxy/animation/galaxy-canvas.js` |

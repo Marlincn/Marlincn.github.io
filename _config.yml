@@ -14,7 +14,9 @@ timezone: Asia/Shanghai
 
 # URL
 url: https://marlincn.github.io/
-version: 20260831-p47
+# 站点资源版本号(单源): 生成器与模板引用会自动跟随。
+# 规则 YYYYMMDD-pNN —— 20260831 是起始版本, pNN 为递增序号(每次改动被引用的 css/js 就 +1)。
+version: 20260831-p48
 permalink: posts/:title/
 permalink_defaults:
 pretty_urls:
@@ -26,7 +28,8 @@ source_dir: source
 # 构建产物直接输出到 web/public —— 它同时是"线上 public 分支"的本地提交仓库，
 # 与 web/main(main 分支)、web/waline(waline 分支) 三者并列，各自独立推送。
 # 官方默认的 main/public 目录已废止：产物一律生成到那个仓库目录，避免两份产物互相混淆。
-# 换机器/换路径时改这一行即可。
+# ⚠️ 演示站 web\demo 里这一行是 public_dir: public（产物留自己目录内）——
+#    从演示站同步 _config.yml 时**不要整文件覆盖**，否则会把这行也带过来（已踩过一次）。
 public_dir: ../public
 tag_dir: articles
 archive_dir: archives

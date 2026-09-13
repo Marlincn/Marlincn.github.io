@@ -49,7 +49,7 @@ function htmlToText(html) {
 function renderSearchXml(posts, songs) {
   const entries = posts
     .slice()
-    .sort((a, b) => b.date - a.date)
+    .sort(byDateDescThenPath)
     .map(p => {
       const url = postUrl(p)
       let bodyHtml = (p.content || '')
@@ -86,7 +86,7 @@ function renderSearchXml(posts, songs) {
 function renderSitemap(posts) {
   const urls = posts
     .slice()
-    .sort((a, b) => b.date - a.date)
+    .sort(byDateDescThenPath)
     .map(p => {
       return '  <url>\n    <loc>' + escXml(encodeURI(SITE + postUrl(p))) + '</loc>\n    <lastmod>' + fmtDate(p.date) + '</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.6</priority>\n  </url>'
     })
@@ -95,7 +95,7 @@ function renderSitemap(posts) {
 }
 
 function renderAtom(posts) {
-  const sorted = posts.slice().sort((a, b) => b.date - a.date)
+  const sorted = posts.slice().sort(byDateDescThenPath)
   const updated = sorted.length ? fmtDate(sorted[0].date) + 'T00:00:00.000Z' : '1970-01-01T00:00:00.000Z'
   const entries = sorted.map(p => {
     const url = postUrl(p)
@@ -113,6 +113,19 @@ function postUrl(post) {
   return p
 }
 
+/* 日期降序 + 路径升序兜底。
+   为什么必须补兜底键: 本站在 8 篇同日期文章(2026-08-17 00:00:00 同一批入库),
+   并列时比较器返回 0, 而 Array.prototype.sort 对"相等"元素**不保证稳定顺序**
+   —— 表现为每次构建 search.xml/sitemap.xml/atom.xml 里同一批条目的先后发生变化,
+   产物 diff 上千行却没有任何实际改动, 无法审阅。
+   路径(post.path)在站内唯一且不随构建变化, 用它兜底即可让同一份数据产生逐字节相同的产物。
+   (home-generator 侧一直是有兜底的, 见 lib/sort.js byKeys 末尾的 byTitle —— 这里是同一问题的另一半。) */
+function byDateDescThenPath(a, b) {
+  const d = (b.date || 0) - (a.date || 0)
+  if (d) return d
+  return postUrl(a) < postUrl(b) ? -1 : postUrl(a) > postUrl(b) ? 1 : 0
+}
+
 /* 测试出口: test/ 下的单元测试直接 require 本模块取纯函数。 */
 module.exports = {
   stripMd,
@@ -122,5 +135,6 @@ module.exports = {
   renderSearchXml,
   renderSitemap,
   renderAtom,
-  postUrl
+  postUrl,
+  byDateDescThenPath
 }

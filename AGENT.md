@@ -208,7 +208,8 @@ P0(2026-09-11) 把外链库改为同源自托管，消除 jsDelivr 依赖。这�
 
 - **页脚横幅**：`custom.css` 中 `html[data-theme=dark|light] body:not(.nova-home-active) footer#footer`(玫瑰横幅 archive-bg.webp，深 `#080c17`/浅 `#d5d4de` 底)；首页为自定义 `.nova-footer` 排除在外；页级 css 中**不要再定义 footer 背景**(曾因覆盖导致横幅消失/矛盾,已收敛)
 - **#page-header 层叠（R6 标注）**：涉及 7 个文件(custom 19 处 / index 58 处 / 页级 19 处)——改 header 前需全局检索 `#page-header`；大部分为分层覆盖设计(主题底→全站覆盖→页级 hero)，勿简单增加规则，考虑现有层叠
-- **版本号约定**：所有 css/js 引用带 `?v=<日期>-<标签>`(当前 `20260831-p47`, 线上 GitHub Pages 同步)。**引用文件内容变更时必须 bump**——`_config.yml` 的 `version:` 是单源(生成器/动态模板自动),yml 与 html 片段中的字面量需手动同步——**实测共 22 处**(2026-09-11 核实: `_config.nova.yml` 的 inject 段 16 处 + `home-parts/page-scripts.html`、`tag-parts/bottom.html`、`parts-common/footer.html` 共 3 处 + 主题版本体系 `?v=5.7.0` 3 处；后者位于 `_partials/head-content.pug`、`parts-common/footer.html`，跟的是**主题版本号**而非站点 `version:`)。(曾出现旧路径图片 404/样式回退)
+- **版本号约定**：所有 css/js 引用带 `?v=<日期>-<标签>`(当前 `20260831-p48`)。**引用文件内容变更时必须 bump**——`_config.yml` 的 `version:` 是**唯一来源**:全站 29 处引用已全部写成 `?v=__VERSION__` 占位符(_config.nova.yml 13 + themes/nova 7 + themes/butterfly 7 + `asset-version.js` 自身 2),由 `asset-version.js` 的 `after_render:html` 过滤器渲染后替换 → **改版本号只需动 `_config.yml` 一行,无需再到各处同步字面量**(2026-09-13 核实:产物中已无任何硬编码站点版本号;实测 p47→p48 全站 462 处引用一次生效)。
+  主题自带的 `?v=5.7.0`(`/js/utils.js`、`/js/search/local-search.js`、`/css/index.css`)属上游文件,不在本机制内,保持原样。
 
   > 附带数据：全仓 `?v=` 引用总量约 25–34 处（含生成器里以 `__VERSION__` 占位、由 `scripts/asset-version.js` 渲染的部分），但**需要手动同步的字面量只有上面 22 处**——其余是自动注入。
 
@@ -320,7 +321,8 @@ npm run verify    # 结构断言 10 项; 加 --strict 为 18 项(含基线比对
 - **PJAX 过渡伪影(R1-B, 2026-09-05)**：切换页面瞬间的整屏"玫瑰色蒙版"是页面重挂时全屏层 CSS transition 首帧过渡造成的(非展示层/浏览器问题)。机制 = `custom.css` 的 `html.nova-no-transitions *` 冻结规则 + `nova-ux.js` `beginNavigation`/`finishNavigation` 加/移除该 html 类(切换 250ms 后解锁)。**勿删这两处**;若优化过渡,需同时保留机制,否则伪影复发。
 - **工程按钮图标(linkIcon)**：`projects-data.js` 工程条目可选 `linkIcon` 字段(如 `'kurtips'`),`projects-generator.js` 两层映射已透传,`project-detail.pug` 按字段渲染对应图标(`source/img/projects/kurtips-fox.png` 为 KurTips 官方标识,官方无 SVG 资源);无该字段的工程保持 GitHub 图标。
 - **更新工程(日期同步)**：替换/新增 `source/assets/projects/<工程名>/` 下资源 → 工程页"最近更新"与首页 LATEST SIGNAL 自动更新为目录内最新文件 mtime(无需改代码);无文件时回退 `projects-data.js` 的 `date`(仅年份)。
-- **版本号升级**：改 `_config.yml` 的 `version:` 一行(权威源, pug/生成器引用自动生效) → 全站搜索 `?v=` 确认 `_config.nova.yml`(10 处) 与 html 片段(parts-common/footer、page-scripts 等) 的字面量同步手动改(这些无插值能力)。
+- **版本号升级**：只改 `_config.yml` 的 `version:` 一行(权威源) → 重建即可,全站 29 处 `?v=__VERSION__` 占位符由 `asset-version.js` 自动替换。**不需要**再手工同步任何字面量(2026-09-13 起)。
+  验证方法:`npm run build` 后全仓搜 `20260831-p<旧号>` 应只剩代码注释里的历史标记(CSS/JS 注释中"某功能于 vX 引入"),不应出现在 `?v=` URL 里。
 - **发说说(瞬间页)**：管理员在瞬间页评论区留言即说说——「评论即说说」由 `moments-feed.js` 渲染(说说流仅在页面加载/PJAX 时拉取,**无自动重拉/轮询**);评论区管理员评论在**本次会话内保持可见可管理(如删除),刷新后自动隐藏**(一次性扫描,非持续观察);右侧「最近状态」收藏为本地 localStorage(`nova-moments-mood-v2`):点心形增删、最新置顶、7 条内完整展示超出滚动、服务端已删除说的收藏自动清除(prune 对账)。
 - **发布**：见「构建与部署」+「审批规则」。
 
