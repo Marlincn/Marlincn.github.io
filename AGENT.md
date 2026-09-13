@@ -119,7 +119,33 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/nova/layout/*.pug(模板, �
 - **文章 updated**：由 `scripts/post-date.js` 统一改写(判定链与工程侧同构)：front matter 显式 `updated` → **源文件 git 最后提交日** → mtime → `date` 兜底。文章页 head 的 `dateModified`/`article:modified_time`、首页 LATEST SIGNAL 与"最新文章"排序都读这个值。
   > ⚠️ **不要再依赖 hexo 的 `updated_option: mtime`** —— 它把"文件最后修改时间"当更新时间，而 mtime 记录的是**文件被复制/检出**的时刻、不是内容改动的时刻。实测(2026-09-13)：`LM-Studio-OpenCode 接入指南` 的 mtime 是 09-13，真实最后提交是 **08-31**(偏晚 13 天)；15 篇文章的 mtime 只聚成 3 个值(被成批复制的特征)；换机器/re-clone/CI 干净检出后全部文章的 mtime 会一起重置，`dateModified` 集体漂到同一天。
   > 代价与工程侧一致：**改完文章要 commit，日期才会前进**(与"改 → 提交 → 部署"的工作流一致)。无 git 时自动回退 mtime，不抛错。
-- **工程 updated**：`projects-data.js` 的 `updated:` 字段(可选) > **`source/assets/projects/<工程名>/` 目录内最新文件的 mtime(自动记录,robocopy 保留源文件时间故同步不污染)** > `date` 兜底。工程页概览第 4 栏"最近更新"与首页 LATEST SIGNAL 的工程日期统一读此链；**更新工程即上传/替换目录内文件,日期自动取最新文件 mtime,零人工**。
+- **工程 updated**：`projects-data.js` 的 `updated:` 字段(可选) > **该工程资产目录的 git 最后提交日** > 目录内最新文件的 mtime > `date` 兜底。工程页概览第 4 栏"最近更新"与首页 LATEST SIGNAL 的工程日期统一读此链。
+  > **注意路径是"资产目录"而非介绍文案**：判定看 `source/assets/projects/<工程名>/`(由 `downloads[0]` 的 href 推出)。所以**只改 `projects-intro.js` 的介绍文案不会让日期前进**，必须动资产文件并 commit。
+
+### 日期怎么更新（操作指引）
+
+两条链都是"**提交才生效**"——② 优先于 ③ mtime，所以只改文件不 commit，日期不会变。有意的：契合"改 → 提交 → 部署"的工作流，也避免 mtime 那种"换个机器日期就全乱"。
+
+| 目的 | 做法 |
+|---|---|
+| **改文章后让日期自动前进** | `git add -A && git commit` → `npm run build`。日期 = 这个 `.md` 的提交日 |
+| **改工程后让日期自动前进** | 替换/新增 `source/assets/projects/<工程名>/` 里的文件 → commit → build。无需改代码 |
+| **想指定某一天(不靠提交时间)** | 文章：front matter 写 `updated: 2026-09-01`；工程：`projects-data.js` 条目写 `updated: '2026-09-01'`。① 优先级最高，立即生效 |
+| **改了文件但不想/不能 commit** | 同上，只能靠显式 `updated:` |
+
+> ⚠️ **一次提交动多篇文章 ⇒ 它们的 `dateModified` 会是同一天**(都用那次提交日)。
+> 这跟旧 mtime 方案的"日期成批聚集"看着像，但成因不同：mtime 的聚集是**假象**(文件被复制/检出，内容没改)，
+> 现在的聚集是**真实的**(你确实在同一次提交里改了它们)。不想要就分开提交，或用显式 `updated:`。
+
+**验证方法**（改完日期后自查）：
+```powershell
+# 看某篇文章最终的 updated 取自哪里
+git log -1 --format=%cI -- "source/_posts/<标题>.md"
+# 看某工程的资产提交日
+git log -1 --format=%cI -- "source/assets/projects/<工程名>/"
+# 看产物里实际写进去的值
+Select-String -Path C:\Users\mabin\Desktop\web\public\posts\<标题>\index.html -Pattern 'dateModified'
+```
 - **概览统计条数据**：文章索引(/articles/)四栏 = TOPICS 主题总数 / ARTICLES 文章总数 / TOP TOPIC(最多文章主题+名称) / LATEST UPDATE(最新文章日期+标题)，数值由 `nova-tags.js` 注入；工程页(/projects/)四栏 = PROJECTS 项目总数 / TAGS 技术标签 / TOP PROJECT(真实 pv 最高的工程，pv 数字+工程名) / LATEST UPDATE(更新日期+工程名)，由 `projects-generator.js` 计算(真实 pv 取 `views-cache.json` 的 `lastRaw` 段；全部为 0 时第 3 栏兜底显示最新更新工程)。
 - **卡片注入**：mid.html 的 `<!--NOVA-FEATURED-->`/`<!--NOVA-RECENT-->` 与 top.html 的 `<!--NOVA-LATEST-->` 占位由生成器 `split().join()` 替换;卡片 HTML 拼装在 `home-generator.js` 的 `featuredCardsHtml`/`recentCardsHtml`/`latestSignal`。
 
