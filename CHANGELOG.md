@@ -4,12 +4,12 @@
 
 > 面向读者：想了解站点如何一步步演化的人 / 需要追溯某处改动原因的人。
 > 只想上手使用请看 [`README.md`](README.md)；AI/Agent 维护请看 [`AGENT.md`](AGENT.md)。
+> 工程坑统一维护在 [`AGENT.md`](AGENT.md)（Hexo 工程坑 / 排障清单），本文件只记录改动事件。
 
 ## 目录
 
 - [2026 年 9 月 · 阶段 1–5 结构化改造](#2026-年-9-月--阶段-15-结构化改造)
 - [2026 年 8–9 月 定制记录](#2026-年-89-月-定制记录)
-- [构建过程关键踩坑](#构建过程关键踩坑)
 
 ---
 
@@ -100,34 +100,3 @@
 | 2026-08-15 | 板块删减(归档/分类/模板/照片)、导航改版、彩蛋移除、背景图 day/night.webp | 全站 |
 | | ⑫ 工程更名 deymo-web → Marlin-web(目录与 package.json,含主题存储键 marlin-theme-pref) | `package.json`、`nova-ux.js`、README |
 
----
-
-## 构建过程关键踩坑
-
-> 完整历史日志（1. 调研与素材获取 → 9. 板块删减与导航改版，2026-08-15 全部步骤）见上方表格中 2026-08-16/17 的详细条目。
-
-- **hexo server 不热加载配置/模板/插件**：每次改动配置或脚本后必须重启 server
-- **浏览器缓存**：CSS/JS 版本号未变时，强刷（Ctrl+Shift+R）或隐私窗口验证
-- **hexo 会加载 `scripts/` 下所有文件**：模板不能放 `scripts/` 下，放工程根 `nova-templates/`；Python 工具脚本（如 `py-tools/` 里的）也不能放 `scripts/`，否则 hexo 当 JS 执行报错导致渲染不完整
-- **hexo partial `cache: true` 会缓存旧模板**：改 partial 模板后可能不生效，改用 `include` 或删 `db.json` + `hexo clean`
-- **Hexo excerpt 是渲染后的 HTML**：生成摘要时须先剥离 HTML 标签，否则残留未闭合标签破坏卡片 DOM
-- **hexo generate 不删除孤儿文件**：删除文章/页面后需 `hexo clean` 再 generate
-- **headless 截图陷阱**：虚拟时钟会冻结入场动画、缓存旧 CSS，验证用全新 profile + 像素采样
-
----
-
-## 2026-09 新增踩坑
-
-> 阶段 1–5 执行中实际发生过的坑，各条都真实复现过。
-
-| 坑 | 表现 | 正确做法 |
-| --- | --- | --- |
-| **hexo 增量构建不会因模板改动重生成所有页** | 改了 `.pug` 后 `npm run build` 只报 `3 files generated`，目标页仍是旧内容 | 改模板后必须 `hexo generate --force`；判据检查通过 ≠ 该页已更新 |
-| **`hexo server` 缓存 pug 模板** | 预览页一直用旧模板（产物却是对的） | 改 `.pug` 后重启 server |
-| **pug 在 `script.` 块内写 `//-`** | 注释被当作文本输出到产物 JS | 模板注释写在脚本块**外** |
-| **`head_begin` 注入时 `document.body` 不存在** | 用 `document.body.classList` 判首页 → 条件永远为假 | 该时机用 URL 路径判定 |
-| **运行时创建的 DOM 让"零影响"测试失真** | 静态扫 CSS 命中数为 0，据此判定可删 → 实际是 JS 运行时创建的元素（如 `.nova-mini-player`） | 剔除测试必须**触发真实交互**后再测 |
-| **"看不见的文案"必须实测** | 据源码位置判断"仅存在于结构化数据" → 实际渲染在页面可见处 | 可见性要读 DOM：`getComputedStyle` + `getBoundingClientRect` + 祖先 `overflow` 裁切 |
-| **对比前必须归一化运行时状态** | 计算样式比对出现 130 处假差异（加载态消失、`fa-spin` 动画、主题漂移） | 采样前等状态稳定 + 关动画 + 固定 `data-theme` |
-| **`hexo server` 占用文件导致写入失败** | 编辑器报 `ReplaceFileW EIO` | 改文件前先停 server |
-| **基线 `publicFiles` 随资源增减变化** | 每次加/删资源都让 `--strict` 失败 | 是预期变化，用 `--update-baseline` 刷新；但要在删完临时文件之后再刷 |

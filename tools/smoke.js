@@ -16,9 +16,8 @@
 
 const fs = require('fs')
 const path = require('path')
+const { ROOT, PUBLIC_DIR } = require('./lib/public-dir')
 
-const ROOT = path.join(__dirname, '..')
-const PUBLIC_DIR = path.join(ROOT, 'public')
 const POSTS_SRC = path.join(ROOT, 'source', '_posts')
 const BASELINE_FILE = path.join(ROOT, 'test', 'baseline.json')
 
@@ -33,9 +32,14 @@ const sizeOf = name => {
 }
 const readIf = p => { try { return fs.readFileSync(p, 'utf8') } catch (e) { return '' } }
 
+// 跳过版本控制与部署残留目录: 产物目录本身是一个 git 仓库(web\public),
+// 不排除的话 .git 里的 26 个内部文件会被算进"产物文件数"。
+const SKIP_DIRS = new Set(['.git', '.deploy_git', 'node_modules'])
+
 function walkFiles(dir, base, out) {
   out = out || []
   for (const name of fs.readdirSync(dir)) {
+    if (SKIP_DIRS.has(name)) continue
     const full = path.join(dir, name)
     let st
     try { st = fs.statSync(full) } catch (e) { continue }   // 忽略检查期间消失的文件

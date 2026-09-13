@@ -1,6 +1,6 @@
 # Marlin-web — 个人网站
 
-一个以「深夜幕蓝 + 玫瑰星系粒子」为视觉核心的个人网站。基于 [marlincn.github.io](https://marlincn.github.io) 的静态构建产物重建，采用 Hexo 8.1.2 + Butterfly 5.7.0 + 自研 rose-galaxy 定制层，并在此基础上做了个性化与开放共享。
+一个以「深夜幕蓝 + 玫瑰星系粒子」为视觉核心的个人网站。基于 [marlincn.github.io](https://marlincn.github.io) 的静态构建产物重建，采用 Hexo 8.1.2 + 自研 nova 主题（`themes/nova/`）+ rose-galaxy 定制层，并在此基础上做了个性化与开放共享。
 
 线上地址：<https://marlincn.github.io>
 
@@ -50,8 +50,8 @@ npm run verify -- --strict   # 结构 + 基线比对 18 项
 
 ```
 Marlin-web/
-├── _config.yml                Hexo 站点配置，permalink: posts/:title/
-├── _config.butterfly.yml      主题配置：导航 / 搜索 / 资源注入 / 评论
+├── _config.yml                Hexo 站点配置，permalink: posts/:title/、public_dir: ../public
+├── _config.nova.yml           主题配置：导航 / 搜索 / 资源注入 / 评论（原 _config.butterfly.yml）
 ├── package.json               Hexo 8.1.2 + 插件
 │
 ├── scripts/                   Hexo 插件与生成器，只能放这类文件
@@ -69,7 +69,9 @@ Marlin-web/
 │
 ├── tools/                     构建与验证工具，hexo 不加载
 │   ├── minify.js              构建后 JS 压缩，esbuild
-│   └── smoke.js               冒烟检查 / 结构断言 / 基线比对
+│   ├── smoke.js               冒烟检查 / 结构断言 / 基线比对
+│   ├── layout-guard.js        布局回归护栏：真实拉伸 / 横向溢出 / 容器宽度
+│   └── lib/public-dir.js      产物目录解析（读 _config.yml 的 public_dir）
 │
 ├── source/                    网站源文件
 │   ├── _posts/                15 篇文章 Markdown
@@ -84,13 +86,15 @@ Marlin-web/
 │   ├── css/custom.css         全站覆盖规则的唯一去处
 │   └── assets/projects/       工程下载文件，按工程名分包
 │
-├── themes/butterfly/layout/   模板层
-│   ├── base.pug               基础布局：html + head + body
-│   ├── _partials/             head.pug 统一 head / helpers.pug 共享函数
+├── themes/nova/layout/        ★ 站点模板层（`_config.yml` 的 theme: nova）
+│   ├── base.pug               基础布局：html + head + body（静态页）
+│   ├── _partials/             head.pug 统一 head / head-content.pug 共享实现 / helpers.pug
 │   ├── parts-common/          ★ 公共组件单源：loading / nav / sidebar / footer / 评论
 │   ├── home-parts/ tag-parts/ idx-parts/ project-parts/ page-parts/    各页页级片段
 │   ├── 各页面 pug              home / tag / tags-index / projects / project-detail / music / moments / about / 404
-│   └── includes/              Butterfly 原版布局链，文章详情页依赖，勿删
+│   └── includes/              layout.pug 文章页布局链 + head/ + third-party/
+│
+├── themes/butterfly/          Butterfly 5.7.0 原版主题（保留未启用，勿当作站点模板改）
 │
 ├── data/                      运行时数据，非 hexo 源
 │   ├── views-cache.json       浏览量缓存，配 views-cache.md
@@ -100,7 +104,7 @@ Marlin-web/
 ├── docs/                      仓库文档，不随站点发布
 │   ├── preview-dark.png       预览图
 │   ├── preview-light.png
-│   └── 主题升级指南.md         升级 Butterfly 前必读
+│   └── 主题升级指南.md         nova 主题维护指南：结构、文件来源与维护方式
 │
 ├── test/                      测试与基线
 │   ├── *.test.js              node:test 单测，68 项
@@ -118,7 +122,7 @@ Marlin-web/
 | 层 | 选型 |
 | --- | --- |
 | 静态生成 | Hexo 8.1.2，Node.js 24 |
-| 主题基座 | Butterfly 5.7.0：布局 / 侧边栏 / 搜索对话框 |
+| 主题 | **nova**（自研，`themes/nova/`）；`themes/butterfly/` 保留 5.7.0 原版未启用 |
 | 自研定制层 | rose-galaxy：首页特效、各页样式、交互脚本 |
 | 评论后端 | Waline v2，Vercel serverless + Neon PostgreSQL |
 | 字体 | 自托管 woff2 |
@@ -221,14 +225,14 @@ Markdown 是一种轻量级的标记语言……
 | 文案 | 位置 |
 | --- | --- |
 | 站点名、描述、作者 | `_config.yml` 的 `title` / `description` / `author` |
-| 首页标题与描述 | `themes/butterfly/layout/home.pug` 的 `headOpts`，需与 `_config.yml` 保持一致 |
+| 首页标题与描述 | `themes/nova/layout/home.pug` 的 `headOpts`，需与 `_config.yml` 保持一致 |
 | 各页标题与描述 | 对应页面 pug 的 `headOpts` |
 | 页面顶部题记 | 对应 `*-parts/top.html` |
-| 首页 hero 文案 | `themes/butterfly/layout/home-parts/top.html` |
+| 首页 hero 文案 | `themes/nova/layout/home-parts/top.html` |
 
 ### 升级版本号
 
-改 `_config.yml` 的 `version:` 一行，生成器和动态模板会自动跟随。但 `_config.butterfly.yml` 与 html 片段里的字面量没有插值能力，需要手动同步搜索 `?v=`。
+改 `_config.yml` 的 `version:` 一行，生成器和动态模板会自动跟随。但 `_config.nova.yml` 与 html 片段里的字面量没有插值能力，需要手动同步搜索 `?v=`。
 
 > 文件内容变更后必须提升版本号，否则访客会拿到旧资源。
 
@@ -301,7 +305,7 @@ Markdown 是一种轻量级的标记语言……
 - **文章更新时间**：Hexo 原生 `updated`，md 里没写就取文件最后修改时间
 - **工程更新时间**：优先 `projects-data.js` 的 `updated` 字段，其次取 `source/assets/projects/<工程名>/` 目录内最新文件的 mtime，最后回退 `date`。所以更新工程只要替换目录里的文件，日期自动变化
 
-静态骨架在 `themes/butterfly/layout/home-parts/{top,mid,bottom}.html`，改动时请保持占位注释与 DOM 结构。卡片 HTML 由 `home-generator.js` 的 `featuredCardsHtml` / `recentCardsHtml` / `latestSignal` 拼装。
+静态骨架在 `themes/nova/layout/home-parts/{top,mid,bottom}.html`，改动时请保持占位注释与 DOM 结构。卡片 HTML 由 `home-generator.js` 的 `featuredCardsHtml` / `recentCardsHtml` / `latestSignal` 拼装。
 
 ### 工程板块
 
@@ -337,17 +341,17 @@ Markdown 是一种轻量级的标记语言……
 | `/` | 首页 | `nova-home.css` |
 | `/articles/` | 文章标签索引 | `tag-page.css` |
 | `/articles/<标签>/` | 标签页 | `tag-page.css` |
-| `/posts/<标题>/` | 文章详情 | Butterfly 原版 + `custom.css` |
+| `/posts/<标题>/` | 文章详情 | `nova` 的 `includes/layout.pug` + `custom.css` |
 | `/projects/` | 工程列表 | `projects-page.css` |
 | `/projects/<id>/` | 工程详情 | `project-detail-page.css` |
 | `/music/` | 音乐播放 | `music-page.css` |
 | `/moments/` | 说说 | `moments-page.css` |
 | `/about/` | 关于 | `about-page.css` |
-| `/404.html` | 404 | Butterfly 默认 |
+| `/404.html` | 404 | `custom.css` |
 
 ### 评论系统
 
-后端是 Waline v2，部署在 Vercel，数据存 Neon PostgreSQL，管理后台在 `{serverURL}/ui/`。配置位于 `_config.butterfly.yml` 的 `comments.use` 与 `waline.serverURL`。
+后端是 Waline v2，部署在 Vercel，数据存 Neon PostgreSQL，管理后台在 `{serverURL}/ui/`。配置位于 `_config.nova.yml` 的 `comments.use` 与 `waline.serverURL`。
 
 评论按页面 `path` 存储，所以**页面路径变更后旧评论不会迁移**，需要迁移的话得在数据层操作。
 
@@ -376,7 +380,7 @@ Markdown 是一种轻量级的标记语言……
 | `README.md` | 使用者 | 本文档：怎么用、怎么加内容、各版块怎么运作 |
 | `AGENT.md` | AI / Agent | 维护手册：架构事实、操作守则、工程坑、排障清单 |
 | `CHANGELOG.md` | 追溯者 | 详细变更日志，逐条改动与文件清单 |
-| `docs/主题升级指南.md` | 升级者 | 升级 Butterfly 前必读：55 个定制文件清单与流程 |
+| `docs/主题升级指南.md` | 维护者 | nova 主题维护指南：结构、每类文件来源、维护方式 |
 | `data/views-cache.md` | 维护者 | 浏览量缓存的字段含义与手动调整方法 |
 
 ---
@@ -389,7 +393,7 @@ Marlin-web 从一份静态站导出产物，长成现在这个带生成器、双
 
 | 时间 | 阶段 | 主要变化 | 效果 |
 | --- | --- | --- | --- |
-| 09-11 | 结构化改造 | 清死代码、修 6 个真实缺陷、建测试护栏；第三方库转同源自托管；9 张图重新压缩；首页大图按主题预加载；粒子发光改缓存纹理；删除 10.5 MB 从未被引用的图片 | 首屏大图加载起点 **8.4 秒 → 0.2 秒**；外部域名请求 **7 → 2**；图片合计 **1.94 MB → 1.07 MB**；护栏 **68 项单测 + 18 项断言** |
+| 09-11 | 结构化改造 | 清死代码、修 6 个真实缺陷、建测试护栏；第三方库转同源自托管；9 张图重新压缩；首页大图按主题预加载；粒子发光改缓存纹理；删除孤儿图片 | 首屏大图加载起点 **8.4 秒 → 0.2 秒**；外部域名请求 **7 → 2**；图片合计 **1.94 MB → 1.07 MB**；护栏 **68 项单测 + 18 项断言** |
 | 09-05 | 切页伪影修复 | 站内无刷新跳转会闪出一层玫瑰色蒙版，根因是全屏层过渡动画的首帧；改为切换期间冻结过渡、就绪后解锁；工程按钮换官方标识 | 跳转瞬间不再有整屏色块闪过 |
 | 09-04 | 说说页与首屏 | 说说页重做：评论区的管理员留言直接变成说说卡片，带标签识别与收藏；首屏遮罩时长减半，六个页面 hero 图预加载 | 说说由手工维护变为**评论即发布**；消除"先见裸页面再上样式" |
 | 09-03 | 收敛重复 | 页面级样式只留一处来源，删掉并行注入机制；工程日期、主题色、字体收敛到单一出处；大图全面 WebP 化 | 改一处即全站生效；单张图最大 **4.1 MB → 215 KB** |
@@ -408,8 +412,12 @@ Marlin-web 从一份静态站导出产物，长成现在这个带生成器、双
 
 ## 相关仓库
 
-| 分支 | 用途 |
-| --- | --- |
-| `main` | 源码 |
-| `public` | GitHub Pages 产物 |
-| `waline` | Waline 评论后端 |
+线上仓库 `Marlincn/Marlincn.github.io` 有三个分支，本地各有一个**独立仓库**与之一一对应：
+
+| 本地目录 | 线上分支 | 用途 |
+| --- | --- | --- |
+| `web\main` | `main` | 源码（`scripts/` `source/` `themes/` `_config*.yml`） |
+| `web\public` | `public` | GitHub Pages 产物，`hexo generate` 直接输出到这里 |
+| `web\waline` | `waline` | Waline 评论后端（Vercel） |
+
+发布时只推 `public`（产物）；`main` 的源码改动留在本地。GitHub Desktop 里这三个目录各是一个仓库。

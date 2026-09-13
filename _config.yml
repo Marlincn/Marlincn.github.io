@@ -23,7 +23,11 @@ pretty_urls:
 
 # Directory
 source_dir: source
-public_dir: public
+# 构建产物直接输出到 web/public —— 它同时是"线上 public 分支"的本地提交仓库，
+# 与 web/main(main 分支)、web/waline(waline 分支) 三者并列，各自独立推送。
+# 官方默认的 main/public 目录已废止：产物一律生成到那个仓库目录，避免两份产物互相混淆。
+# 换机器/换路径时改这一行即可。
+public_dir: ../public
 tag_dir: articles
 archive_dir: archives
 category_dir: categories
