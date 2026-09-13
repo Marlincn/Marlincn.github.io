@@ -420,4 +420,4 @@ Marlin-web 从一份静态站导出产物，长成现在这个带生成器、双
 | `web\public` | `public` | GitHub Pages 产物，`hexo generate` 直接输出到这里 |
 | `web\waline` | `waline` | Waline 评论后端（Vercel） |
 
-发布时只推 `public`（产物）；`main` 的源码改动留在本地。GitHub Desktop 里这三个目录各是一个仓库。
+源码改动推 `main`（同步源码），上线推 `public`（产物）——**只有 `public` 会改变线上页面**。GitHub Desktop 里这三个目录各是一个仓库。

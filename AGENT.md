@@ -12,8 +12,8 @@
 
 | 目录 | 角色 | 能否修改 |
 | --- | --- | --- |
-| `C:\Users\mabin\Desktop\web\main` | **源码仓**(远端 `main` 分支) | ✅ **所有改造在这里做**；但**源码改动不推线上**(见「构建与部署」) |
-| `C:\Users\mabin\Desktop\web\public` | **产物仓**(远端 `public` 分支,Pages 直接发布它) | 产物由构建生成；上线只推这个仓库 |
+| `C:\Users\mabin\Desktop\web\main` | **源码仓**(远端 `main` 分支) | ✅ **所有改造在这里做**；改完推 `origin main` 同步源码 |
+| `C:\Users\mabin\Desktop\web\public` | **产物仓**(远端 `public` 分支,Pages 直接发布它) | 产物由构建生成；**上线由它决定** |
 | `C:\Users\mabin\Desktop\web\waline` | **后端仓**(远端 `waline` 分支, Vercel) | 仅评论后端改动时动 |
 
 > 旧的 `web\demo` / `web\demo-d` / `web\demo-fresh` 演示站**已删除**(2026-09-13)：改动直接在 `web\main` 做，产物直接生成进 `web\public`，不再需要"演示站 → robocopy 同步回原站"那一步。
@@ -221,20 +221,22 @@ P0(2026-09-11) 把外链库改为同源自托管，消除 jsDelivr 依赖。这�
 
 | 本地目录 | 线上分支 | 内容 | 谁推它 |
 | --- | --- | --- | --- |
-| `web\main` | `main` | 源码（pug/scripts/source/_config） | **不推线上**（见下） |
-| `web\public` | `public` | 构建产物（Pages 直接发布它） | 产物改动推这里 |
+| `web\main` | `main` | 源码（pug/scripts/source/_config） | 源码改动推这里（同步源码） |
+| `web\public` | `public` | 构建产物（Pages 直接发布它） | 产物改动推这里（**上线由它决定**） |
 | `web\waline` | `waline` | Waline 评论后端（Vercel） | 后端改动推这里 |
 
 - **`hexo generate` 直接输出到 `web\public`** —— `_config.yml` 的 `public_dir: ../public`。官方默认的 `main\public` 目录**已废止**（不要再在 main 里生成产物）。产品目录一律用 `tools/lib/public-dir.js` 解析，勿在脚本里硬编码 `public`。
 - **`waline` 分支是独立服务**：前端通过 `_config.nova.yml` 的 `waline.serverURL`（`https://marlincn-github-io.vercel.app`）访问它，前端改动通常不需要动它。
-- **`main` 的改动不发布到线上**：源码改动留在本地 `main`，不 `push origin main`。要上线的是 `web\public` 的产物提交。
+- **源码与上线是两条线**：源码改动推 `origin main`（远端保存源码）；**真正上线的是 `web\public` 的产物提交** —— 只推 `main` 不会改变线上页面。
 
-### 发布流程（改源码 → 上线）
+### 发布流程（改源码 → 同步源码 → 上线）
 
 1. 在 `web\main` 改源码并本地验证：`npm run build` + `npm test` + `npm run verify` 全绿
 2. 产物按第 1 步生成进 `web\public`（无需复制；生成即落位）
-3. **用户明确批准**后，在 `web\public` 里提交并推送：
+3. **用户明确批准**后推两个仓库（顺序无关，但 `public` 才决定线上）：
    ```powershell
+   cd C:\Users\mabin\Desktop\web\main
+   git add -A && git commit -m "..." && git push origin main
    cd C:\Users\mabin\Desktop\web\public
    git add -A && git commit -m "Site updated: ..." && git push origin public
    ```
@@ -263,7 +265,7 @@ npm run verify    # 结构断言 10 项; 加 --strict 为 18 项(含基线比对
 3. 结构性/行为性决策先询问用户。
 4. 修复完成后只汇报验证结果并请求批准；禁止以"已验证/惯例/之前授权过"为由自行发布。
 5. GitHub 提交注释一律**英文简洁**(如 "Globalize page CSS into inject.head … v20260831-p37")。
-6. **源码不推线上**:`web\main` 的改动不 `push origin main`；要上线的是 `web\public` 里那次产物提交。
+6. **源码推 main,上线看 public**:`web\main` 的改动推 `origin main` 同步源码;但**线上页面只由 `web\public` 的产物提交改变** —— 只推 `main` 不影响线上。
 
 ---
 
