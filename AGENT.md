@@ -15,11 +15,12 @@
 | `C:\Users\mabin\Desktop\web\main` | **源码仓**(远端 `main` 分支) | ✅ **所有改造在这里做**；改完推 `origin main` 同步源码 |
 | `C:\Users\mabin\Desktop\web\public` | **产物仓**(远端 `public` 分支,Pages 直接发布它) | 产物由构建生成；**上线由它决定** |
 | `C:\Users\mabin\Desktop\web\waline` | **后端仓**(远端 `waline` 分支, Vercel) | 仅评论后端改动时动 |
-
-> 旧的 `web\demo` / `web\demo-d` / `web\demo-fresh` 演示站**已删除**(2026-09-13)：改动直接在 `web\main` 做，产物直接生成进 `web\public`，不再需要"演示站 → robocopy 同步回原站"那一步。
+| `C:\Users\mabin\Desktop\web\demo` | **演示站**(独立工作区) | 若存在则用于试验改动；它的 `_config.yml` 与基线可能与 main 不同, 动它之前先看 `web\演示站说明.md` |
 
 **本地预览**:`cd main` → `.\node_modules\.bin\hexo.cmd server -p 4015` → <http://127.0.0.1:4015/>
 (`hexo server` 是**动态渲染**,直接读 `source/`,改完刷新即见；改 `.pug`/`_config`/`scripts` 后须重启 server)
+
+> `web\` 下除三个仓库外的其它目录(如 `demo`、`_snapshots`)是**临时工作区**, 不属于产品链路, 其用途见 `web\演示站说明.md`。产品事实只记在本文件, 临时工作区的细节不写在这里。
 
 **改完必跑的三道护栏**:
 
@@ -260,7 +261,7 @@ npm run verify    # 结构断言 10 项; 加 --strict 为 18 项(含基线比对
 
 > 强制规则（2026-08-27 立此存照；分期台账 STRUCTURE-REFACTOR.md 已归档下架，历史见 `CHANGELOG.md`）：
 
-1. 所有改动直接在 `web\main` 完成并本地验证（演示站已取消）。
+1. 所有改动在 `web\main` 完成并本地验证（`npm run build` + `npm test` + `npm run verify`）；需要隔离试验时用临时工作区（见 `web\演示站说明.md`），其改动最终仍要回到 `web\main`。
 2. **未经用户明确批准，禁止任何提交/推送/部署**（git push / GitHub Pages / `web\public` / `web\waline`）。发布动作必须逐次明确授权。
 3. 结构性/行为性决策先询问用户。
 4. 修复完成后只汇报验证结果并请求批准；禁止以"已验证/惯例/之前授权过"为由自行发布。
