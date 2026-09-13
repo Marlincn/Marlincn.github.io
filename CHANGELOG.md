@@ -20,6 +20,8 @@
 
 | 日期 | 改动 | 涉及文件 |
 | --- | --- | --- |
+| 2026-09-13 | **首页 hero 海报改单图加载**：原先 `day.webp` 写在 `.nova-hero-bg::after`（`opacity:0` 的交叉淡入层）里，浏览器**解析 CSS 就会请求它**，深色模式下白下载 271 KB。改为 `--nova-hero-bg` 变量按主题二选一（未生效的变量值不触发请求），另一张由 `nova-ux.js initHeroThemeSwap` 在切主题时按需加载并写进 `::after` —— 省 271 KB 且保留 0.55s 交叉淡入（实测首屏 hero 海报 2 张→1 张） | `source/rose-galaxy/{css/nova-home.css,js/nova-ux.js}` |
+| 2026-09-13 | **字重归一化**：`font-weight` 的 520/540/550/560/650 共 11 处改为标准档（650→600、其余→500）。中文字体只有 400/500/600/700 档，非标准值会被吸附，导致**同一行里英文能插值出 520 而中文吸到 500**、中英粗细不一致（实测墨量比差 5.3%）；改后两侧落在同档 | `source/css/custom.css`、`source/rose-galaxy/css/{about-page,moments-page}.css` |
 | 2026-09-11 | **阶段 5 加载优化**：① 5.2 粒子发光改离屏 sprite 缓存 —— 每帧 `createRadialGradient` 93→0 次、`arc` −60%、JS 堆增长 −61%（帧率不变，瓶颈在像素填充）；② 5.3 视口变化改为**按比例缩放**已有粒子，不再重建（消除拖动窗口时的整片跳变）；③ 5.1 页级 CSS 按需注入**取消** —— 实测真实传输口径只省约 2.6%，且需改 PJAX 引入裸渲染风险 | `source/rose-galaxy/animation/galaxy-canvas.js` |
 | 2026-09-11 | **P0 加载性能专项**：① **CDN 全部本地化**（FontAwesome / pjax / medium-zoom / infinitegrid → `source/rose-galaxy/vendor/`，jsdelivr 引用 5→0，外部域名请求 7→2）；② **图片压缩 9 张**（1.94 MB→1.07 MB，省 891 KB；hero `day/night` 压至 q80）；③ 删除 **10.54 MB 未被引用**的 `preview-*.png`；④ 首页 hero 大图**按主题 preload**（`night.webp` 加载起点 8443ms→206ms） | `_config.butterfly.yml`、`themes/butterfly/layout/_partials/head.pug`、`parts-common/footer.html`、`scripts/inject-theme.js`、`source/rose-galaxy/vendor/`(新)、`source/img/*` |
 | 2026-09-11 | **P1 主题升级清单化**：不改"把自制页迁出 themes"（hexo 硬编码 `view_dir = theme_dir + 'layout'`，迁移需维护上游 layout 副本），改为产出 `docs/主题升级指南.md` —— 55 个定制文件清单（144.7 KB）+ 8 步升级流程 + 5 个易错点 | `docs/主题升级指南.md`(新) |

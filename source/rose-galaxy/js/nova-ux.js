@@ -129,6 +129,47 @@
     window.setTimeout(done, HOME_BG_MAX_WAIT)
   }
 
+  // 首页 hero 只加载当前主题那一张海报(方案 1)。CSS 用 --nova-hero-bg 变量,
+  // 未选中主题的 URL 不出现在生效声明里,浏览器因此不会请求它(实测原先 ::after
+  // 的 day.webp 会无条件加载 271KB)。切主题时才把另一张拉下来,拉完写进 ::after
+  // 做交叉淡入,所以既省首屏也保住 .55s 过渡。
+  function initHeroThemeSwap() {
+    if (!isHomePage()) return
+
+    const root = document.documentElement
+    const heroBg = document.querySelector('.nova-hero-bg')
+    if (!heroBg) return
+
+    let raf = 0
+    let lastMode = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
+
+    const onThemeChanged = () => {
+      const mode = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark'
+      if (mode === lastMode) return
+      lastMode = mode
+
+      const src = HOME_BG[mode]
+      const img = new Image()
+      img.onload = () => {
+        // 基础层已由 CSS 变量换成新主题的海报,这里只补交叉淡入层。
+        window.cancelAnimationFrame(raf)
+        raf = window.requestAnimationFrame(() => {
+          heroBg.style.setProperty('--nova-hero-bg-next', 'url("' + src + '")')
+          // 过渡是 .55s;留足余量再撤,别让淡入层长期持一份解码后的位图。
+          window.setTimeout(() => {
+            heroBg.style.removeProperty('--nova-hero-bg-next')
+          }, 900)
+        })
+      }
+      img.src = src
+    }
+
+    new MutationObserver(onThemeChanged).observe(root, {
+      attributes: true,
+      attributeFilter: ['data-theme'],
+    })
+  }
+
   function finishInitialLoading() {
     // 首页首屏:退场须同时满足 ①背景图渲染完成 ②已展示 ≥ INITIAL_MIN_SHOW 最小时长,
     // 否则会"粒子先动、图片后到"或"loading 一闪而过"。非首页直接进入退场。
@@ -638,6 +679,7 @@
 
   initInitialLoading()
   initThemeSchedule()
+  initHeroThemeSwap()
   prefetchNavPages()
   if (document.readyState !== 'loading') {
     enhanceSearch()

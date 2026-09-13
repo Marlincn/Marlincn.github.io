@@ -127,7 +127,13 @@
   border-top:1px solid rgba(255,255,255,.12);
 }
 
-/* Hero poster composition: dark /img/hero/night.webp, light /img/hero/day.webp */
+/* Hero poster composition: dark /img/hero/night.webp, light /img/hero/day.webp
+   Single-image policy (2026-09-13): only the active theme's poster is fetched.
+   The image is referenced through --nova-hero-bg, so the inactive theme's URL
+   never appears in a used declaration and the browser never requests it.
+   The ::after crossfade layer carries no background here; JS sets it at switch
+   time from the already-preloaded image (nova-ux.js initHeroThemeSwap), which
+   keeps the fade without paying for the second poster up front. */
 .nova-home-active #nav{color:#fff;text-shadow:0 1px 12px #000;
   height:66px;
   padding-inline:max(28px,calc((100vw - 1480px)/2 + 34px));
@@ -290,26 +296,31 @@
   max-height:none;
   overflow:hidden;
 }
+/* Active theme selects the poster via a variable: the unused theme's URL never
+   lands in a used declaration, so exactly one poster is requested. */
+html[data-theme="dark"] body.nova-home-active{--nova-hero-bg:url("/img/hero/night.webp")}
+html[data-theme="light"] body.nova-home-active{--nova-hero-bg:url("/img/hero/day.webp")}
 .nova-hero-bg{position:absolute;
-  background:url("/img/hero/night.webp") center center/cover no-repeat;
+  background-image:var(--nova-hero-bg);
+  background-position:var(--nova-hero-pos,center 48%);
+  background-size:cover;
+  background-repeat:no-repeat;
   filter:saturate(.88) contrast(1.03);
   transform:none!important;
   inset:0;
   width:100%;
   height:100%;
-  background-position:center 48%;
-  background-size:cover;
-  background-repeat:no-repeat;
 }
 .nova-hero-bg::after{
   content:"";
   position:absolute;
   inset:0;
   pointer-events:none;
-  /* Theme crossfade: night.png (base) -> day.png (overlay, fades in on
-     light theme). Site customization: images swapped from the original
-     background02/background03 pair, mechanism preserved. */
-  background:url("/img/hero/day.webp") center 46%/cover no-repeat;
+  /* Theme crossfade: the base layer holds the active poster; this overlay fades
+     in for the other theme. The image is injected by JS at switch time (after
+     preload), so no background is declared here and the browser has nothing to
+     fetch on first paint. */
+  background:var(--nova-hero-bg-next,none) var(--nova-hero-pos,center 48%)/cover no-repeat;
   opacity:0;
   transition:opacity .55s ease;
 }
@@ -520,8 +531,8 @@ html[data-theme="dark"] body.nova-home-active .nova-hero{
   background:#080c16;
 }
 html[data-theme="dark"] body.nova-home-active .nova-hero-bg{
-  background-image:url("/img/hero/night.webp");
-  background-position:center 48%;
+  background-image:var(--nova-hero-bg);
+  background-position:var(--nova-hero-pos,center 48%);
   background-size:cover;
   filter:none;
   opacity:1;
@@ -1025,10 +1036,10 @@ html[data-theme="dark"] .home-theme-toggle__icon--moon {
 }
 
 /* Light-theme Hero clarity: keep the image clean and confine haze to copy.
-   Base layer intentionally keeps night.png so the day.png overlay (::after)
-   crossfades over it when the theme switches. */
+   The base layer now follows the active theme through --nova-hero-bg; the
+   crossfade overlay is injected by JS on switch and fades in over it. */
 html[data-theme="light"] body.nova-home-active .nova-hero-bg {
-  background-position:center 46%;
+  background-position:var(--nova-hero-pos,center 46%);
   background-size:cover;
   filter:none;
   opacity:1;
@@ -1396,7 +1407,7 @@ html[data-theme="light"] body.nova-home-active .nova-hero .nova-actions a:last-c
     min-height:100svh;
   }
   html[data-theme="dark"] body.nova-home-active .nova-hero-bg{
-    background-position:58% 48%;
+    --nova-hero-pos:58% 48%;
   }
   html[data-theme="dark"] body.nova-home-active .nova-hero::before{
     background:
@@ -1468,7 +1479,7 @@ html[data-theme="light"] body.nova-home-active .nova-hero .nova-actions a:last-c
 
 @media(max-width:1024px){
   html[data-theme="light"] body.nova-home-active .nova-hero-bg{
-    background-position:52% 48%;
+    --nova-hero-pos:52% 48%;
   }
   html[data-theme="light"] body.nova-home-active .nova-hero .hero-copy.nova-hero-copy{
     width:min(480px,52vw);
@@ -1493,7 +1504,7 @@ html[data-theme="light"] body.nova-home-active .nova-hero .nova-actions a:last-c
     background:linear-gradient(180deg,transparent 0%,transparent calc(100% - 52px),rgba(221,216,223,.3) 100%);
   }
   html[data-theme="light"] body.nova-home-active .nova-hero-bg{
-    background-position:55% 48%;
+    --nova-hero-pos:55% 48%;
   }
   html[data-theme="light"] body.nova-home-active .nova-hero .hero-copy.nova-hero-copy{
     width:min(100%,460px);

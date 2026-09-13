@@ -96,7 +96,7 @@ hexo 加载 scripts/*.js(插件/生成器) + themes/butterfly/layout/*.pug(模�
 | `projects-data.js` / `projects-intro.js` | 工程数据(5 个工程)/ 详情介绍文案(自包含) |
 | `lib/fetch-views.js` | **浏览量抓取器(部署前手动运行)**：busuanzi API 带 Referer 查询各页真实 page_pv → 写 `data/views-cache.json`；24h 缓存、单条失败跳过、手动修改自动保留偏移 |
 | `data/views-cache.json` | 浏览量缓存(**在 `data/`, 不在 `scripts/`**)：`pv`(显示值=排序用) / `shift`(人工偏移) / `lastRaw`·`lastDisplay`(脚本维护)。**手动改只动 `pv` 段**，详见 `data/views-cache.md` |
-| `inject-theme.js` | 首帧主题注入(injector head_begin, 各页) + **首页 hero 大图按主题 preload**(night/day, P0 2026-09-11) |
+| `inject-theme.js` | 首帧主题注入(injector head_begin, 各页) + **首页 hero 海报按主题 preload**(night/day, P0 2026-09-11)。**只 preload 当前主题那一张**:另一张由 `nova-ux.js initHeroThemeSwap` 在切主题时按需加载(单图策略 2026-09-13, 见操作守则 8) |
 | `lib/date.js` | `fmtDate`(支持 moment 对象与 Date) |
 | `lib/feeds.js` | `search.xml`/`sitemap.xml`/`atom.xml` 三件套生成器 + `stripMd`/`summaryOf`/`escXml`/`htmlToText`/`postUrl`(阶段4 4.8 从 `nova-tags.js` 拆出) |
 | `lib/sort.js` | `toMs` + `byKeys` 排序工具(阶段4 N) |
@@ -259,6 +259,7 @@ npm run verify    # 结构断言 10 项; 加 --strict 为 18 项(含基线比对
 5. **页级 CSS 只有一处来源**:`_config.butterfly.yml inject.head`。**勿**恢复 head extraCss / body 内 PAGE_STYLES 双份机制(2026-09-03 A 方案已全局化, 死代码已清)。
 6. **发布三连**:robocopy 同步(注意不删目标多余文件 → 手动清残留)→ `npm run build` → 用户批准后 `push main` + `hexo deploy`。
 7. **SCF 云函数**:响应勿加自定义 `Content-Length`(网关注入双 CT);前端 fetch 按响应体字节判定 base64, 勿再改回 audio 直连(网关注入 `application/json`, 实测不可行)。
+8. **hero 双海报只加载当前主题那一张**(单图策略 2026-09-13):`night.webp`/`day.webp` 通过 `--nova-hero-bg` 变量二选一(未生效的变量值不触发请求),另一张由 `nova-ux.js initHeroThemeSwap` 在切主题时按需加载 + 交叉淡入。**勿改回"两图都写在 CSS 里 + opacity 切换"** —— 浏览器会为 `opacity:0` 的 `::after` 也发请求,深色模式下白下载 `day.webp` 271 KB(实测)。
 
 ## Hexo 工程坑
 
@@ -292,6 +293,7 @@ npm run verify    # 结构断言 10 项; 加 --strict 为 18 项(含基线比对
 - **换 B 站收藏夹源**：改 `source/rose-galaxy/js/lib/site-config.js` 的 `NOVA_SITE.bili` → bump `utils.js?` 无需，但 **bump site-config.js 引用处版本号**(yml inject) 防缓存。
 - **换页脚横幅图**：替换 `source/img/hero/archive-bg.webp`(保持文件名)；改色 → `custom.css` 两套规则；**勿在页级 css 加 footer 背景**。
 - **换页面 hero 背景**：页面级 css(`{page}-page.css`)中对应 `#page-header`/`.nova-hero-bg` 规则 → 图片放 `img/hero/` → bump 该 css 版本号。
+  - **首页(深浅双海报)**:不写 `background-image`,而是给两个主题变量各写一张 —— `html[data-theme="dark"] body.nova-home-active{--nova-hero-bg:url(night)}` / `[light]{...url(day)}`;换图只改变量值。`::after` 交叉淡入层默认无背景(单图策略),由 `nova-ux.js initHeroThemeSwap` 在切主题时注入 → **勿在 CSS 里给 `::after` 写死背景图**,那会让两张海报都被无条件下载(实测非当前主题那张白下载 271 KB)。
 - **PJAX 过渡伪影(R1-B, 2026-09-05)**：切换页面瞬间的整屏"玫瑰色蒙版"是页面重挂时全屏层 CSS transition 首帧过渡造成的(非展示层/浏览器问题)。机制 = `custom.css` 的 `html.nova-no-transitions *` 冻结规则 + `nova-ux.js` `beginNavigation`/`finishNavigation` 加/移除该 html 类(切换 250ms 后解锁)。**勿删这两处**;若优化过渡,需同时保留机制,否则伪影复发。
 - **工程按钮图标(linkIcon)**：`projects-data.js` 工程条目可选 `linkIcon` 字段(如 `'kurtips'`),`projects-generator.js` 两层映射已透传,`project-detail.pug` 按字段渲染对应图标(`source/img/projects/kurtips-fox.png` 为 KurTips 官方标识,官方无 SVG 资源);无该字段的工程保持 GitHub 图标。
 - **更新工程(日期同步)**：替换/新增 `source/assets/projects/<工程名>/` 下资源 → 工程页"最近更新"与首页 LATEST SIGNAL 自动更新为目录内最新文件 mtime(无需改代码);无文件时回退 `projects-data.js` 的 `date`(仅年份)。
@@ -315,6 +317,8 @@ npm run verify    # 结构断言 10 项; 加 --strict 为 18 项(含基线比对
 | **预览用旧模板、产物却正确** | `hexo server` 缓存了 pug 模板 → 重启 server；对比"server 返回 HTML"与"public 产物"可确认（坑③） |
 | **整站图标消失 / PJAX 失效 / 图片不能放大** | `source/rose-galaxy/vendor/` 被当"未使用资源"删了 → 从 git 恢复；这 4 个库只由 `head.pug`/`footer.html` 路径引用，源码里搜不到（操作守则 2） |
 | **首页 hero 预加载没生效** | 检查 `inject-theme.js` 是否又用了 `document.body` 判首页（该注入时机 body 不存在）→ 改用 `location.pathname`（坑⑮） |
+| **首页出现两张海报都下载 / 非当前主题那张白下载 271 KB** | CSS 里给 `.nova-hero-bg::after` 写死了背景图 → 改回无背景(单图策略);换图只改 `--nova-hero-bg` 变量（操作守则 8） |
+| **切主题后海报空白不切换** | `nova-ux.js initHeroThemeSwap` 是否被删/未调用（须在 `initInitialLoading()` 后调用, 且仅首页生效）;它靠 `MutationObserver` 监听 `data-theme`, 覆盖时间制/按钮/URL 四种来源 |
 | **产物 HTML 里出现 `//-` 文本** | pug 注释写在了 `script.` 块内 → 移到脚本块外（坑⑭） |
 | footer 横幅异常 | 页级 css 又有 footer 背景规则 → 删；`custom.css` 两套规则(md 主题前缀)是唯一来源 |
 | 评论不见 | Waline 按 path 存储——页面路径变更后旧评论不显示(非 bug)；需迁移在数据层处理 |

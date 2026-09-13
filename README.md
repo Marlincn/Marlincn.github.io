@@ -208,6 +208,8 @@ Markdown 是一种轻量级的标记语言……
 2. 在对应的页级样式 `source/rose-galaxy/css/{page}-page.css` 里改 `#page-header` 或 `.nova-hero-bg` 规则
 3. 提升该 css 的版本号，防止访客拿到缓存
 
+> **首页的深浅两张海报**（`night.webp` / `day.webp`）不在 `.nova-hero-bg` 上直接写图片，而是各挂一个主题变量：深色写 `--nova-hero-bg:url(night)`、浅色写 `url(day)`。这样浏览器只会下载当前主题那一张；另一张等你切换主题时才加载，并保留原有的交叉淡入过渡。换图只改变量里的文件名即可，**不要**给 `::after` 补背景图，那会让两张海报都被下载。
+
 ### 换页脚横幅
 
 替换 `source/img/hero/archive-bg.webp`，保持文件名不变。要改颜色就改 `custom.css` 里的深浅两套规则。
