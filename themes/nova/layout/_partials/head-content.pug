@@ -31,7 +31,11 @@ mixin headContent(opts)
   if opts.description
     meta(property='og:description' content=opts.description)
   meta(property='og:locale' content='zh_CN')
-  meta(property='og:image' content=siteUrl + '/img/brand/headpicture.jpg')
+  //- og:image / twitter:image follow the page's real hero image. The chain mirrors
+  //- includes/header/index.pug (page.top_img then page.cover then
+  //- theme.default_top_img), so the shared card matches the image the page shows.
+  - var headImage = full_url_for(page.top_img || page.cover || theme.default_top_img || '/img/brand/headpicture.jpg')
+  meta(property='og:image' content=headImage)
   if opts.articleDate || opts.articleUpdated
     meta(property='article:published_time' content=opts.articleDate || opts.articleUpdated)
     meta(property='article:modified_time' content=opts.articleUpdated || opts.articleDate)
@@ -41,7 +45,7 @@ mixin headContent(opts)
     each _tag in opts.articleTags
       meta(property='article:tag' content=_tag)
   meta(name='twitter:card' content='summary')
-  meta(name='twitter:image' content=siteUrl + '/img/brand/headpicture.jpg')
+  meta(name='twitter:image' content=headImage)
   link(rel='shortcut icon' href=opts.favicon || '/img/brand/favicon-small.png')
   if opts.canonical
     link(rel='canonical' href=opts.canonical)
